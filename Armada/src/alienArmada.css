@@ -4,7 +4,17 @@
   src: url("../fonts/emulogic.ttf");
 }
 
+#options
+{
+	width: 200px;
+}
+
 button {
-		  display: block;
-		  width: 150px;
+	display: inline;
+	width: 60px;
+}
+
+input {
+	width: 25px;
+
 }

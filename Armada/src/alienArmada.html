@@ -7,8 +7,11 @@
  
 <!-- The sounds -->
 <audio id="music">
-  <source src="../sounds/music.mp3" type="audio/mpeg" loop>
-  <source src="../sounds/music.ogg" type="audio/ogg" loop>
+  <!--<source src="../sounds/music.mp3" type="audio/mpeg" loop>
+  <source src="../sounds/music.ogg" type="audio/ogg" loop>-->
+  <source src="../sounds/Emancipator - Maps.mp3" type="audio/mpeg" loop>
+  <source src="../sounds/Emancipator - Maps.ogg" type="audio/ogg" loop>
+  
 </audio>
 <audio id="shootSound">
   <source src="../sounds/shoot.mp3" type="audio/mpeg">
@@ -24,15 +27,16 @@
 	<tr>
 		<td><canvas width="480" height="320" display="block"></canvas></td>
 	<td>
-		<table border="1px">
+		<table id="options" border="1px">
 			<tr> <td><center>Options: </center></td>
 
-			<tr><td><center>Sound:</center>
-				<button id="muteAll">Mute All</button>
-				<button id="muteMusic">Mute music</button>
-				<button id="muteEffects">Mute effects</button> </td>
+			<tr><td align="right"><center>Volume:</center>
+				Master <button id="muteAll">mute</button> <input id="volAll"/> %<br>
+				Music  <button id="muteMusic">mute</button> <input id="volMusic"/> %<br>
+				Effects <button id="muteEffects">mute</button> <input id="volEffects"/> %</br>
 		</table>
 	</td>
+	<tr><td id="pauseMessage" align="center">Press "ESC" to pause</td>
 </table>
 
 

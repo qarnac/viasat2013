@@ -54,7 +54,6 @@ image.src = "../images/alienArmada.png";
 assetsToLoad.push(image);
 
 //Load the sounds
-
 var music = document.querySelector("#music");
 music.addEventListener("canplaythrough", loadHandler, false);
 music.load();
@@ -69,119 +68,23 @@ var explosionSound = document.querySelector("#explosionSound");
 explosionSound.addEventListener("canplaythrough", loadHandler, false);
 explosionSound.load();
 assetsToLoad.push(explosionSound);
+//End sound loading
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Control music
+//Option buttons
 var muteMusic = document.querySelector("#muteMusic");
-muteMusic.addEventListener("click", function(){
-	
-	
-	if (music.isOn) 
-	{ 
-		music.isOn = 0; 
-		muteMusic.innerHTML = "Unmute music"; 
-		if (!shootSound.isOn) {	muteAll.innerHTML = "Unmute all"; }
-
-	}
-	else 
-	{
-		music.isOn = 1; 
-		muteMusic.innerHTML = "Mute music"; 
-		muteAll.innerHTML = "Mute all";
-	}
-
-	music.volume = .1 * music.isOn;	
-}, false);
-
-//Control effects
 var muteEffects= document.querySelector("#muteEffects");
-muteEffects.addEventListener("click", function() {
-		
-	if (shootSound.isOn) 
-	{ 
-		shootSound.isOn = 0; 
-		muteEffects.innerHTML = "Unmute effects"; 
-		if (!music.isOn) {	muteAll.innerHTML = "Unmute all"; }
-	}
-	else 
-	{
-		shootSound.isOn = 1; 
-		muteEffects.innerHTML = "Mute effects" 
-		muteAll.innerHTML = "Mute all";
-	}
-	
-	shootSound.volume = explosionSound.volume = .3 * shootSound.isOn;
-
-}, false);
-
-
-//Control all sound
 var muteAll = document.querySelector("#muteAll");
-muteAll.addEventListener("click", function() {
-	console.log (shootSound.isOn);
-	
+muteMusic.addEventListener("click", controlMusic, false);
+muteEffects.addEventListener("click", controlEffects, false);
+muteAll.addEventListener("click", controlAllSound, false);
 
-	
-	//Everything on
-	if (shootSound.isOn && music.isOn) 
-	{
-		shootSound.isOn = music.isOn = 0; 
-		muteAll.innerHTML = "Unmute all";
-		muteEffects.innerHTML = "Unmute effects";
-		muteMusic.innerHTML = "Unmute music";
-		
-	}
-	//Nothing on
-	else if (!shootSound.isOn && !music.isOn)
-	{
-		shootSound.isOn = music.isOn = 1; 
-		muteAll.innerHTML = "Mute all";
-		muteEffects.innerHTML = "Mute effects";
-		muteMusic.innerHTML = "Mute music";
-	}
-	
-	else //Mixture
-	{
-		shootSound.isOn = music.isOn = 0; 
-		muteAll.innerHTML = "Unmute all";
-		muteEffects.innerHTML = "Unmute effects";
-		muteMusic.innerHTML = "Unmute music";
-	}
-	
-	shootSound.volume = explosionSound.volume = .3 * shootSound.isOn;
-	music.volume = .1 * music.isOn;	
-
-}, false);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+var volAll = document.querySelector("#volAll");
+var volMusic = document.querySelector("#volMusic");
+var volEffects = document.querySelector("#volEffects");
+volAll.addEventListener("keydown", controlVolAll, false);
+volMusic.addEventListener("keydown", controlVolMusic, false);
+volEffects.addEventListener("keydown", controlVolEffects, false);
+//End option buttons
 
 //Variable to count the number of assets the game needs to load
 var assetsLoaded = 0;
@@ -190,12 +93,14 @@ var assetsLoaded = 0;
 var LOADING = 0
 var PLAYING = 1;
 var OVER = 2;
+var PAUSED = 3;
 var gameState = LOADING;
 
 //Arrow key codes
 var RIGHT = 39;
 var LEFT = 37;
 var SPACE = 32;
+var ESC = 27;
 
 //Directions
 var moveRight = false;
@@ -214,24 +119,24 @@ var alienTimer = 0;
 //Add keyboard listeners
 window.addEventListener("keydown", function(event)
 {
-  switch(event.keyCode)
-  {
-	  case LEFT:
-	    moveLeft = true;
-	    break;  
-	    
-	  case RIGHT:
-	    moveRight = true;
-	    break;
-	 
-	  case SPACE:
-		shoot = true;
-	    if(!spaceKeyIsDown)
-	    {
-	      shoot = true;
-	      spaceKeyIsDown = true;
-	    }
-   }
+	switch(event.keyCode)
+	{
+		case LEFT:
+			moveLeft = true;
+			break;  
+
+		case RIGHT:
+			moveRight = true;
+			break;
+
+		case SPACE:
+			//shoot = true;
+			if(!spaceKeyIsDown)
+			{
+			shoot = true;
+			spaceKeyIsDown = true;
+			}
+	}
 
 }, false);
 
@@ -239,16 +144,23 @@ window.addEventListener("keyup", function(event)
 {
   switch(event.keyCode)
   {	    
-	  case LEFT:
+	case LEFT:
 	    moveLeft = false;
 	    break;  
 	    
-	  case RIGHT:
+	case RIGHT:
 	    moveRight = false;
-	    break; 
+		break; 
 	
-	  case SPACE:
-	    spaceKeyIsDown = false;
+	case SPACE:
+		spaceKeyIsDown = false;
+		break;
+		
+	case ESC:
+		if (gameState === PLAYING) { gameState = PAUSED; }
+		else if (gameState === PAUSED) {	gameState = PLAYING;}
+		break;
+		
   }
 }, false);
 
@@ -265,21 +177,26 @@ function update()
   switch(gameState)
   {
     case LOADING:
-      console.log("loading…");
-      break;
+		console.log("loading…");
+		break;
     
     case PLAYING:
-      playGame();
-      break;
+		playGame();
+		break;
     
     case OVER:
-      endGame();
-      break;
+		endGame();
+		break;
+	  
+	case PAUSED:
+		pauseGame();
+		break;
   }
   
   //Render the game
   render();
 }
+
 
 function loadHandler()
 { 
@@ -291,7 +208,7 @@ function loadHandler()
     music.removeEventListener("canplaythrough", loadHandler, false);
     shootSound.removeEventListener("canplaythrough", loadHandler, false);
     explosionSound.removeEventListener("canplaythrough", loadHandler, false);
-    console.log(assetsLoaded);
+    console.log(assetsLoaded + " assets loaded");
     //Play the music
     music.play();
 
@@ -299,11 +216,8 @@ function loadHandler()
 
 	
 	music.volume = .05;
-	music.isOn = 1;
 	shootSound.volume = .3;
-	shootSound.isOn = 1;
 	explosionSound.volume= .3;
-	explosionSound.isOn = 1;
     
     //Start the game 
     gameState = PLAYING;
@@ -477,6 +391,12 @@ function endGame()
   }
 }
 
+function pauseGame()
+{
+	console.log("Paused");
+	
+	
+}
 function makeAlien()
 {
   //Create the alien
@@ -586,5 +506,123 @@ function render()
   }
 }
 
+function controlMusic()
+{
+	music.muted = !music.muted;
+	if (music.muted) 
+	{ 
+		muteMusic.innerHTML = "unmute"; 
+		if (shootSound.muted) {	muteAll.innerHTML = "unmute"; }
+	}
+	else 
+	{
+		muteMusic.innerHTML = "mute"; 
+		muteAll.innerHTML = "mute";
+	}
+}
 
+function controlEffects() 
+{
+	explosionSound.muted = shootSound.muted = !shootSound.muted
+	if (shootSound.muted) 
+	{ 
+		muteEffects.innerHTML = "unmute "; 
+		if (music.muted) {	muteAll.innerHTML = "unmute"; }
+	}
+	else 
+	{
+		muteEffects.innerHTML = "mute" ;
+		muteAll.innerHTML = "mute";
+	}
+}
+
+function controlAllSound() {
+	//Everything on
+	if (shootSound.muted && music.muted) 
+	{
+		controlMusic();
+		controlEffects();
+	}
+	//Nothing on
+	else if (!shootSound.muted && !music.muted)
+	{
+		controlMusic();
+		controlEffects();
+	}
+	
+	else //Mixture
+	{
+		explosionSound = true;
+		shootSound.muted = true;
+		music.muted =  true; 
+		muteAll.innerHTML = "unmute";
+		muteEffects.innerHTML = "unmute";
+		muteMusic.innerHTML = "unmute";
+	}
+}
+
+function controlVolMusic(event){
+	if (event.keyCode === 13)
+	{
+		var newvol = parseInt(volMusic.value)/100;
+		if (newvol === 0) 
+		{ 
+			music.muted = true;
+			muteMusic.innerHTML = "unmute"; 
+			if (shootSound.muted) {	muteAll.innerHTML = "unmute"; }
+		}
+		else if (newvol <= 1)
+		{
+			music.volume = newvol / 3;
+			music.muted = false;
+			muteMusic.innerHTML = "mute"; 
+			muteAll.innerHTML = "mute";
+		}
+	}
+}
+
+function controlVolEffects(event){
+	if (event.keyCode === 13)
+	{
+		var newvol = parseInt(volEffects.value)/100;
+		if (newvol === 0) 
+		{ 
+			shootSound.muted = explosionSound.muted = true;
+			muteEffects.innerHTML = "unmute"; 
+			if (music.muted) {	muteAll.innerHTML = "unmute"; }
+		}
+		else if (newvol <= 1)
+		{
+			shootSound.volume = explosionSound.volume = newvol / 2;
+			shootSound.muted = explosionSound.muted = false;
+			muteEffects.innerHTML = "mute"; 
+			muteAll.innerHTML = "mute";
+		}
+	}
+}
+
+function controlVolAll(event){
+	if (event.keyCode === 13)
+	{
+		var newvol = parseInt(volAll.value)/100;
+		if (newvol === 0) 
+		{ 
+			music.muted = shootSound.muted = explosionSound.muted = true;
+			muteMusic.innerHTML = "unmute"; 
+			muteEffects.innerHTML = "unmute"; 
+			muteAll.innerHTML = "unmute";
+		}
+		else if (newvol <= 1)
+		{
+			music.volume *= newvol;
+			shootSound.volume *= newvol;
+			explosionSound.volume *= newvol;
+
+			music.muted = shootSound.muted = explosionSound.muted = false;
+			if (shootSound.volume !== 0) {muteEffects.innerHTML = "mute"; }
+			if (music.volume !== 0) {muteMusic.innerHTML = "mute"; }
+			if (music.volume !== 0 && shootSound.volume !== 0) {muteAll.innerHTML = "mute";}
+		}
+	}
+}
 }());
