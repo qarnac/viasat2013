@@ -40,6 +40,7 @@ alienObject.NORMAL = 1;
 alienObject.EXPLODED = 2;
 alienObject.state = alienObject.NORMAL;
 alienObject.update = function()
+
 {
   this.sourceX = this.state * this.width;
 };

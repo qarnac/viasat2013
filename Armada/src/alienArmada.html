@@ -31,12 +31,12 @@
 			<tr> <td><center>Options: </center></td>
 
 			<tr><td align="right"><center>Volume:</center>
-				Master <button id="muteAll">mute</button> <input id="volAll"/> %<br>
-				Music  <button id="muteMusic">mute</button> <input id="volMusic"/> %<br>
-				Effects <button id="muteEffects">mute</button> <input id="volEffects"/> %</br>
+				Master <input id="volAll" type="range" min="1" max="100" value="30"> <p id="currVol">30%</p><br>
+				<button id="muteMusic">Mute music</button><br>
+				<button id="muteEffects">Mute effects</button>
 		</table>
 	</td>
-	<tr><td id="pauseMessage" align="center">Press "ESC" to pause</td>
+	<tr><td id="pauseMessage" align="center">Press "ESC" to pause </td>
 </table>
 
 
@@ -46,4 +46,5 @@
 
 <script src="objects.js"></script>
 <script src="collision.js"></script>
+<script src="sounds.js"></script>
 <script src="alienArmada.js"></script>

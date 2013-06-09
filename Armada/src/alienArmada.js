@@ -54,6 +54,7 @@ image.src = "../images/alienArmada.png";
 assetsToLoad.push(image);
 
 //Load the sounds
+
 var music = document.querySelector("#music");
 music.addEventListener("canplaythrough", loadHandler, false);
 music.load();
@@ -70,21 +71,7 @@ explosionSound.load();
 assetsToLoad.push(explosionSound);
 //End sound loading
 
-//Option buttons
-var muteMusic = document.querySelector("#muteMusic");
-var muteEffects= document.querySelector("#muteEffects");
-var muteAll = document.querySelector("#muteAll");
-muteMusic.addEventListener("click", controlMusic, false);
-muteEffects.addEventListener("click", controlEffects, false);
-muteAll.addEventListener("click", controlAllSound, false);
 
-var volAll = document.querySelector("#volAll");
-var volMusic = document.querySelector("#volMusic");
-var volEffects = document.querySelector("#volEffects");
-volAll.addEventListener("keydown", controlVolAll, false);
-volMusic.addEventListener("keydown", controlVolMusic, false);
-volEffects.addEventListener("keydown", controlVolEffects, false);
-//End option buttons
 
 //Variable to count the number of assets the game needs to load
 var assetsLoaded = 0;
@@ -158,7 +145,7 @@ window.addEventListener("keyup", function(event)
 		
 	case ESC:
 		if (gameState === PLAYING) { gameState = PAUSED; }
-		else if (gameState === PAUSED) {	gameState = PLAYING;}
+		else if (gameState === PAUSED) { gameState = PLAYING;}
 		break;
 		
   }
@@ -196,7 +183,6 @@ function update()
   //Render the game
   render();
 }
-
 
 function loadHandler()
 { 
@@ -506,123 +492,5 @@ function render()
   }
 }
 
-function controlMusic()
-{
-	music.muted = !music.muted;
-	if (music.muted) 
-	{ 
-		muteMusic.innerHTML = "unmute"; 
-		if (shootSound.muted) {	muteAll.innerHTML = "unmute"; }
-	}
-	else 
-	{
-		muteMusic.innerHTML = "mute"; 
-		muteAll.innerHTML = "mute";
-	}
-}
 
-function controlEffects() 
-{
-	explosionSound.muted = shootSound.muted = !shootSound.muted
-	if (shootSound.muted) 
-	{ 
-		muteEffects.innerHTML = "unmute "; 
-		if (music.muted) {	muteAll.innerHTML = "unmute"; }
-	}
-	else 
-	{
-		muteEffects.innerHTML = "mute" ;
-		muteAll.innerHTML = "mute";
-	}
-}
-
-function controlAllSound() {
-	//Everything on
-	if (shootSound.muted && music.muted) 
-	{
-		controlMusic();
-		controlEffects();
-	}
-	//Nothing on
-	else if (!shootSound.muted && !music.muted)
-	{
-		controlMusic();
-		controlEffects();
-	}
-	
-	else //Mixture
-	{
-		explosionSound = true;
-		shootSound.muted = true;
-		music.muted =  true; 
-		muteAll.innerHTML = "unmute";
-		muteEffects.innerHTML = "unmute";
-		muteMusic.innerHTML = "unmute";
-	}
-}
-
-function controlVolMusic(event){
-	if (event.keyCode === 13)
-	{
-		var newvol = parseInt(volMusic.value)/100;
-		if (newvol === 0) 
-		{ 
-			music.muted = true;
-			muteMusic.innerHTML = "unmute"; 
-			if (shootSound.muted) {	muteAll.innerHTML = "unmute"; }
-		}
-		else if (newvol <= 1)
-		{
-			music.volume = newvol / 3;
-			music.muted = false;
-			muteMusic.innerHTML = "mute"; 
-			muteAll.innerHTML = "mute";
-		}
-	}
-}
-
-function controlVolEffects(event){
-	if (event.keyCode === 13)
-	{
-		var newvol = parseInt(volEffects.value)/100;
-		if (newvol === 0) 
-		{ 
-			shootSound.muted = explosionSound.muted = true;
-			muteEffects.innerHTML = "unmute"; 
-			if (music.muted) {	muteAll.innerHTML = "unmute"; }
-		}
-		else if (newvol <= 1)
-		{
-			shootSound.volume = explosionSound.volume = newvol / 2;
-			shootSound.muted = explosionSound.muted = false;
-			muteEffects.innerHTML = "mute"; 
-			muteAll.innerHTML = "mute";
-		}
-	}
-}
-
-function controlVolAll(event){
-	if (event.keyCode === 13)
-	{
-		var newvol = parseInt(volAll.value)/100;
-		if (newvol === 0) 
-		{ 
-			music.muted = shootSound.muted = explosionSound.muted = true;
-			muteMusic.innerHTML = "unmute"; 
-			muteEffects.innerHTML = "unmute"; 
-			muteAll.innerHTML = "unmute";
-		}
-		else if (newvol <= 1)
-		{
-			music.volume *= newvol;
-			shootSound.volume *= newvol;
-			explosionSound.volume *= newvol;
-
-			music.muted = shootSound.muted = explosionSound.muted = false;
-			if (shootSound.volume !== 0) {muteEffects.innerHTML = "mute"; }
-			if (music.volume !== 0) {muteMusic.innerHTML = "mute"; }
-			if (music.volume !== 0 && shootSound.volume !== 0) {muteAll.innerHTML = "mute";}
-		}
-	}
-}
 }());
