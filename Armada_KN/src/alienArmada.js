@@ -103,7 +103,7 @@ var alienFrequency = 100;
 var alienTimer = 0;
 
 //Add keyboard listeners
-
+/*
 window.addEventListener("keydown", function(event)
 {
 
@@ -176,7 +176,7 @@ window.addEventListener("keyup", function(event)
 		break;
   }
 }, false);
-
+*/
 //Start the game animation loop
 update();
 
