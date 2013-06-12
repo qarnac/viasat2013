@@ -53,24 +53,17 @@ image.addEventListener("load", loadHandler, false);
 image.src = "../images/alienArmada.png";
 assetsToLoad.push(image);
 
-//Load the sounds
 
-var music = document.querySelector("#music");
+//Push sounds
 music.addEventListener("canplaythrough", loadHandler, false);
-music.load();
 assetsToLoad.push(music);
 
-var shootSound = document.querySelector("#shootSound");
 shootSound.addEventListener("canplaythrough", loadHandler, false);
-shootSound.load();
 assetsToLoad.push(shootSound);
 
-var explosionSound = document.querySelector("#explosionSound");
 explosionSound.addEventListener("canplaythrough", loadHandler, false);
-explosionSound.load();
 assetsToLoad.push(explosionSound);
 //End sound loading
-
 
 
 //Variable to count the number of assets the game needs to load
@@ -88,6 +81,8 @@ var RIGHT = 39;
 var LEFT = 37;
 var SPACE = 32;
 var ESC = 27;
+var S = 83;
+
 
 //Directions
 var moveRight = false;
@@ -120,9 +115,18 @@ window.addEventListener("keydown", function(event)
 			//shoot = true;
 			if(!spaceKeyIsDown)
 			{
-			shoot = true;
-			spaceKeyIsDown = true;
+				shoot = true;
+				spaceKeyIsDown = true;
 			}
+			break;
+			
+		case ESC:
+			if (gameState === PLAYING) { gameState = PAUSED; }
+			else if (gameState === PAUSED) { gameState = PLAYING;}
+			break;
+		case S: 
+			music.muted = !music.muted;
+			break;
 	}
 
 }, false);
@@ -142,12 +146,6 @@ window.addEventListener("keyup", function(event)
 	case SPACE:
 		spaceKeyIsDown = false;
 		break;
-		
-	case ESC:
-		if (gameState === PLAYING) { gameState = PAUSED; }
-		else if (gameState === PAUSED) { gameState = PLAYING;}
-		break;
-		
   }
 }, false);
 

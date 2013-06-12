@@ -4,9 +4,22 @@
   src: url("../fonts/emulogic.ttf");
 }
 
+table, td, th, #options {
+	border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+	
+	}
+	
+th {
+	background-color: black;
+	color: white;
+	}
+
 #options
 {
+	border: 1px solid black;
 	width: 200px;
+	
 }
 
 button {
@@ -17,6 +30,10 @@ button {
 input {
 	width: 25px;
 
+}
+
+canvas {
+	
 }
 
 #currVol {
