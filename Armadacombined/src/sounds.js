@@ -67,7 +67,7 @@ function controlSound(event) //Overarching volume control function
 	if (target === "keyAll")
 	{
 		//newvol = 0;
-		if (event === "PLUS" && shootSound.volume < .94) 
+		if (event === "PLUS" && music.volume < .94) 
 		{
 			newvol = .05;
 		}
@@ -89,8 +89,6 @@ function controlSound(event) //Overarching volume control function
 			if (!shootSound.muted) {muteEffects.innerHTML = "Mute effects"; } //Update button
 			if (!music.muted) {muteMusic.innerHTML = "Mute music"; } //Update button
 			currVol.innerHTML = Math.round(shootSound.volume*100) + "%"; //Update text saying what the volume is presently at
-			console.log (volAll.value);
-			volAll.value = shootSound.volume;
 		}
 	}
 }
