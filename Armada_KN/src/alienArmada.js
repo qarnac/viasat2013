@@ -82,7 +82,11 @@ var LEFT = 37;
 var SPACE = 32;
 var ESC = 27;
 var S = 83;
-
+var E = 69;
+var PLUSNP = 107;
+var PLUS = 187;
+var MINUSNP = 109;
+var MINUS = 189;
 
 //Directions
 var moveRight = false;
@@ -99,10 +103,13 @@ var alienFrequency = 100;
 var alienTimer = 0;
 
 //Add keyboard listeners
+
 window.addEventListener("keydown", function(event)
 {
+
 	switch(event.keyCode)
 	{
+	
 		case LEFT:
 			moveLeft = true;
 			break;  
@@ -124,9 +131,30 @@ window.addEventListener("keydown", function(event)
 			if (gameState === PLAYING) { gameState = PAUSED; }
 			else if (gameState === PAUSED) { gameState = PLAYING;}
 			break;
+			
 		case S: 
-			music.muted = !music.muted;
+			controlSound("S");
 			break;
+			
+		case E:
+			controlSound("E");
+			break;
+			
+		case PLUS:
+			controlSound("PLUS");
+			break;
+		case PLUSNP:
+			controlSound("PLUS");
+			break;
+			
+		case MINUS:
+			controlSound("MINUS");
+			break;
+		case MINUSNP:
+			controlSound("MINUS");
+			break;
+
+		
 	}
 
 }, false);
