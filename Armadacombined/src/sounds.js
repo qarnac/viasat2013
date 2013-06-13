@@ -11,6 +11,15 @@ var explosionSound = new Audio();
 explosionSound.src = "../sounds/explosion.mp3";
 explosionSound.load();
 
+music.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(music);
+
+shootSound.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(shootSound);
+
+explosionSound.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(explosionSound);
+
 
 //Option buttons
 var muteMusic = document.querySelector("#muteMusic");  	 //Music button
