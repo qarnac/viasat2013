@@ -6,18 +6,17 @@
 <link rel="stylesheet" href="alienArmada.css">
  
 <!-- The canvas -->
-
 <table>
 	<tr>
 		<td><canvas width="480" height="520" display="block"></canvas></td>
 	<td valign="top">
 		<table id="options" >
-			<tr> <th id="optionshead">Options: </th>
+			<tr> <th>Options: </center></th>
 
-			<tr><th>Volume:	</th></tr>
-				<td align="right">Master <input id="volAll" type="range" min="1" max="99" value="30"> <p id="currVol">30%</p><br>
+			<tr><td align="right"><center>Volume:</center>
+				Master <input id="volAll" type="range" min="1" max="100" value="30"> <p id="currVol">30%</p><br>
 				Hotkey: <b>S</b> <button id="muteMusic">Mute music</button><br>
-				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button></td>
+				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
 		</table>
 	</td>
 	<tr><td id="pauseMessage" align="center">Press "ESC" to pause </td>
@@ -27,17 +26,9 @@
 
 <!-- The game code -->
 <!--<script src="globals.js"></script>-->
-<!--<script src="requestAnimationFramePolyfill.js"/></script>-->
-
-<script src="globalvariables.js"/></script>
-<script src="loadhandler.js"/></script>
-<script src="keyhandler.js"/></script>
-<script src="objects.js"/></script>
-<script src="drawbackground.js"/></script>
-<script src="collision.js"/></script>
-<!--<script src="monsters.js"/></script>-->
-<script src="sounds.js"/></script>
-
-<script src="alienArmada.js"/></script>
-<script src="gamestates.js"></script>
-
+<script src="requestAnimationFramePolyfill.js"></script>
+<script src="keyhandler.js"></script>
+<script src="objects.js"></script>
+<script src="collision.js"></script>
+<script src="sounds.js"></script>
+<script src="alienArmada.js"></script>

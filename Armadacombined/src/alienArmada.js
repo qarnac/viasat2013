@@ -1,5 +1,122 @@
 (function(){
 
+//The canvas
+var canvas = document.querySelector("canvas");
+
+//Create the drawing surface 
+var drawingSurface = canvas.getContext("2d");
+
+//Arrays to store the game objects and assets to load
+var sprites = [];
+var health = [];
+var assetsToLoad = [];
+var missiles = [];
+var aliens = [];
+var messages = [];
+var buttons = [];
+
+//**********make scenes for the game
+var scene = [];
+
+//check to see if the mothershipp is out
+var motherShipCalled = false;
+
+//Create the background
+var background = Object.create(spriteObject);
+background.x = 0;
+background.y = 0;
+background.sourceY = 32;
+background.sourceWidth = 480;
+background.sourceHeight = 520;
+background.width = 480;
+background.height = 520;
+sprites.push(background);
+
+//Create the cannon and center it
+var cannon = Object.create(spriteObject);
+cannon.x = canvas.width / 2 - cannon.width / 2;
+cannon.y = 480;
+sprites.push(cannon);
+
+//Create the score message
+var scoreDisplay = Object.create(messageObject);
+scoreDisplay.font = "normal bold 30px emulogic";
+scoreDisplay.fillStyle = "#00FF00";
+scoreDisplay.x = 400;
+scoreDisplay.y = 10;
+messages.push(scoreDisplay);
+
+//The game over message
+var gameOverMessage = Object.create(messageObject);
+gameOverMessage.font = "normal bold 20px emulogic";
+gameOverMessage.fillStyle = "#00FF00";
+gameOverMessage.x = 70;
+gameOverMessage.y = 120;
+gameOverMessage.visible = false;
+messages.push(gameOverMessage);
+
+var optionsSelected = false;
+var playButton = Object.create(buttonObject);
+playButton.x = canvas.width *1/4 - playButton.width/2;
+playButton.y = 0;
+sprites.push(playButton);
+buttons.push(playButton);
+
+
+var shipsButton = Object.create(buttonObject);
+shipsButton.sourceX += 100;
+shipsButton.x = canvas.width *3/4 - shipsButton.width/2;
+shipsButton.y = 0;
+sprites.push(shipsButton);
+buttons.push(shipsButton);
+
+//Load the tilesheet image
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../images/alienArmadaRED2.png";
+assetsToLoad.push(image);
+
+
+//Push sounds
+music.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(music);
+
+shootSound.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(shootSound);
+
+explosionSound.addEventListener("canplaythrough", loadHandler, false);
+assetsToLoad.push(explosionSound);
+//End sound loading
+
+
+//Variable to count the number of assets the game needs to load
+var assetsLoaded = 0;
+
+
+//All moved to keyhandler.js for now
+var LOADING = 0
+var PLAYING = 1;
+var OVER = 2;			//Moved to keyhandler.js
+var PAUSED = 3;
+var OPTIONSMENU = 4;
+
+
+gameState = LOADING;
+//Game variables
+var score = 0;
+var motherShipHealth = 60;
+var scoreToMotherShip = 0;
+var scoreNeededToWin = 160;
+var alienFrequency = 100;
+var alienTimer = 0;
+
+//******this variable turns the health bar on and off
+var hpVisible = false;
+
+//Add keyboard listeners
+
+window.addEventListener("keydown", keydownhandler, false);	//Executed in keyhandler.js
+window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler.js
 
 //Start the game animation loop
 update();
@@ -27,7 +144,6 @@ function update()
 	case OPTIONSMENU:
 		selectShip();
 		break;
-		
 	case PAUSED:
 		pauseGame();
 		break;
@@ -37,11 +153,37 @@ function update()
   render();
 }
 
-//select ship function *************************************************************************************** 
+//select ship fucntion *************************************************************************************** 
 function selectShip()
 {
   playGame();
   gameState = PLAYING;
+}
+
+
+function loadHandler()
+{ 
+ 
+  assetsLoaded++;
+  if(assetsLoaded === assetsToLoad.length)
+  {
+    //Remove the load event listener from the image and sounds
+    image.removeEventListener("load", loadHandler, false);
+    music.removeEventListener("canplaythrough", loadHandler, false);
+    shootSound.removeEventListener("canplaythrough", loadHandler, false);
+    explosionSound.removeEventListener("canplaythrough", loadHandler, false);
+    console.log(assetsLoaded + "/" + assetsToLoad.length + " assets loaded");
+    //Play the music
+    music.play();
+
+	//Set default volumes
+
+	
+	music.volume = shootSound.volume = explosionSound.volume= .3;
+    
+    //Start the game 
+    gameState = OPTIONSMENU;
+  }
 }
 
 function playGame()
@@ -73,6 +215,10 @@ function playGame()
   //Move the cannon and keep it within the screen boundaries
   cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
   
+  //Move the buttons
+  playButton.y += playButton.vy;
+  shipsButton.y += shipsButton.vy;
+  
   //Move the missiles
   for(var i = 0; i < missiles.length; i++)
   {
@@ -98,9 +244,11 @@ function playGame()
 
   //Make the aliens
 
-  //Add one to the alienTimer
+  //Add one to the alienTimer, only after options have been selected
+  if (optionsSelected)
+  {
   alienTimer++;
-
+	}
   //Make a new alien if alienTimer equals the alienFrequency
   if(alienTimer === alienFrequency)
   {
@@ -151,6 +299,42 @@ function playGame()
   }
   
   //--- The collisions 
+  //Check for button collisions
+  /*
+  for (var i = 0; i < buttons.length; i++)
+  {
+	var button = buttons[i];
+	for (var j = 0; j < missiles.length; j++)
+	{
+		var missile = missiles[j];
+		
+		if (hitTestRectangle(missile, button))
+		{
+			if (button = playButton) {optionsSelected = true;}
+			removeObject(button, buttons);
+			removeObject(button, sprites);
+			removeObject(missile, missiles);
+			removeObject(missile, sprites);
+		}
+	}
+  }*/
+   for (var i = 0; i < missiles.length; i++)
+  {
+	var missile = missiles[i];
+	for (var j = 0; j < buttons.length; j++)
+	{
+		var button= buttons[j];
+		
+		if (hitTestRectangle(missile, button))
+		{
+			if (button === playButton) {optionsSelected = true;}
+			removeObject(button, buttons);
+			removeObject(button, sprites);
+			removeObject(missile, missiles);
+			removeObject(missile, sprites);
+		}
+	}
+}
 
   //Check for a collision between the aliens and missiles
    for(var i = 0; i < aliens.length; i++)
@@ -237,6 +421,7 @@ function playGame()
     }
   }
   
+  
   //--- The score 
 
   //Display the score
@@ -248,7 +433,7 @@ function playGame()
     gameState = OVER;
   }
 }
-/*
+
 function destroyAlien(alien)
 {
   //Change the alien's state and update the object 
@@ -270,6 +455,91 @@ function destroyAlien(alien)
     removeObject(alien, sprites);
   }
 }
+
+function endGame()
+{
+  gameOverMessage.visible = true;
+  if(score < scoreNeededToWin)
+  {
+    gameOverMessage.text = "EARTH DESTROYED!";
+  }
+  else
+  {
+    gameOverMessage.x = 120;
+    gameOverMessage.text = "EARTH SAVED!";
+  }
+}
+
+function pauseGame()
+{
+	console.log("Paused");
+	
+	
+}
+function makeAlien()
+{
+  //Create the alien
+  var alien = Object.create(alienObject);
+  alien.sourceX = 32;
+  
+  //Set its y position above the screen boundary
+  alien.y = 0 - alien.height;
+  
+  //Assign the alien a random x position
+  var randomPosition = Math.floor(Math.random() * 15);
+  //var randomPosition = Math.floor(Math.random() * (canvas.width / alien.width));
+  alien.x = randomPosition * alien.width;
+  
+  //Set its speed
+  alien.vy = 1;
+  
+  //Push the alien into both the sprites and aliens arrays
+  sprites.push(alien);
+  aliens.push(alien);
+}
+
+//crates the mothership
+function makeMother()
+{
+  //Create the alien
+  var alieM = Object.create(alienObject);
+  alieM.sourceX = 128;
+  
+  //its dimensions
+  alieM.sourceWidth = 64;
+  alieM.sourceHeight = 32;
+  alieM.width = 64;
+  alieM.Height = 32;
+ 
+ //Set its y position above the screen boundary
+  alieM.y = 0 - alieM.height;
+  
+  //Center it over the screen
+  alieM.x = canvas.width / 2 - alieM.width / 2;
+ 
+  //Set its speed
+  alieM.vy = .2;
+  
+  //Push the alien into both the sprites and aliens arrays
+  sprites.push(alieM);
+  aliens.push(alieM);
+  
+  //**along with the mothership we will create a health bar for it on the side
+  var innerMeter = Object.create(spriteObject);
+  innerMeter.sourceY =0;
+  innerMeter.sourceX = 256;
+  innerMeter.sourceWidth = 180;
+  innerMeter.sourceHeight = 32;
+  innerMeter.width = 180;
+  innerMeter.height = 32;
+  innerMeter.vis = 1;
+  health.push(innerMeter);
+  hpVisible =true;
+  
+  sprites.push(innerMeter);
+  
+}
+
 
 function fireMissile()
 { 
@@ -305,7 +575,21 @@ function removeObject(objectToRemove, array)
     array.splice(i, 1);
   }
 }
-*/
+
+function endGame()
+{
+  gameOverMessage.visible = true;
+  if(score < scoreNeededToWin)
+  {
+    gameOverMessage.text = "EARTH DESTROYED!";
+  }
+  else
+  {
+    gameOverMessage.x = 120;
+    gameOverMessage.text = "EARTH SAVED!";
+  }
+}
+
 function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);

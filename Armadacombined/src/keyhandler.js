@@ -1,6 +1,35 @@
 
-window.addEventListener("keydown", keydownhandler, false);	//Executed in keyhandler.js
-window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler.js
+//Game states
+var LOADING = 0
+var PLAYING = 1;
+var OVER = 2;			//Moved to keyhandler.js
+var PAUSED = 3;
+var OPTIONSMENU = 4;
+
+
+var gameState;
+
+//Arrow key codes
+var RIGHT = 39;
+var LEFT = 37;
+var SPACE = 32;
+var ESC = 27;
+var S = 83;
+var E = 69;
+var PLUSNP = 107;					//Moved to keyhandler.js
+var PLUS = 187;
+var MINUSNP = 109;
+var MINUS = 189;
+
+//Directions
+var moveRight = false;
+var moveLeft = false;
+
+//Variables to help fire missiles
+var shoot = false;
+var spaceKeyIsDown = false;
+
+
 
 function keydownhandler() {
 	

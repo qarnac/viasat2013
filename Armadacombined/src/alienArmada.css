@@ -4,32 +4,22 @@
   src: url("../fonts/emulogic.ttf");
 }
 
-table, td, th {
-		border-top-left-radius: 10px;
+table, td, th, #options {
+	border-top-left-radius: 10px;
 border-top-right-radius: 10px;
-font-family: verdana;
-font-size: 12px;
+	
 	}
 	
 th {
-	background-color: #909090;
+	background-color: black;
 	color: white;
-	border-radius: 0px
 	}
 
-	
-	
 #options
 {
 	border: 1px solid black;
 	width: 200px;
-}
-#optionshead {
-
-	background-color: black;
-	color: white;
-	border-top-left-radius: 10px;
-border-top-right-radius: 10px;
+	
 }
 
 button {
@@ -42,11 +32,15 @@ input {
 
 }
 
+canvas {
+	
+}
 
 #currVol {
 	display: inline;
 }
 
 #volAll {
-	width: 91px;
+
+	width: 60px;
 	}
