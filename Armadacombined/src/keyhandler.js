@@ -8,6 +8,7 @@ var OPTIONSMENU = 4;
 
 
 var gameState;
+var prevState;
 
 //Arrow key codes
 var RIGHT = 39;
@@ -54,8 +55,16 @@ function keydownhandler() {
 			break;
 			
 		case ESC:
-			if (gameState === PLAYING) { gameState = PAUSED; }
-			else if (gameState === PAUSED) { gameState = PLAYING;}
+			if (gameState === PLAYING) 
+			{ 
+				gameState = PAUSED; prevState = PLAYING;
+			}
+			else if (gameState === OPTIONSMENU) { gameState = PAUSED; prevState = OPTIONSMENU; }
+			else if (gameState === PAUSED) 
+			{ 
+				console.log
+				gameState = prevState;
+			}
 			break;
 			
 		case S: 

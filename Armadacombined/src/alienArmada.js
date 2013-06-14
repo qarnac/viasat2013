@@ -55,7 +55,7 @@ gameOverMessage.y = 120;
 gameOverMessage.visible = false;
 messages.push(gameOverMessage);
 
-var optionsSelected = false;
+//var optionsSelected = false;
 var playButton = Object.create(buttonObject);
 playButton.x = canvas.width *1/4 - playButton.width/2;
 playButton.y = 0;
@@ -101,7 +101,6 @@ var PAUSED = 3;
 var OPTIONSMENU = 4;
 
 
-gameState = LOADING;
 //Game variables
 var score = 0;
 var motherShipHealth = 60;
@@ -121,74 +120,9 @@ window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler
 //Start the game animation loop
 update();
 
-function update()
-{ 
-  //The animation loop
-  requestAnimationFrame(update, canvas);
-
-  //Change what the game is doing based on the game state
-  switch(gameState)
-  {
-    case LOADING:
-		console.log("loading…");
-		break;
-    
-    case PLAYING:
-		playGame();
-		break;
-    
-    case OVER:
-		endGame();
-		break;
-		
-	case OPTIONSMENU:
-		selectShip();
-		break;
-	case PAUSED:
-		pauseGame();
-		break;
-  }
-  
-  //Render the game
-  render();
-}
-
-//select ship fucntion *************************************************************************************** 
-function selectShip()
+function moveThings()
 {
-  playGame();
-  gameState = PLAYING;
-}
-
-
-function loadHandler()
-{ 
- 
-  assetsLoaded++;
-  if(assetsLoaded === assetsToLoad.length)
-  {
-    //Remove the load event listener from the image and sounds
-    image.removeEventListener("load", loadHandler, false);
-    music.removeEventListener("canplaythrough", loadHandler, false);
-    shootSound.removeEventListener("canplaythrough", loadHandler, false);
-    explosionSound.removeEventListener("canplaythrough", loadHandler, false);
-    console.log(assetsLoaded + "/" + assetsToLoad.length + " assets loaded");
-    //Play the music
-    music.play();
-
-	//Set default volumes
-
-	
-	music.volume = shootSound.volume = explosionSound.volume= .3;
-    
-    //Start the game 
-    gameState = OPTIONSMENU;
-  }
-}
-
-function playGame()
-{
-  //Left
+//Left
   if(moveLeft && !moveRight)
   {
     cannon.vx = -6;
@@ -212,15 +146,7 @@ function playGame()
     shoot = false;	
   }
   
-  //Move the cannon and keep it within the screen boundaries
-  cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
-  
-  //Move the buttons
-  playButton.y += playButton.vy;
-  shipsButton.y += shipsButton.vy;
-  
-  //Move the missiles
-  for(var i = 0; i < missiles.length; i++)
+    for(var i = 0; i < missiles.length; i++)
   {
     var missile = missiles[i];
 
@@ -241,47 +167,16 @@ function playGame()
       i--;
     }
   }
-
-  //Make the aliens
-
-  //Add one to the alienTimer, only after options have been selected
-  if (optionsSelected)
-  {
-  alienTimer++;
-	}
-  //Make a new alien if alienTimer equals the alienFrequency
-  if(alienTimer === alienFrequency)
-  {
-    makeAlien();
-    alienTimer = 0;
-
-    //Reduce alienFrequency by one to gradually increase
-    //the frequency that aliens are created
-    if(alienFrequency > 2)
-    {  
-      alienFrequency--;
-    }
+  
+  //Move the cannon and keep it within the screen boundaries
+  cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
+  
+  //Move the buttons
+  playButton.y += playButton.vy;
+  shipsButton.y += shipsButton.vy;
+    scoreDisplay.text = score;
 	
-	
-	if ((scoreToMotherShip === 2) && motherShipCalled === false)
-	{
-     
-      //**********warp to mars with the boss
-      background.sourceX = 480;
-      background.sourceY = 32;
-
-    cannon.sourceX = 480;
-    cannon.sourceY = 0;
-      
-      //make the mothership
-      makeMother();
-      
-      //make onbly one mother ship
-      motherShipCalled = true;
-    }
-  }
-
-  //Loop through the aliens
+	 //Loop through the aliens
   for(var i = 0; i < aliens.length; i++)
   { 
     var alien = aliens[i];
@@ -299,43 +194,8 @@ function playGame()
   }
   
   //--- The collisions 
-  //Check for button collisions
-  /*
-  for (var i = 0; i < buttons.length; i++)
-  {
-	var button = buttons[i];
-	for (var j = 0; j < missiles.length; j++)
-	{
-		var missile = missiles[j];
-		
-		if (hitTestRectangle(missile, button))
-		{
-			if (button = playButton) {optionsSelected = true;}
-			removeObject(button, buttons);
-			removeObject(button, sprites);
-			removeObject(missile, missiles);
-			removeObject(missile, sprites);
-		}
-	}
-  }*/
-   for (var i = 0; i < missiles.length; i++)
-  {
-	var missile = missiles[i];
-	for (var j = 0; j < buttons.length; j++)
-	{
-		var button= buttons[j];
-		
-		if (hitTestRectangle(missile, button))
-		{
-			if (button === playButton) {optionsSelected = true;}
-			removeObject(button, buttons);
-			removeObject(button, sprites);
-			removeObject(missile, missiles);
-			removeObject(missile, sprites);
-		}
-	}
-}
-
+  
+  
   //Check for a collision between the aliens and missiles
    for(var i = 0; i < aliens.length; i++)
   {
@@ -434,6 +294,134 @@ function playGame()
   }
 }
 
+function update()
+{ 
+  //The animation loop
+  requestAnimationFrame(update, canvas);
+
+  //Change what the game is doing based on the game state
+  switch(gameState)
+  {
+    case LOADING:
+		console.log("loading…");
+		break;
+    
+    case PLAYING:
+		playGame();
+		break;
+    
+    case OVER:
+		endGame();
+		break;
+		
+	case OPTIONSMENU:
+		selectShip();
+		break;
+	case PAUSED:
+		pauseGame();
+		break;
+  }
+  
+  //Render the game
+  render();
+}
+
+//select ship fucntion *************************************************************************************** 
+function selectShip()
+{
+	moveThings();
+	//Check for button collisions
+	for (var i = 0; i < buttons.length; i++)
+	{
+		var button = buttons[i];
+		for (var j = 0; j < missiles.length; j++)
+		{
+			var missile = missiles[j];
+
+			if (hitTestRectangle(missile, button))
+			{
+				if (button === playButton) 
+				{
+					playGame();
+					gameState = PLAYING;
+				}
+				removeObject(button, buttons);
+				removeObject(button, sprites);
+				removeObject(missile, missiles);
+				removeObject(missile, sprites);
+			}
+		}
+	}  
+}
+
+
+function loadHandler()
+{ 
+ 
+  assetsLoaded++;
+  if(assetsLoaded === assetsToLoad.length)
+  {
+    //Remove the load event listener from the image and sounds
+    image.removeEventListener("load", loadHandler, false);
+    music.removeEventListener("canplaythrough", loadHandler, false);
+    shootSound.removeEventListener("canplaythrough", loadHandler, false);
+    explosionSound.removeEventListener("canplaythrough", loadHandler, false);
+    console.log(assetsLoaded + "/" + assetsToLoad.length + " assets loaded");
+    //Play the music
+    music.play();
+
+	//Set default volumes
+
+	
+	music.volume = shootSound.volume = explosionSound.volume= .3;
+    
+    //Start the game 
+    gameState = OPTIONSMENU;
+  }
+}
+
+function playGame()
+{
+  moveThings();
+
+  //Make the aliens
+
+  //Add one to the alienTimer
+  alienTimer++;
+
+  //Make a new alien if alienTimer equals the alienFrequency
+  if(alienTimer === alienFrequency)
+  {
+    makeAlien();
+    alienTimer = 0;
+
+    //Reduce alienFrequency by one to gradually increase
+    //the frequency that aliens are created
+    if(alienFrequency > 2)
+    {  
+      alienFrequency--;
+    }
+	
+	
+	if ((scoreToMotherShip === 2) && motherShipCalled === false)
+	{
+     
+      //**********warp to mars with the boss
+      background.sourceX = 480;
+      background.sourceY = 32;
+
+    cannon.sourceX = 480;
+    cannon.sourceY = 0;
+      
+      //make the mothership
+      makeMother();
+      
+      //make onbly one mother ship
+      motherShipCalled = true;
+    }
+  }
+}
+
 function destroyAlien(alien)
 {
   //Change the alien's state and update the object 
@@ -473,7 +461,6 @@ function endGame()
 function pauseGame()
 {
 	console.log("Paused");
-	
 	
 }
 function makeAlien()
