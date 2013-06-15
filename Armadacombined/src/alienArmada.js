@@ -27,22 +27,22 @@ background.x = 0;
 background.y = 0;
 background.sourceY = 32;
 background.sourceWidth = 480;
-background.sourceHeight = 520;
+background.sourceHeight = 320;
 background.width = 480;
-background.height = 520;
+background.height = 320;
 sprites.push(background);
 
 //Create the cannon and center it
 var cannon = Object.create(spriteObject);
 cannon.x = canvas.width / 2 - cannon.width / 2;
-cannon.y = 480;
+cannon.y = 280;
 sprites.push(cannon);
 
 //Create the score message
 var scoreDisplay = Object.create(messageObject);
 scoreDisplay.font = "normal bold 30px emulogic";
 scoreDisplay.fillStyle = "#00FF00";
-scoreDisplay.x = 400;
+scoreDisplay.x = 380;
 scoreDisplay.y = 10;
 messages.push(scoreDisplay);
 
@@ -55,13 +55,13 @@ gameOverMessage.y = 120;
 gameOverMessage.visible = false;
 messages.push(gameOverMessage);
 
-//var optionsSelected = false;
+
+// Create the options buttons
 var playButton = Object.create(buttonObject);
 playButton.x = canvas.width *1/4 - playButton.width/2;
 playButton.y = 0;
 sprites.push(playButton);
 buttons.push(playButton);
-
 
 var shipsButton = Object.create(buttonObject);
 shipsButton.sourceX += 100;
@@ -69,11 +69,24 @@ shipsButton.x = canvas.width *3/4 - shipsButton.width/2;
 shipsButton.y = 0;
 sprites.push(shipsButton);
 buttons.push(shipsButton);
+//End button creation
+
+// Create different ships
+var pinkShip = Object.create(spriteObject);
+pinkShip.sourceX = 512;
+pinkShip.x = canvas.width * 1/4 - pinkShip.width / 2;
+pinkShip.y = 0;
+pinkShip.visible = false;
+var tealShip = Object.create(pinkShip);
+tealShip.sourceX = 544;
+tealShip.x = canvas.width * 3/4 - tealShip.width / 2;
+//End ship creation (pushed into sprites array within selectShip
+
 
 //Load the tilesheet image
 var image = new Image();
 image.addEventListener("load", loadHandler, false);
-image.src = "../images/alienArmadaRED2.png";
+image.src = "../images/alienArmadaRED3.png";
 assetsToLoad.push(image);
 
 
@@ -156,10 +169,8 @@ function moveThings()
     //Remove the missile if it crosses the top of the screen
     if(missile.y < 0 - missile.height)
     { 
-      //Remove the missile from the missiles array
+      //Remove the missile from the missiles and sprites arrays
       removeObject(missile, missiles);
-
-      //Remove the missile from the sprites array
       removeObject(missile, sprites);
 
       //Reduce the loop counter by 1 to compensate 
@@ -172,9 +183,15 @@ function moveThings()
   cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
   
   //Move the buttons
-  playButton.y += playButton.vy;
-  shipsButton.y += shipsButton.vy;
-    scoreDisplay.text = score;
+  if (gameState === OPTIONSMENU)
+  {
+	playButton.y += playButton.vy;
+	shipsButton.y += shipsButton.vy;
+	pinkShip.y += pinkShip.vy;
+	tealShip.y += tealShip.vy;
+  }
+  
+  scoreDisplay.text = score;
 	
 	 //Loop through the aliens
   for(var i = 0; i < aliens.length; i++)
@@ -182,9 +199,6 @@ function moveThings()
     var alien = aliens[i];
     //Move the current alien if its state is NORMAL
 	alien.y += alien.vy;
-
-
-
     //Check if the alien has crossed the bottom of the screen
     if(alien.y > canvas.height + alien.height)
     { 
@@ -193,8 +207,7 @@ function moveThings()
     }
   }
   
-  //--- The collisions 
-  
+  //--- The collisions   
   
   //Check for a collision between the aliens and missiles
    for(var i = 0; i < aliens.length; i++)
@@ -331,33 +344,60 @@ function selectShip()
 {
 	moveThings();
 	//Check for button collisions
-	for (var i = 0; i < buttons.length; i++)
+	for (var j = 0; j < missiles.length; j++)
 	{
-		var button = buttons[i];
-		for (var j = 0; j < missiles.length; j++)
+		var missile = missiles[j];
+		for (var i = 0; i < buttons.length; i++)
 		{
-			var missile = missiles[j];
-
+			var button = buttons[i];
 			if (hitTestRectangle(missile, button))
 			{
-				if (button === playButton) 
-				{
-					playGame();
-					gameState = PLAYING;
-				}
 				removeObject(button, buttons);
 				removeObject(button, sprites);
 				removeObject(missile, missiles);
 				removeObject(missile, sprites);
+				if (button === playButton)
+				{
+					removeObject(shipsButton, sprites);
+					removeObject(shipsButton, buttons);		
+					playGame();
+					gameState = PLAYING;					
+				}
+				if (button === shipsButton)
+				{
+					removeObject(playButton, sprites);
+					removeObject(playButton, buttons);							
+					tealShip.visible = pinkShip.visible = true;
+					tealShip.vy = pinkShip.vy = 0.5;
+					sprites.push(pinkShip);
+					sprites.push(tealShip);					
+				}
 			}
 		}
+		if (hitTestRectangle(missile, pinkShip) || hitTestRectangle(missile, tealShip))
+		{
+			if (hitTestRectangle(missile, pinkShip))
+			{
+				cannon.sourceX = pinkShip.sourceX;
+			}
+			else 
+			{
+				cannon.sourceX = tealShip.sourceX;
+			}
+			removeObject(missile, missiles);
+			removeObject(missile, sprites);
+			console.log("Hit!");
+			removeObject(pinkShip, sprites);
+			removeObject(tealShip, sprites);		
+			playGame();
+			gameState = PLAYING;
+		}		
 	}  
 }
 
 
 function loadHandler()
-{ 
- 
+{  
   assetsLoaded++;
   if(assetsLoaded === assetsToLoad.length)
   {
