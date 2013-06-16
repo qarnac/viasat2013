@@ -18,7 +18,7 @@ var buttons = [];
 //**********make scenes for the game
 var scene = [];
 
-//check to see if the mothershipp is out
+//check to see if the mothership is out
 var motherShipCalled = false;
 
 //Create the background
@@ -26,16 +26,16 @@ var background = Object.create(spriteObject);
 background.x = 0;
 background.y = 0;
 background.sourceY = 32;
-background.sourceWidth = 480;
-background.sourceHeight = 320;
-background.width = 480;
-background.height = 320;
+background.sourceWidth = canvas.width;
+background.sourceHeight = canvas.height;
+background.width =canvas.width; 
+background.height = canvas.height;
 sprites.push(background);
 
 //Create the cannon and center it
 var cannon = Object.create(spriteObject);
 cannon.x = canvas.width / 2 - cannon.width / 2;
-cannon.y = 280;
+cannon.y = canvas.height-40;
 sprites.push(cannon);
 
 //Create the score message
@@ -57,6 +57,7 @@ messages.push(gameOverMessage);
 
 
 // Create the options buttons
+// Play sits centered at 1/4th over the screen, Ships at 3/4ths
 var playButton = Object.create(buttonObject);
 playButton.x = canvas.width *1/4 - playButton.width/2;
 playButton.y = 0;
@@ -74,13 +75,14 @@ buttons.push(shipsButton);
 // Create different ships
 var pinkShip = Object.create(spriteObject);
 pinkShip.sourceX = 512;
-pinkShip.x = canvas.width * 1/4 - pinkShip.width / 2;
-pinkShip.y = 0;
-pinkShip.visible = false;
+pinkShip.x = canvas.width * 1/4 - pinkShip.width / 2;	//Centered at 1 quarter into the screen
+pinkShip.y = -200;	//High enough that player can't accidentally shoot (As missile will be removed at y===0)
 var tealShip = Object.create(pinkShip);
 tealShip.sourceX = 544;
-tealShip.x = canvas.width * 3/4 - tealShip.width / 2;
-//End ship creation (pushed into sprites array within selectShip
+tealShip.x = canvas.width * 3/4 - tealShip.width / 2;	//Centered at 3 quarters into the screen
+
+var shipChosen = false; //Makes sure that the player's ship doesn't change when they travel to the homeworld.
+//End ship creation (pushed into sprites array within selectShip)
 
 
 //Load the tilesheet image
@@ -90,13 +92,11 @@ image.src = "../images/alienArmadaRED3.png";
 assetsToLoad.push(image);
 
 
-//Push sounds
+//Push sounds (Created in sounds.js)
 music.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(music);
-
 shootSound.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(shootSound);
-
 explosionSound.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(explosionSound);
 //End sound loading
@@ -106,13 +106,12 @@ assetsToLoad.push(explosionSound);
 var assetsLoaded = 0;
 
 
-//All moved to keyhandler.js for now
-var LOADING = 0
-var PLAYING = 1;
-var OVER = 2;			//Moved to keyhandler.js
-var PAUSED = 3;
-var OPTIONSMENU = 4;
-
+//The different game states. Default is LOADING.
+LOADING = 0
+PLAYING = 1;
+OVER = 2;			
+PAUSED = 3;
+OPTIONSMENU = 4;
 
 //Game variables
 var score = 0;
@@ -122,189 +121,171 @@ var scoreNeededToWin = 160;
 var alienFrequency = 100;
 var alienTimer = 0;
 
-//******this variable turns the health bar on and off
+//******this variable turns the mothership's health bar on and off
 var hpVisible = false;
 
 //Add keyboard listeners
-
 window.addEventListener("keydown", keydownhandler, false);	//Executed in keyhandler.js
 window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler.js
 
 //Start the game animation loop
 update();
 
-function moveThings()
-{
-//Left
-  if(moveLeft && !moveRight)
-  {
-    cannon.vx = -6;
-  }
-  //Right
-  if(moveRight && !moveLeft)
-  {
-    cannon.vx = 6;
-  }
-
-  //Set the cannon's velocity to zero if none of the keys are being pressed
-  if(!moveLeft && !moveRight)
-  {
-    cannon.vx = 0;
-  }
-
-  //Fire a missile if shoot is true
-  if(shoot)
-  {
-    fireMissile();
-    shoot = false;	
-  }
-  
-    for(var i = 0; i < missiles.length; i++)
-  {
-    var missile = missiles[i];
-
-    //Move it up the screen
-    missile.y += missile.vy;
-
-    //Remove the missile if it crosses the top of the screen
-    if(missile.y < 0 - missile.height)
-    { 
-      //Remove the missile from the missiles and sprites arrays
-      removeObject(missile, missiles);
-      removeObject(missile, sprites);
-
-      //Reduce the loop counter by 1 to compensate 
-      //for the removed element
-      i--;
-    }
-  }
-  
-  //Move the cannon and keep it within the screen boundaries
-  cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
-  
-  //Move the buttons
-  if (gameState === OPTIONSMENU)
-  {
-	playButton.y += playButton.vy;
-	shipsButton.y += shipsButton.vy;
-	pinkShip.y += pinkShip.vy;
-	tealShip.y += tealShip.vy;
-  }
-  
-  scoreDisplay.text = score;
-	
-	 //Loop through the aliens
-  for(var i = 0; i < aliens.length; i++)
-  { 
-    var alien = aliens[i];
-    //Move the current alien if its state is NORMAL
-	alien.y += alien.vy;
-    //Check if the alien has crossed the bottom of the screen
-    if(alien.y > canvas.height + alien.height)
-    { 
-      //End the game if an alien has reached Earth
-      gameState = OVER;
-    }
-  }
-  
-  //--- The collisions   
-  
-  //Check for a collision between the aliens and missiles
-   for(var i = 0; i < aliens.length; i++)
-  {
-    var alien = aliens[i];
-
-    for(var j = 0; j < missiles.length; j++)
-    {
-      var missile = missiles[j];
-      
-      if(hitTestRectangle(missile, alien)
-      && alien.state === alien.NORMAL)
-      {
-	//checks to see if this is the mothership
-	if (alien.sourceWidth === 64)
+function moveSprites() //Called in both the main playing loop, and the options select loop
 	{
-	  if (motherShipHealth === 0)
-	  {
-	     //Destroy the alien
-	    destroyAlien(alien);
-    
-	    //Update the score
-	    score+=60;
-	    
-	    //Remove the missile
-	    removeObject(missile, missiles);
-	    removeObject(missile, sprites);
-	  }
-	  else
-	  {
-	    motherShipHealth--;
-	    
-	    if(sprites.length !== 0)
-	    {
-	      for(var i = 0; i < sprites.length; i++)
-	      {
-		var sprite = sprites[i];
-		
-		if (sprite.sourceX === 256)
-		{
-		  //reduces the hp bar
-		  sprite.sourceWidth-=3;
-		  sprite.width-=3;
-		  
-		  drawingSurface.drawImage
-		  (
-		    image, 
-		    sprite.sourceX, sprite.sourceY, 
-		    sprite.sourceWidth, sprite.sourceHeight,
-		    Math.floor(sprite.x), Math.floor(sprite.y), 
-		    sprite.width, sprite.height
-		  ); 
+	//Left
+	if(moveLeft && !moveRight) { cannon.vx = -6; }
+	//Right
+	if(moveRight && !moveLeft) { cannon.vx = 6;  }
+
+	//Set the cannon's velocity to zero if none of the keys are being pressed
+	if(!moveLeft && !moveRight){ cannon.vx = 0; }
+
+	//Fire a missile if shoot is true (ie, player hit the space bar)
+	if(shoot)
+	{
+		fireMissile();
+		shoot = false;	
+	}
+
+	for(var i = 0; i < missiles.length; i++)
+	{
+		var missile = missiles[i];
+
+		//Move it up the screen
+		missile.y += missile.vy;
+
+		//Remove the missile if it crosses the top of the screen
+		if(missile.y < 0 - missile.height)
+		{ 
+			//Remove the missile from the missiles and sprites arrays
+			removeObject(missile, missiles);
+			removeObject(missile, sprites);
+
+			//Reduce the loop counter by 1 to compensate 
+			//for the removed element
+			i--;
 		}
-		
-	      }
-	    }
-	    
-	    //Remove the missile
-	    removeObject(missile, missiles);
-	    removeObject(missile, sprites);
-	  }
 	}
-	else
+  
+	//Move the cannon and keep it within the screen boundaries
+	cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
+
+	//Move the buttons
+	if (gameState === OPTIONSMENU)
+		{
+		playButton.y += playButton.vy;
+		shipsButton.y += shipsButton.vy;
+		pinkShip.y += pinkShip.vy;
+		tealShip.y += tealShip.vy;
+	}
+  
+	scoreDisplay.text = score;
+	
+	//Loop through the aliens
+	for(var i = 0; i < aliens.length; i++)
+	{ 
+		var alien = aliens[i];
+		//Move the current alien if its state is NORMAL
+		alien.y += alien.vy;
+		//Check if the alien has crossed the bottom of the screen
+		if(alien.y > canvas.height + alien.height)
+		{ 
+			//End the game if an alien has reached Earth
+			gameState = OVER;
+		}
+	}
+  
+	//--- The collisions   
+	//Check for a collision between the aliens and missiles
+	for(var i = 0; i < aliens.length; i++)
 	{
-	  //****************increment the mothership call******************
-	  scoreToMotherShip++;
-	  
-	  //Destroy the alien
-	  destroyAlien(alien);
-  
-	  //Update the score
-	  score++;
-	  
-	  //Remove the missile
-	  removeObject(missile, missiles);
-	  removeObject(missile, sprites);
-  
-	  //Subtract 1 from the loop counter to compensate
-	  //for the removed missile
-	  j--;
-	}
-	  
-      }
-    }
-  }
-  
-  
-  //--- The score 
+		var alien = aliens[i];
 
-  //Display the score
-  scoreDisplay.text = score;
+		for(var j = 0; j < missiles.length; j++)
+		{
+			var missile = missiles[j];
 
-  //Check for the end of the game
-  if(score === scoreNeededToWin)
-  {
-    gameState = OVER;
-  }
+			if(hitTestRectangle(missile, alien) && alien.state === alien.NORMAL)
+			{
+				//checks to see if this is the mothership
+				if (alien.sourceWidth === 64)
+				{
+					if (motherShipHealth === 0) //If the mothership's health has gone to 0, destroy it.
+					{
+						//Destroy the alien
+						destroyAlien(alien);
+
+						//Update the score
+						score+=60; 		//Reward with bounty for killing the mothership
+
+						//Remove the missile
+						removeObject(missile, missiles);
+						removeObject(missile, sprites);
+					}
+					else
+					{
+						motherShipHealth--; //If the mothership was hit, but is not at 0 health, reduce its health.
+
+						//Reduce health bar.
+						if(sprites.length !== 0) 
+						{
+							for(var i = 0; i < sprites.length; i++)
+							{
+								var sprite = sprites[i];
+
+								if (sprite.sourceX === 256)
+								{
+									//reduces the hp bar
+									sprite.sourceWidth-=3;
+									sprite.width-=3;
+
+									drawingSurface.drawImage
+									(
+									image, 
+									sprite.sourceX, sprite.sourceY, 
+									sprite.sourceWidth, sprite.sourceHeight,
+									Math.floor(sprite.x), Math.floor(sprite.y), 
+									sprite.width, sprite.height
+									); 
+								}
+							}
+						}//End health bar reduction
+
+						//Remove the missile
+						removeObject(missile, missiles);
+						removeObject(missile, sprites);
+					}
+				}//End mothership check
+				else //Otherwise this is a normal alien, so destroy it, increment score, and make it one monster closer to calling the mothership
+				{
+					//****************increment the mothership call******************
+					scoreToMotherShip++;
+
+					//Destroy the alien
+					destroyAlien(alien);
+
+					//Update the score
+					score++;
+
+					//Remove the missile
+					removeObject(missile, missiles);
+					removeObject(missile, sprites);
+
+					//Subtract 1 from the loop counter to compensate
+					//for the removed missile
+					j--;
+				}
+			}
+		}
+	}//End collision check
+
+	//--- The score
+	//Display the score
+	scoreDisplay.text = score;
+
+	//Check for the end of the game
+	if(score === scoreNeededToWin) { gameState = OVER; }
 }
 
 function update()
@@ -315,23 +296,24 @@ function update()
   //Change what the game is doing based on the game state
   switch(gameState)
   {
-    case LOADING:
+    case LOADING:	//0
 		console.log("loading…");
 		break;
     
-    case PLAYING:
+    case PLAYING:	//1
 		playGame();
 		break;
     
-    case OVER:
+    case OVER:		//2
 		endGame();
 		break;
 		
-	case OPTIONSMENU:
-		selectShip();
-		break;
-	case PAUSED:
+	case PAUSED:	//3
 		pauseGame();
+		break;
+		
+	case OPTIONSMENU: //4
+		selectShip();
 		break;
   }
   
@@ -342,57 +324,71 @@ function update()
 //select ship fucntion *************************************************************************************** 
 function selectShip()
 {
-	moveThings();
-	//Check for button collisions
+	moveSprites(); //Update locations for player, buttons/ships, missiles
+	
+	//Check for  collisions	
 	for (var j = 0; j < missiles.length; j++)
 	{
 		var missile = missiles[j];
+		//Collision with buttons
 		for (var i = 0; i < buttons.length; i++)
 		{
 			var button = buttons[i];
 			if (hitTestRectangle(missile, button))
 			{
-				removeObject(button, buttons);
-				removeObject(button, sprites);
 				removeObject(missile, missiles);
 				removeObject(missile, sprites);
-				if (button === playButton)
-				{
-					removeObject(shipsButton, sprites);
-					removeObject(shipsButton, buttons);		
-					playGame();
-					gameState = PLAYING;					
+				if (button === playButton) //If they shot the play Button
+				{	
+					preGame();
+					gameState = PLAYING;
 				}
-				if (button === shipsButton)
+				if (button === shipsButton)//If they shot the ships button 
 				{
-					removeObject(playButton, sprites);
-					removeObject(playButton, buttons);							
-					tealShip.visible = pinkShip.visible = true;
+					//Remove the other button
+					removeObject(playButton, sprites);	
+					removeObject(playButton, buttons);	
+					removeObject(shipsButton, sprites); 
+					removeObject(shipsButton, buttons); 
+					
+					//And start moving the ship choices down.
+					tealShip.y = pinkShip.y = 0;
+					tealShip.visible = pinkShip.visible = true; 
 					tealShip.vy = pinkShip.vy = 0.5;
 					sprites.push(pinkShip);
-					sprites.push(tealShip);					
+					sprites.push(tealShip);	
 				}
 			}
-		}
+		}//End button collision
+		
+		//Collision with ship choices
 		if (hitTestRectangle(missile, pinkShip) || hitTestRectangle(missile, tealShip))
 		{
-			if (hitTestRectangle(missile, pinkShip))
-			{
-				cannon.sourceX = pinkShip.sourceX;
-			}
-			else 
-			{
-				cannon.sourceX = tealShip.sourceX;
-			}
+			//Change the sourceX to the right spot
+			if (hitTestRectangle(missile, pinkShip)) { cannon.sourceX = pinkShip.sourceX; }
+			else 									 { cannon.sourceX = tealShip.sourceX; }
+			shipChosen = true; //Make note that custom ship has been selected
 			removeObject(missile, missiles);
 			removeObject(missile, sprites);
-			console.log("Hit!");
-			removeObject(pinkShip, sprites);
-			removeObject(tealShip, sprites);		
-			playGame();
+			
+			preGame();	//Start the game
 			gameState = PLAYING;
-		}		
-	}  
+		}//End ship choices collision
+		
+		//If user fails to select either ship, go with default ship and start game
+		if (pinkShip.y > canvas.height)
+		{	
+			gameState = PLAYING;
+			preGame();
+		}
+	}  //End collision detection
+
+	//If user fails to select either button, just start game
+	if (playButton.y === canvas.height)
+	{
+		gameState = PLAYING;
+		preGame();
+	}
 }
 
 
@@ -411,98 +407,104 @@ function loadHandler()
     music.play();
 
 	//Set default volumes
-
-	
 	music.volume = shootSound.volume = explosionSound.volume= .3;
     
-    //Start the game 
+    //Go to the next game state
     gameState = OPTIONSMENU;
   }
 }
 
+//Called between options menu and play game, to clear out all the options sprites
+function preGame()
+{
+	removeObject(shipsButton, sprites);
+	removeObject(shipsButton, buttons);		
+	removeObject(playButton, sprites);
+	removeObject(playButton, buttons);	
+	removeObject(pinkShip, sprites);
+	removeObject(tealShip, sprites);	
+	playGame(); //Start the game
+}
+
 function playGame()
 {
-  moveThings();
+	moveSprites(); //Move the aliens, mothership, player, and missiles
 
-  //Make the aliens
+	//Add one to the alienTimer
+	alienTimer++;
 
-  //Add one to the alienTimer
-  alienTimer++;
-
-  //Make a new alien if alienTimer equals the alienFrequency
-  if(alienTimer === alienFrequency)
-  {
-    makeAlien();
-    alienTimer = 0;
-
-    //Reduce alienFrequency by one to gradually increase
-    //the frequency that aliens are created
-    if(alienFrequency > 2)
-    {  
-      alienFrequency--;
-    }
-	
-	
-	if ((scoreToMotherShip === 2) && motherShipCalled === false)
+	//Make a new alien if alienTimer equals the alienFrequency
+	if(alienTimer === alienFrequency)
 	{
-     
-      //**********warp to mars with the boss
-      background.sourceX = 480;
-      background.sourceY = 32;
+		makeAlien();
+		alienTimer = 0;
 
-    cannon.sourceX = 480;
-    cannon.sourceY = 0;
-      
-      //make the mothership
-      makeMother();
-      
-      //make onbly one mother ship
-      motherShipCalled = true;
-    }
-  }
+		//Reduce alienFrequency by one to gradually increase
+		//the frequency that aliens are created
+		if(alienFrequency > 2)
+		{  
+		  alienFrequency--;
+		}
+
+		if ((scoreToMotherShip === 2) && motherShipCalled === false)
+		{     
+			//**********warp to mars with the boss
+			background.sourceX = 480;
+			background.sourceY = 32;
+			
+			//If the player is using the default ship, change it to a special one. Otherwise, leave it alone
+			if (!shipChosen) { cannon.sourceX = 480; cannon.sourceY = 0; }
+			
+			//make the mothership
+			makeMother();
+			motherShipCalled = true; //Make sure there will only be one mothership
+		}
+	}//End alien creation
 }
 
 function destroyAlien(alien)
-{
-  //Change the alien's state and update the object 
-  alien.state = alien.EXPLODED;
-    alien.vy /= 2;
+	{
+	//Change the alien's state and update the object 
+	alien.state = alien.EXPLODED;
+	alien.vy /= 3; //Slow it down greatly
 
-  alien.update();  
-  
-  //Remove the alien after 1 second
-  setTimeout(removeAlien, 1000);
+	alien.update();  //Changes the model to the explosion
 
-  //Play the explosion sound
-  explosionSound.currentTime = 0;
-  explosionSound.play();
-  
-  function removeAlien()
-  {
-    removeObject(alien, aliens);
-    removeObject(alien, sprites);
-  }
+	//Remove the alien after 1 second
+	setTimeout(removeAlien, 1000);
+
+	//Play the explosion sound
+	explosionSound.currentTime = 0;
+	explosionSound.play();
+
+	function removeAlien()
+	{
+		removeObject(alien, aliens);
+		removeObject(alien, sprites);
+	}
 }
 
 function endGame()
-{
-  gameOverMessage.visible = true;
-  if(score < scoreNeededToWin)
-  {
-    gameOverMessage.text = "EARTH DESTROYED!";
-  }
-  else
-  {
-    gameOverMessage.x = 120;
-    gameOverMessage.text = "EARTH SAVED!";
-  }
+	{
+	gameOverMessage.visible = true;
+	
+	//Display a win/loss message on the screen
+	if(score < scoreNeededToWin)
+	{
+		gameOverMessage.text = "EARTH DESTROYED!";
+	}
+	else
+	{
+		gameOverMessage.x = 120;
+		gameOverMessage.text = "EARTH SAVED!";
+	}
 }
 
 function pauseGame()
 {
-	console.log("Paused");
-	
+	console.log("Paused"); //Give a bit of feedback
 }
+
 function makeAlien()
 {
   //Create the alien
@@ -603,20 +605,6 @@ function removeObject(objectToRemove, array)
   }
 }
 
-function endGame()
-{
-  gameOverMessage.visible = true;
-  if(score < scoreNeededToWin)
-  {
-    gameOverMessage.text = "EARTH DESTROYED!";
-  }
-  else
-  {
-    gameOverMessage.x = 120;
-    gameOverMessage.text = "EARTH SAVED!";
-  }
-}
-
 function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
@@ -656,4 +644,4 @@ function render()
 }
 
 
-}());
+}());//End alienArmada.js
