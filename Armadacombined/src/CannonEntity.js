@@ -1,13 +1,9 @@
 Cannon.prototype = new EntityClass();
 Cannon.prototype.constructor = Cannon;
 function Cannon(x, y) {
-	//call base constructor
 	EntityClass.call(this);
- 
 	this.x = x; 
-	this.y = y;
-
-	
+	this.y = y;	
 }
 
 Cannon.prototype.update = function () {

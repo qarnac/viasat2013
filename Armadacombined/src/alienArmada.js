@@ -231,7 +231,7 @@ function playGame()
     }
 	
 	
-	if ((scoreToMotherShip === 2) && motherShipCalled === false)
+	if ((scoreToMotherShip >= 2) && motherShipCalled === false)
 	{
      
       //**********warp to mars with the boss
@@ -253,49 +253,46 @@ function playGame()
 
   //Check for a collision between the aliens and missiles
   
- for(var i = 0; i < aliens.length; i++)
-  {
-    var alien = aliens[i];
+	for(var i = 0; i < aliens.length; i++)
+	{
+		var alien = aliens[i];
 
-    for(var j = 0; j < missiles.length; j++)
-    {
-      var missile = missiles[j];
-      
-      if(hitTestRectangle(missile, alien)
-      && alien.state === alien.NORMAL)
-      {
-	//HEALTH BAR STUFF NOW
-	if (alien.sourceWidth === 64)
-	{	    
-	    if(sprites.length !== 0)
-	    {
-	      for(var i = 0; i < sprites.length; i++)
-	      {
-			var sprite = sprites[i];
-		
-			if (sprite.sourceX === 256)
+		for(var j = 0; j < missiles.length; j++)
+		{
+			var missile = missiles[j];
+
+			if(hitTestRectangle(missile, alien)	&& alien.state === alien.NORMAL)
 			{
-			  //reduces the hp bar
-			  sprite.sourceWidth-=3;
-			  sprite.width-=3;
-			  
-			  drawingSurface.drawImage
-			  (
-				image, 
-				sprite.sourceX, sprite.sourceY, 
-				sprite.sourceWidth, sprite.sourceHeight,
-				Math.floor(sprite.x), Math.floor(sprite.y), 
-				sprite.width, sprite.height
-			  ); 
+				//HEALTH BAR STUFF NOW
+				if (alien.sourceWidth === 64)
+				{	    
+					if(sprites.length !== 0)
+					{
+						for(var i = 0; i < sprites.length; i++)
+						{
+							var sprite = sprites[i];
+
+							if (sprite.sourceX === 256)
+							{
+								//reduces the hp bar
+								sprite.sourceWidth-=3;
+								sprite.width-=3;
+
+								drawingSurface.drawImage
+								(
+								image, 
+								sprite.sourceX, sprite.sourceY, 
+								sprite.sourceWidth, sprite.sourceHeight,
+								Math.floor(sprite.x), Math.floor(sprite.y), 
+								sprite.width, sprite.height
+								); 
+							}
+						}
+					}	    
+				} //END HEALTH BAR STUFF
 			}
-		
-	      }
-	    }	    
-	    
-	} //END HEALTH BAR STUFF
-      }
-    }
-  }
+		}
+	}
   
   //--- The score 
 
@@ -345,16 +342,7 @@ function makeMother()
   aliens.push(mothership);
   
   //**along with the mothership we will create a health bar for it on the side
-  var innerMeter = new EntityClass(0, 0);	//Object.create(spriteObject);
-  innerMeter.sourceY =0;
-  innerMeter.sourceX = 256;
-  innerMeter.sourceWidth = 180;
-  innerMeter.sourceHeight = 32;
-  innerMeter.width = 180;
-  innerMeter.height = 32;
-  innerMeter.vis = 1;
-  hpVisible =true;
-  
+  var innerMeter = new Bar();	  
   health.push(innerMeter);
   sprites.push(innerMeter);
 }
@@ -374,16 +362,6 @@ function fireMissile()
   shootSound.play();
 }
 
-//Moved to GlobalVariables.js
-/*function removeObject(objectToRemove, array)  
-{ 
-  var i = array.indexOf(objectToRemove);
-  if (i !== -1)
-  {
-    array.splice(i, 1);
-  }
-}
-*/
 function endGame()
 {
   gameOverMessage.visible = true;

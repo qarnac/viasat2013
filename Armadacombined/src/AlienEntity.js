@@ -50,7 +50,7 @@ Alien.prototype.destroyAlien = function() {
   //Change the alien's state and update the object 
   
   this.state = this.EXPLODED;
-  this.vy /= 3;
+  this.vy /= 4;
   
   //Remove the alien after 1 second
   setTimeout(removeAlien, 1000);
@@ -62,13 +62,7 @@ Alien.prototype.destroyAlien = function() {
   var alien = this; //Temporary variable
   function removeAlien()
   {
-  
-	//Comment this out to make game work right
-	removeObject(this, aliens);
-    removeObject(this, sprites);
-	
-	//Uncomment this to make game work right
-    //removeObject(alien, aliens);
-    //removeObject(alien, sprites);
+    removeObject(alien, aliens);
+    removeObject(alien, sprites);
   }
 }
