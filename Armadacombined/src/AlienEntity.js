@@ -62,8 +62,12 @@ Alien.prototype.destroyAlien = function() {
   var alien = this; //Temporary variable
   function removeAlien()
   {
+  
+	//Comment this out to make game work right
 	removeObject(this, aliens);
     removeObject(this, sprites);
+	
+	//Uncomment this to make game work right
     //removeObject(alien, aliens);
     //removeObject(alien, sprites);
   }
