@@ -27,10 +27,12 @@ Bar.prototype.update = function() {
 	
 	if (mothership !== null)
 	{
+		//44px constant is the icon that doesn't get reduced. The rest of the bar is 136px.
+		//Reduce that 136px to reflect the mothership's current/max health.
 		this.sourceWidth = 44 + 136 * (mothership.health / mothership.MAXHEALTH);
 		this.width = 44 + 136 * (mothership.health / mothership.MAXHEALTH);
 	}
-	else
+	else //Once the mothership is gone, remove the health bar.
 	{
 		removeObject(this, health);
 		removeObject(this, sprites);

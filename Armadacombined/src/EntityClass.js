@@ -11,7 +11,7 @@ EntityClass = function() {
 	this.vx = 0;
 	this.vy = 0;
 	this.visible = true;
-	  
+	this.deathcounter = 0;
 }
 
 EntityClass.prototype.centerX = function() {

@@ -13,6 +13,7 @@ function Alien() {
 	this.NORMAL = 1;
 	this.EXPLODED = 2;
 	this.state = this.NORMAL;
+	this.deathcounter = 60;
 }
 
 Alien.prototype.update = function () {
@@ -44,6 +45,8 @@ Alien.prototype.update = function () {
 			removeObject(missile, sprites);
 		}
 	}
+	
+	if (this.state === this.EXPLODED) { this.deathcounter--; }
 }
 
 Alien.prototype.destroyAlien = function() {
@@ -53,16 +56,16 @@ Alien.prototype.destroyAlien = function() {
   this.vy /= 4;
   
   //Remove the alien after 1 second
-  setTimeout(removeAlien, 1000);
 
   //Play the explosion sound
   explosionSound.currentTime = 0;
-  explosionSound.play();
+  explosionSound.play();  
   
+  /*setTimeout(removeAlien, 1000);
   var alien = this; //Temporary variable
   function removeAlien()
   {
     removeObject(alien, aliens);
     removeObject(alien, sprites);
-  }
+  }*/
 }

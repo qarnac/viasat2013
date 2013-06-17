@@ -20,7 +20,7 @@ var currVol = document.querySelector("#currVol");   //Text output
 
 muteMusic.addEventListener("click", controlSound, false);
 muteEffects.addEventListener("click", controlSound, false);
-volAll.addEventListener("click", controlSound, false);
+volAll.addEventListener("input", controlSound, false);
 
 
 //End option buttons

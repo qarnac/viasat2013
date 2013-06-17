@@ -1,3 +1,6 @@
+//instanceof
+//console.log(alien instanceof Alien);
+
 (function(){
 
 //The canvas
@@ -190,6 +193,7 @@ function loadHandler()
     music.play();
 
 	//Set default volumes
+	music.muted = true;
 	music.volume = shootSound.volume = explosionSound.volume= .3;
     
     //Start the game 
@@ -211,6 +215,16 @@ function playGame()
   for(var i = 0; i < sprites.length; i++) {
 	sprites[i].update();
   }
+  
+  //Add a loop to delete all dead objects after their delay
+  for (var i = 0; i < aliens.length; i++) {
+	var alien = aliens[i];
+	if (alien.deathcounter === 0)
+	{
+	removeObject(aliens[i], sprites);
+	removeObject(aliens[i], aliens);
+	}
+	}
  
   //Make the aliens
 
