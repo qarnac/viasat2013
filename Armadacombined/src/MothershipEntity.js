@@ -11,8 +11,8 @@ function Mothership() {
 	this.y = 0 - this.height;	
 	this.x = 480/2 - this.width/2;
 	this.vy = .2;	  
-	this.MAXHEALTH = 60;
-	this.health = 60;
+	this.MAXHEALTH = 10;
+	this.health = 10;
 	this.NORMAL = 1;
 	this.EXPLODED = 2;
 	this.state = this.NORMAL;
@@ -29,44 +29,40 @@ Mothership.prototype.update = function () {
 	}
 	
 	//Check for missile collisions
-	for(var i = 0; i < missiles.length; i++)
+	for (var i = 0; i < sprites.length; i++)
 	{
-		var missile = missiles[i];
-		if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
+		if (sprites[i] instanceof Missile) 
 		{
-			this.health--; //Reduce mothership health
-			console.log("Health: " + this.health + "/" + this.MAXHEALTH); //Note to check progress
+			var missile = sprites[i];
+			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
+			{
+				this.health--; //Reduce mothership health
+				console.log("Health: " + this.health + "/" + this.MAXHEALTH); //Note to check progress
 
-			//Remove the missile
-			removeObject(missile, missiles);
-			removeObject(missile, sprites);
+				//Remove the missile
+				missile.deathcounter--;
+				//removeObject(missile, sprites);
+			}
 		}
 	}
+	
 	if (this.health === 0 && this.state === this.NORMAL) //When health is 0, it should die. (check state to make sure not calling multiple times)
 	{
 		this.state = this.EXPLODED;
 		this.destroyMothership();
 		score+=60;
 	}
+	
+	if (this.state === this.EXPLODED) { this.deathcounter--; }
 }
 
 Mothership.prototype.destroyMothership = function() {
 
   //Change the Mothership's state and update the object 
-  var Mothership = this;
   Mothership.state = Mothership.EXPLODED;
   Mothership.vy /= 3;
   
-  //Remove the Mothership after 1 second
-  setTimeout(removeMothership, 1000);
-
   //Play the explosion sound
   explosionSound.currentTime = 0;
   explosionSound.play();
-  
-  function removeMothership()
-  {
-    removeObject(Mothership, aliens);
-    removeObject(Mothership, sprites);
-  }
 }

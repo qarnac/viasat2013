@@ -9,17 +9,6 @@ var canvas = document.querySelector("canvas");
 //Create the drawing surface 
 var drawingSurface = canvas.getContext("2d");
 
-//Arrays to store the game objects and assets to load
-/*var sprites = [];
-var health = [];
-var assetsToLoad = [];
-var missiles = [];
-var aliens = [];
-var messages = [];
-
-//**********make scenes for the game
-var scene = [];*/
-
 //check to see if the mothershipp is out
 var motherShipCalled = false;
 
@@ -35,12 +24,6 @@ background.height = 320;
 sprites.push(background);
 
 //Create the cannon and center it
-/*
-var cannon = Object.create(spriteObject);
-cannon.x = canvas.width / 2 - cannon.width / 2;
-cannon.y = 280;
-sprites.push(cannon);
-*/
 var cannon = new Cannon(canvas.width / 2 - 32 / 2, 280);
 sprites.push(cannon);
 
@@ -90,43 +73,7 @@ var PLAYING = 1;
 var OVER = 2;			//Moved to keyhandler.js
 var PAUSED = 3;
 var OPTIONSMENU = 4;
-
-/* 
-//Game states
-var LOADING = 0
-var PLAYING = 1;
-var OVER = 2;
-var PAUSED = 3;
-var OPTIONSMENU = 4;
-var gameState = LOADING;
-
-//Arrow key codes
-var RIGHT = 39;
-var LEFT = 37;						
-var SPACE = 32;
-var ESC = 27;
-var S = 83;
-
-
-//Directions
-var moveRight = false;
-var moveLeft = false;
-
-//Variables to help fire missiles
-var shoot = false;
-var spaceKeyIsDown = false;*/
-
 gameState = LOADING;
-//Game variables
-/*var score = 0;
-var motherShipHealth = 60;
-var scoreToMotherShip = 0;
-var scoreNeededToWin = 160;
-var alienFrequency = 100;
-var alienTimer = 0;*/
-
-//******this variable turns the health bar on and off
-var hpVisible = false;
 
 //Add keyboard listeners
 
@@ -137,8 +84,7 @@ window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler
 update();
 
 function update()
-{ 
-	
+{ 	
   //The animation loop
   requestAnimationFrame(update, canvas);
 
@@ -178,8 +124,7 @@ function selectShip()
 
 
 function loadHandler()
-{ 
- 
+{  
   assetsLoaded++;
   if(assetsLoaded === assetsToLoad.length)
   {
@@ -203,7 +148,6 @@ function loadHandler()
 
 function playGame()
 {
-
   //Fire a missile if shoot is true
   if(shoot)
   {
@@ -217,13 +161,13 @@ function playGame()
   }
   
   //Add a loop to delete all dead objects after their delay
-  for (var i = 0; i < aliens.length; i++) {
-	var alien = aliens[i];
-	if (alien.deathcounter === 0)
+	for (var i = 0; i < sprites.length; i++) 
 	{
-	removeObject(aliens[i], sprites);
-	removeObject(aliens[i], aliens);
-	}
+	var sprite = sprites[i];
+	if (sprite.deathcounter === 0)
+		{
+		removeObject(sprites[i], sprites);
+		}
 	}
  
   //Make the aliens
@@ -262,54 +206,8 @@ function playGame()
 		motherShipCalled = true;
     }
   }
- 
-  //--- The collisions 
-
-  //Check for a collision between the aliens and missiles
-  
-	for(var i = 0; i < aliens.length; i++)
-	{
-		var alien = aliens[i];
-
-		for(var j = 0; j < missiles.length; j++)
-		{
-			var missile = missiles[j];
-
-			if(hitTestRectangle(missile, alien)	&& alien.state === alien.NORMAL)
-			{
-				//HEALTH BAR STUFF NOW
-				if (alien.sourceWidth === 64)
-				{	    
-					if(sprites.length !== 0)
-					{
-						for(var i = 0; i < sprites.length; i++)
-						{
-							var sprite = sprites[i];
-
-							if (sprite.sourceX === 256)
-							{
-								//reduces the hp bar
-								sprite.sourceWidth-=3;
-								sprite.width-=3;
-
-								drawingSurface.drawImage
-								(
-								image, 
-								sprite.sourceX, sprite.sourceY, 
-								sprite.sourceWidth, sprite.sourceHeight,
-								Math.floor(sprite.x), Math.floor(sprite.y), 
-								sprite.width, sprite.height
-								); 
-							}
-						}
-					}	    
-				} //END HEALTH BAR STUFF
-			}
-		}
-	}
   
   //--- The score 
-
   //Display the score
   scoreDisplay.text = score;
 
@@ -336,16 +234,15 @@ function endGame()
 
 function pauseGame()
 {
-	console.log("Paused");	
+	console.log("Paused. Sprite count: " + sprites.length);	
 }
 function makeAlien()
 {
   //Create the alien
   var alien = new Alien();
   
-  //Push the alien into both the sprites and aliens arrays
+  //Push the alien into the sprites array
   sprites.push(alien);
-  aliens.push(alien);
 }
 
 //crates the mothership
@@ -353,11 +250,9 @@ function makeMother()
 {  
   var mothership = new Mothership();
   sprites.push(mothership);
-  aliens.push(mothership);
   
   //**along with the mothership we will create a health bar for it on the side
   var innerMeter = new Bar();	  
-  health.push(innerMeter);
   sprites.push(innerMeter);
 }
 
@@ -367,9 +262,8 @@ function fireMissile()
   //Create a missile sprite
   var missile = new Missile(cannon);	
     
-  //Push the missile into both the sprites and missiles arrays
+  //Push the missile into the sprites array
   sprites.push(missile);
-  missiles.push(missile);
 
   //Play the firing sound
   shootSound.currentTime = 0;

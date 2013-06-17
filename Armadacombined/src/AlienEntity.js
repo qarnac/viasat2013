@@ -27,23 +27,20 @@ Alien.prototype.update = function () {
 	}
 	
 	//Check for missile collisions
-	for(var i = 0; i < missiles.length; i++)
+	for (var i = 0; i < sprites.length; i++)
 	{
-		var missile = missiles[i];
-		if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
+		if (sprites[i] instanceof Missile) 
 		{
-			scoreToMotherShip++;
-	  
-			//Destroy the alien
-			this.destroyAlien();
-
-			//Update the score
-			score++;
-
-			//Remove the missile
-			removeObject(missile, missiles);
-			removeObject(missile, sprites);
-		}
+			var missile = sprites[i];
+			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
+			{
+				scoreToMotherShip++;
+				this.destroyAlien();
+				score++;
+				missile.deathcounter--;
+				//removeObject(missile, sprites);
+			}
+		}	
 	}
 	
 	if (this.state === this.EXPLODED) { this.deathcounter--; }
@@ -51,21 +48,11 @@ Alien.prototype.update = function () {
 
 Alien.prototype.destroyAlien = function() {
   //Change the alien's state and update the object 
-  
   this.state = this.EXPLODED;
   this.vy /= 4;
   
-  //Remove the alien after 1 second
-
   //Play the explosion sound
   explosionSound.currentTime = 0;
   explosionSound.play();  
   
-  /*setTimeout(removeAlien, 1000);
-  var alien = this; //Temporary variable
-  function removeAlien()
-  {
-    removeObject(alien, aliens);
-    removeObject(alien, sprites);
-  }*/
 }

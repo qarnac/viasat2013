@@ -10,6 +10,7 @@ function Bar() {
 	this.width = 180;
 	this.height = 32;
 	this.visible =true;
+	this.deathcounter = 1;
 }
 
 
@@ -31,10 +32,10 @@ Bar.prototype.update = function() {
 		//Reduce that 136px to reflect the mothership's current/max health.
 		this.sourceWidth = 44 + 136 * (mothership.health / mothership.MAXHEALTH);
 		this.width = 44 + 136 * (mothership.health / mothership.MAXHEALTH);
+
 	}
 	else //Once the mothership is gone, remove the health bar.
 	{
-		removeObject(this, health);
-		removeObject(this, sprites);
+		this.deathcounter--;
 	}
 }

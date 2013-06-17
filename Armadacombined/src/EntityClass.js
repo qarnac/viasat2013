@@ -11,7 +11,7 @@ EntityClass = function() {
 	this.vx = 0;
 	this.vy = 0;
 	this.visible = true;
-	this.deathcounter = 0;
+	this.deathcounter = 1; //When counter is 0, object gets removed. Alien/mothership have higher counter numbers, so there is a delay between being killed and disappearing.
 }
 
 EntityClass.prototype.centerX = function() {
