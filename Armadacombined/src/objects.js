@@ -1,4 +1,5 @@
 //--- The sprite object
+
 var spriteObject =
 {
   sourceX: 0,
@@ -33,6 +34,7 @@ var spriteObject =
 };
 
 //--- The alien object
+
 var alienObject = Object.create(spriteObject);
 alienObject.NORMAL = 1;
 alienObject.EXPLODED = 2;
@@ -44,6 +46,7 @@ alienObject.update = function()
 };
 
 //--- The message object
+
 var messageObject =
 {
   x: 0,
@@ -55,14 +58,3 @@ var messageObject =
   textBaseline: "top"
 };
 
-// The button object. used for the option choices before the game
-var buttonObject = Object.create(spriteObject);
-buttonObject.sourceX= 600;
-buttonObject.sourceY= 0;
-buttonObject.sourceWidth= 80;
-buttonObject.sourceHeight= 20;
-buttonObject.width= 80;
-buttonObject.height= 20;
-buttonObject.vx= 0;
-buttonObject.vy= .5;
-buttonObject.visible = true;

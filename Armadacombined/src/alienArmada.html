@@ -10,28 +10,30 @@
 	<tr>
 		<td><canvas width="480" height="320" display="block"></canvas></td>
 	<td valign="top">
-		<table id="options" style="width: 200px; border: 1px solid black">
-			<tr> <th id="Optionshead" style="background-color: black">Options: </center></th>
+		<table id="options" >
+			<tr> <th>Options: </center></th>
 
-			<tr><th>Volume:</th></tr>
-			<tr><td align="right">
-				Master <input id="volAll" type="range" min="1" max="100" value="30" style="width: 90px"> <p id="currVol" style="display: inline">30%</p><br>
+			<tr><td align="right"><center>Volume:</center>
+				Master <input id="volAll" type="range" min="1" max="100" value="30"> <p id="currVol">30%</p><br>
 				Hotkey: <b>S</b> <button id="muteMusic">Mute music</button><br>
-				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button></tr>
-			<tr><th id="pauseMessage">Press "ESC" to <span></span>pause </th></tr>
-			
+				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
 		</table>
 	</td>
-	
+	<tr><td id="pauseMessage" align="center">Press "ESC" to pause </td>
 </table>
 
 
 
 <!-- The game code -->
-<!--<script src="globals.js"></script>-->
+<script src="GlobalVariables.js"></script>
 <script src="requestAnimationFramePolyfill.js"></script>
 <script src="keyhandler.js"></script>
 <script src="objects.js"></script>
+<script src="EntityClass.js"></script>
+<script src="MissileEntity.js"></script>
+<script src="AlienEntity.js"></script>
+<script src="MothershipEntity.js"></script>
+<script src="CannonEntity.js"></script>
 <script src="collision.js"></script>
 <script src="sounds.js"></script>
 <script src="alienArmada.js"></script>

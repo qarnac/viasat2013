@@ -1,25 +1,46 @@
 @font-face 
 {
-	font-family: emulogic;
-	src: url("../fonts/emulogic.ttf");
+  font-family: emulogic;
+  src: url("../fonts/emulogic.ttf");
 }
 
-table, #Optionshead {
+table, td, th, #options {
 	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
+border-top-right-radius: 10px;
+	
+	}
+	
+th {
+	background-color: black;
+	color: white;
 	}
 
-th {
-	color: white;
-	background-color: #585858 ;
-	border-radius: 0px;
-	}	
+#options
+{
+	border: 1px solid black;
+	width: 200px;
+	
+}
 
 button {
 	display: inline;
 	width: 110px;
 }
 
-span {
-	color: #D00000;
+input {
+	width: 25px;
+
 }
+
+canvas {
+	
+}
+
+#currVol {
+	display: inline;
+}
+
+#volAll {
+
+	width: 60px;
+	}

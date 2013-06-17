@@ -2,12 +2,12 @@
 //Game states
 var LOADING = 0
 var PLAYING = 1;
-var OVER = 2;			
+var OVER = 2;			//Moved to keyhandler.js
 var PAUSED = 3;
 var OPTIONSMENU = 4;
 
+
 var gameState;
-var prevState;	//Used for pause/unpause going to the right game state
 
 //Arrow key codes
 var RIGHT = 39;
@@ -16,10 +16,10 @@ var SPACE = 32;
 var ESC = 27;
 var S = 83;
 var E = 69;
-var PLUSNP = 107;	//Plus on the num pad
-var PLUS = 187;		//Plus on the main keyboard
-var MINUSNP = 109;	//Minus on the num pad
-var MINUS = 189;	//Minus on the main keyboard section
+var PLUSNP = 107;					//Moved to keyhandler.js
+var PLUS = 187;
+var MINUSNP = 109;
+var MINUS = 189;
 
 //Directions
 var moveRight = false;
@@ -39,9 +39,11 @@ function keydownhandler() {
 		case LEFT:
 			moveLeft = true;
 			break;  
+
 		case RIGHT:
 			moveRight = true;
 			break;
+
 		case SPACE:
 			//shoot = true;
 			if(!spaceKeyIsDown)
@@ -52,33 +54,35 @@ function keydownhandler() {
 			break;
 			
 		case ESC:
-			//Will not change state if game is over, or still loading. Only if currently playing, doing options, or paused.
-			if (gameState === PLAYING) 			{ gameState = PAUSED; prevState = PLAYING;		pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
-			else if (gameState === OPTIONSMENU) { gameState = PAUSED; prevState = OPTIONSMENU; 	pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
-			else if (gameState === PAUSED) 		{ gameState = prevState;						pauseMessage.innerHTML = "Press \"ESC\" to pause";					}
+			if (gameState === PLAYING) { gameState = PAUSED; }
+			else if (gameState === PAUSED) { gameState = PLAYING;}
 			break;
 			
-		case S: //S mutes music
+		case S: 
 			controlSound("S");
 			break;
-		case E:	//E mutes effects
+			
+		case E:
 			controlSound("E");
 			break;
-		
-		//The two + keys increase, and the two - keys decrease, all volume in the game.
-		case PLUS: 
+			
+		case PLUS:
 			controlSound("PLUS");
 			break;
 		case PLUSNP:
 			controlSound("PLUS");
 			break;
+			
 		case MINUS:
 			controlSound("MINUS");
 			break;
 		case MINUSNP:
 			controlSound("MINUS");
 			break;
+
+		
 	}
+
 }
 
 function keyuphandler() 
