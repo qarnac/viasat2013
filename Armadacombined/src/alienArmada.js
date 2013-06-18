@@ -1,6 +1,3 @@
-//instanceof
-//console.log(alien instanceof Alien);
-
 (function(){
 
 //The canvas
@@ -9,7 +6,7 @@ var canvas = document.querySelector("canvas");
 //Create the drawing surface 
 var drawingSurface = canvas.getContext("2d");
 
-//check to see if the mothershipp is out
+//check to see if the mothership is out
 var motherShipCalled = false;
 
 //Create the background
@@ -44,28 +41,71 @@ gameOverMessage.y = 120;
 gameOverMessage.visible = false;
 messages.push(gameOverMessage);
 
+
+
+// Create the options buttons
+// Play sits centered at 1/4th over the screen, Ships at 3/4ths
+var playButton = new Options();
+playButton.x = canvas.width *1/4 - playButton.width/2;
+playButton.y = 0;
+sprites.push(playButton);
+
+
+var shipsButton = new Options();
+shipsButton.sourceX += 100;
+shipsButton.x = canvas.width *3/4 - shipsButton.width/2;
+shipsButton.y = 0;
+sprites.push(shipsButton);
+
+//End button creation
+
+// Create different ships
+var pinkShip  = new Options();
+pinkShip.sourceX = 512;
+pinkShip.sourceWidth = pinkShip.width = pinkShip.sourceHeight = pinkShip.height= 32;
+pinkShip.x = canvas.width * 1/4 - pinkShip.width / 2;	//Centered at 1 quarter into the screen
+pinkShip.y = -200;	//High enough that player can't accidentally shoot (As missile will be removed at y===0)
+pinkShip.vy = 0.5;
+
+var tealShip  = new Options();
+tealShip.sourceX = 544;
+tealShip.sourceWidth = tealShip.width = tealShip.sourceHeight = tealShip.height= 32;
+tealShip.x = canvas.width * 3/4 - tealShip.width / 2;	//Centered at 3 quarters into the screen
+tealShip.y = -200;
+tealShip.vy = 0.5;
+
+sprites.push(pinkShip);
+sprites.push(tealShip);	
+
+
+var shipChosen = 0; //Makes sure that the player's ship doesn't change when they travel to the homeworld.
+//End ship creation (pushed into sprites array within selectShip)
+
+
+
+
+
+
+
+
 //Load the tilesheet image
 var image = new Image();
 image.addEventListener("load", loadHandler, false);
-image.src = "../images/alienArmadaRED.png";
+image.src = "../images/alienArmadaRED3.png";
 assetsToLoad.push(image);
 
 
 //Push sounds
 music.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(music);
-
 shootSound.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(shootSound);
-
 explosionSound.addEventListener("canplaythrough", loadHandler, false);
 assetsToLoad.push(explosionSound);
 //End sound loading
 
-
 //Variable to count the number of assets the game needs to load
 var assetsLoaded = 0;
-
 
 //All moved to keyhandler.js for now
 var LOADING = 0
@@ -89,25 +129,26 @@ function update()
   requestAnimationFrame(update, canvas);
 
   //Change what the game is doing based on the game state
-  switch(gameState)
+    switch(gameState)
   {
-    case LOADING:
+    case LOADING:	//0
 		console.log("loading…");
 		break;
     
-    case PLAYING:
+    case PLAYING:	//1
 		playGame();
 		break;
     
-    case OVER:
+    case OVER:		//2
 		endGame();
 		break;
 		
-	case OPTIONSMENU:
-		selectShip();
-		break;
-	case PAUSED:
+	case PAUSED:	//3
 		pauseGame();
+		break;
+		
+	case OPTIONSMENU: //4
+		selectShip();
 		break;
   }
   
@@ -115,13 +156,81 @@ function update()
   render();
 }
 
-//select ship fucntion *************************************************************************************** 
+//select ship fucntion **
 function selectShip()
 {
-  playGame();
-  gameState = PLAYING;
+	//Shoot
+	if(shoot)
+	{
+		fireMissile();
+		shoot = false;	
+	}
+	
+	//Check collisions
+	for (var i = 0; i < sprites.length; i++)
+	{
+		if (sprites[i] instanceof Missile)
+		{
+			var missile = sprites[i];
+			//Button collision
+			if (hitTestRectangle(missile, playButton))
+			{
+				missile.deathcounter--;
+				preGame();
+				gameState = PLAYING;				
+			}
+			else if (hitTestRectangle(missile, shipsButton))
+			{
+				missile.deathcounter--;
+				missile.x = 700;
+				shipsButton.x = playButton.x = 500;
+				removeObject(shipsButton, sprites);
+				removeObject(playButton, sprites);
+				removeObject(missile, sprites);
+				tealShip.y = pinkShip.y = 0;
+				console.log ("I hit a ship button");				
+			}
+			//End buttons
+			
+			
+			//Ship choice collision
+			if (hitTestRectangle(missile, pinkShip) || hitTestRectangle(missile, tealShip))
+			{
+				if (hitTestRectangle(missile, pinkShip))
+				{
+					cannon.sourceX = pinkShip.sourceX;
+					shipChosen = 1;
+				}
+				else if (hitTestRectangle(missile, tealShip))
+				{
+					cannon.sourceX = tealShip.sourceX;
+					shipChosen = 2;
+				}
+				removeObject(missile, sprites);
+				preGame();
+				gameState = PLAYING;
+			}//End ship choices
+		}
+	}
+	//End collisions
+	
+	//Update frame
+	for(var i = 0; i < sprites.length; i++) {
+		sprites[i].update();
+	}
 }
 
+function preGame()
+{
+	for (var i = 0; i < sprites.length; i++)
+	{
+		if (sprites[i] instanceof Options || sprites[i].deathcounter === 0)
+		{
+			removeObject(sprites[i], sprites);
+			i--;
+		}
+	}
+}
 
 function loadHandler()
 {  
@@ -170,8 +279,6 @@ function playGame()
 		}
 	}
  
-  //Make the aliens
-
   //Add one to the alienTimer
   alienTimer++;
 
@@ -196,9 +303,11 @@ function playGame()
 		background.sourceX = 480;
 		background.sourceY = 32;
 
+		if (shipChosen === 0)
+		{
 		cannon.sourceX = 480;
 		cannon.sourceY = 0;
-		
+		}
       //make the mothership
 		makeMother();
       
@@ -208,11 +317,8 @@ function playGame()
   }
   
   //--- The score 
-  //Display the score
-  scoreDisplay.text = score;
-
-  //Check for the end of the game
-  if(score === scoreNeededToWin)
+   scoreDisplay.text = score; //Display the score
+  if(score === scoreNeededToWin) //Check for the end of the game
   {
     gameState = OVER;
   }
@@ -221,6 +327,8 @@ function playGame()
 function endGame()
 {
   gameOverMessage.visible = true;
+  
+  //Display a win/loss message on the screen
   if(score < scoreNeededToWin)
   {
     gameOverMessage.text = "EARTH DESTROYED!";
@@ -234,14 +342,12 @@ function endGame()
 
 function pauseGame()
 {
-	console.log("Paused. Sprite count: " + sprites.length);	
+	console.log("Paused. "/*Sprite count: " + sprites.length*/);	//Give feedback (commented section checks to make sure sprites are properly removed)
 }
 function makeAlien()
 {
-  //Create the alien
+  //Create the alien and push it to the array
   var alien = new Alien();
-  
-  //Push the alien into the sprites array
   sprites.push(alien);
 }
 

@@ -18,9 +18,11 @@ function Missile(cannon) {
 Missile.prototype.update = function () {
 	this.y += this.vy;
 
+
 	if(this.y < 0 - this.height)
     { 
       //Remove the missile from the sprites array
-	this.deathcounter--;
+	  removeObject(this, sprites);
     }
+	
 }

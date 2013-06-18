@@ -38,7 +38,6 @@ Alien.prototype.update = function () {
 				this.destroyAlien();
 				score++;
 				missile.deathcounter--;
-				//removeObject(missile, sprites);
 			}
 		}	
 	}

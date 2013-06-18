@@ -41,7 +41,6 @@ Mothership.prototype.update = function () {
 
 				//Remove the missile
 				missile.deathcounter--;
-				//removeObject(missile, sprites);
 			}
 		}
 	}

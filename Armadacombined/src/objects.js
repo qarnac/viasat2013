@@ -32,19 +32,6 @@ var spriteObject =
     return this.height / 2;
   }
 };
-
-//--- The alien object
-
-var alienObject = Object.create(spriteObject);
-alienObject.NORMAL = 1;
-alienObject.EXPLODED = 2;
-alienObject.state = alienObject.NORMAL;
-alienObject.update = function()
-
-{
-  this.sourceX = this.state * this.width;
-};
-
 //--- The message object
 
 var messageObject =
@@ -57,4 +44,14 @@ var messageObject =
   fillStyle: "red",
   textBaseline: "top"
 };
-
+/*
+var buttonObject = Object.create(spriteObject);
+buttonObject.sourceX= 600;
+buttonObject.sourceY= 0;
+buttonObject.sourceWidth= 80;
+buttonObject.sourceHeight= 20;
+buttonObject.width= 80;
+buttonObject.height= 20;
+buttonObject.vx= 0;
+buttonObject.vy= .5;
+buttonObject.visible = true;*/
