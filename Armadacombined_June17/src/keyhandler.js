@@ -9,6 +9,8 @@ var CHANGE_LEVEL = 5;
 
 
 var gameState;
+var prevState;	//Used for pause/unpause going to the right game state
+
 
 //Arrow key codes
 var RIGHT = 39;
@@ -36,7 +38,6 @@ function keydownhandler() {
 	
 	switch(event.keyCode)
 	{
-	
 		case LEFT:
 			moveLeft = true;
 			break;  
@@ -55,8 +56,11 @@ function keydownhandler() {
 			break;
 			
 		case ESC:
-			if (gameState === PLAYING) { gameState = PAUSED; }
-			else if (gameState === PAUSED) { gameState = PLAYING;}
+			//Will not change state if game is over, or still loading. Only if currently playing, doing options, or paused.
+			if (gameState === PLAYING) 			{ gameState = PAUSED; prevState = PLAYING;		pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
+
+			else if (gameState === OPTIONSMENU) { gameState = PAUSED; prevState = OPTIONSMENU; 	pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
+			else if (gameState === PAUSED) 		{ gameState = prevState;						pauseMessage.innerHTML = "Press \"ESC\" to pause";					}
 			break;
 			
 		case S: 

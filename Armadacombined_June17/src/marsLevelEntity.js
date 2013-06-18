@@ -9,6 +9,7 @@ function Mars() {
         //these sets of coordinates will be for mars
 	this.sourceX = 480;
 	this.sourceY = 32;
+	this.damage = 1;
 }
 
 

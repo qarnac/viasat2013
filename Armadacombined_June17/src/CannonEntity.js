@@ -4,6 +4,7 @@ function Cannon(x, y) {
 	EntityClass.call(this);
 	this.x = x; 
 	this.y = y;	
+	this.model = 0;
 }
 
 Cannon.prototype.update = function () {
@@ -25,4 +26,22 @@ Cannon.prototype.update = function () {
 	{
 		this.vx = 0;
 	}
+}
+
+Cannon.prototype.changeModel = function(type) {
+	this.model = type;
+
+	switch (type)
+	{
+		case 0: //Default ship
+			Missile.prototype.damage = 2;
+			break;
+		case 1: //Pink??? ship
+			break;
+		case 2: //Teal??? ship
+			break;
+	}
+
+
+
 }

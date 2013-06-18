@@ -12,6 +12,7 @@ function Alien() {
 	this.sourceX = 32;
 	this.NORMAL = 1;
 	this.EXPLODED = 2;
+	this.health = 1;
 	this.state = this.NORMAL;
 	this.deathcounter = 60;
 }
@@ -34,13 +35,16 @@ Alien.prototype.update = function () {
 			var missile = sprites[i];
 			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
 			{
-				scoreToMotherShip++;
-				this.destroyAlien();
-				score++;
+				this.health -= missile.damage;
 				missile.deathcounter--;
-				//removeObject(missile, sprites);
 			}
 		}	
+	}
+	if (this.health <= 0 && this.state === this.NORMAL) //If they've lost all their health, and haven't yet exploded...
+	{ 
+		this.destroyAlien(); 
+		score++; 
+		scoreToMotherShip++;
 	}
 	
 	if (this.state === this.EXPLODED) { this.deathcounter--; }

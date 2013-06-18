@@ -11,8 +11,7 @@ function Mothership() {
 	this.y = 0 - this.height;	
 	this.x = 480/2 - this.width/2;
 	this.vy = .2;	  
-	this.MAXHEALTH = 10;
-	this.health = 10;
+	this.MAXHEALTH = this.health = 15;
 	this.NORMAL = 1;
 	this.EXPLODED = 2;
 	this.state = this.NORMAL;
@@ -36,23 +35,19 @@ Mothership.prototype.update = function () {
 			var missile = sprites[i];
 			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
 			{
-				this.health--; //Reduce mothership health
+				this.health -= missile.damage; //Reduce mothership health
 				console.log("Health: " + this.health + "/" + this.MAXHEALTH); //Note to check progress
-
-				//Remove the missile
-				missile.deathcounter--;
-				//removeObject(missile, sprites);
+				removeObject(missile, sprites);
 			}
 		}
 	}
 	
-	if (this.health === 0 && this.state === this.NORMAL) //When health is 0, it should die. (check state to make sure not calling multiple times)
+	if (this.health <= 0 && this.state === this.NORMAL) //When health is 0, it should die. (check state to make sure not calling multiple times)
 	{
 		this.state = this.EXPLODED;
 		this.destroyMothership();
 		score+=20;
 	}
-	
 	if (this.state === this.EXPLODED) { this.deathcounter--; }
 }
 
