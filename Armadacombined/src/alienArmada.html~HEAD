@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Alien Armada!</title>
+ 
+<!-- The stylesheet -->
+<link rel="stylesheet" href="alienArmada.css">
+ 
+<!-- The canvas -->
+<table>
+	<tr>
+		<td><canvas width="480" height="320" display="block"></canvas></td>
+	<td valign="top">
+		<table id="options" >
+			<tr> <th>Options: </center></th>
+
+			<tr><td align="right"><center>Volume:</center>
+				Master <input id="volAll" type="range" min="1" max="100" value="30"> <p id="currVol">30%</p><br>
+				Hotkey: <b>S</b> <button id="muteMusic">Unmute music</button><br>
+				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
+		</table>
+	</td>
+	<tr><td id="pauseMessage" align="center">Press "ESC" to pause </td>
+</table>
+
+
+
+<!-- The game code -->
+<script src="levelEntityClass.js"></script>
+<script src="marsLevelEntity.js"></script>
+<script src="GlobalVariables.js"></script>
+<script src="requestAnimationFramePolyfill.js"></script>
+<script src="keyhandler.js"></script>
+<script src="objects.js"></script>
+<script src="EntityClass.js"></script>
+<script src="BarEntity.js"></script>
+<script src="MissileEntity.js"></script>
+<script src="AlienEntity.js"></script>
+<script src="MothershipEntity.js"></script>
+<script src="CannonEntity.js"></script>
+<script src="collision.js"></script>
+<script src="sounds.js"></script>
+<script src="alienArmada.js"></script>
