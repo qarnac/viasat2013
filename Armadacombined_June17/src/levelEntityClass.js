@@ -35,5 +35,5 @@ levelEntityClass.prototype.bgScroll = function () {
 	//the update method will now update the scrolling of the
 	this.y += this.vy;
 	
-	console.log("we are inside the loop excecuting bgScroll");
+	//console.log("we are inside the loop excecuting bgScroll");
 }

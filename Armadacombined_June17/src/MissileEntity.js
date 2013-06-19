@@ -21,6 +21,34 @@ Missile.prototype.update = function () {
 	this.y += this.vy;
 	this.x += this.vx;
 	
+	//Collisions
+	for (var i = 0; i < sprites.length; i++)
+	{
+		//Hit an alien
+		if (sprites[i] instanceof Alien) 
+		{
+			var alien = sprites[i];
+			if (hitTestRectangle(this, alien) && alien.state === alien.NORMAL)
+			{
+				alien.health -= this.damage;
+				this.deathcounter--;
+			}
+		}	
+		//Hit a mothership
+		if (sprites[i] instanceof Mothership) 
+		{
+			var mothership = sprites[i];
+			if (hitTestRectangle(this, mothership) && mothership.state === mothership.NORMAL)
+			{
+				mothership.health -= this.damage; //Reduce mothership health
+				console.log("Health: " + mothership.health + "/" + mothership.MAXHEALTH); //Note to check progress
+				removeObject(this, sprites);
+			}
+		}
+	}
+	
+	
+	
 	var mothership;
 	var cannon;
 	for (var i = 0; i < sprites.length; i++)

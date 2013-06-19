@@ -27,21 +27,6 @@ Mothership.prototype.update = function () {
 		gameState = OVER;
 	}
 	
-	//Check for missile collisions
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i] instanceof Missile) 
-		{
-			var missile = sprites[i];
-			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
-			{
-				this.health -= missile.damage; //Reduce mothership health
-				console.log("Health: " + this.health + "/" + this.MAXHEALTH); //Note to check progress
-				removeObject(missile, sprites);
-			}
-		}
-	}
-	
 	if (this.health <= 0 && this.state === this.NORMAL) //When health is 0, it should die. (check state to make sure not calling multiple times)
 	{
 		this.state = this.EXPLODED;

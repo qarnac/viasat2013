@@ -27,19 +27,6 @@ Alien.prototype.update = function () {
 		gameState = OVER;
 	}
 	
-	//Check for missile collisions
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i] instanceof Missile) 
-		{
-			var missile = sprites[i];
-			if (hitTestRectangle(this, missile) && this.state === this.NORMAL)
-			{
-				this.health -= missile.damage;
-				missile.deathcounter--;
-			}
-		}	
-	}
 	if (this.health <= 0 && this.state === this.NORMAL) //If they've lost all their health, and haven't yet exploded...
 	{ 
 		this.destroyAlien(); 

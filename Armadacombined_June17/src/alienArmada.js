@@ -150,6 +150,7 @@ function selectShip()
 		{
 			var missile = sprites[i];
 			//Button collision
+			
 			if (hitTestRectangle(missile, playButton))
 			{
 				missile.deathcounter--;
@@ -324,7 +325,7 @@ function endGame()
 
 function pauseGame()
 {
-	console.log("Paused. Sprite count: " + sprites.length);	
+	console.log("Paused." /*Sprite count: " + sprites.length*/);	
 }
 function makeAlien()
 {
