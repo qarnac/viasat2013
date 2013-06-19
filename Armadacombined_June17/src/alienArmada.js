@@ -11,17 +11,13 @@ var motherShipCalled = false;
 
 //Create the background
 var background = new levelEntityClass();	//Object.create(spriteObject);
-
-//JT: there is an error here. it seems that we have to load the bacground to the sprites array to get them to scroll
-//the scenes array should be the only one handling the background (that is ideal)
-//going to try to figure out a way that the program wont freeze without the background in the sprites
-sprites.push(background);  //try comenting this line out, and you will se the error im talking about
+//sprites.push(background);  
 scenes.push(background);
 
 
 //this variable will track what leve we are on
 var levelNumber = 0; //earth will be level 0, since it is the start
-var loadLevel = true;
+var loadLevel = false;
 
 //Create the cannon and center it
 var cannon = new Cannon(canvas.width / 2 - 32 / 2, 280);
@@ -130,7 +126,7 @@ function update()
   render();
 }
 
-//select ship fucntion *************************************************************************************** 
+//select ship function **
 function selectShip()
 {
 	//Shoot
@@ -141,13 +137,14 @@ function selectShip()
 	}
 
 	//Update frame
-	for(var i = 1; i < sprites.length; i++) {
+	for(var i = 0; i < sprites.length; i++) {
 		sprites[i].update();
 	}
 	   scoreDisplay.text = score; //Display the score
 
 }
 
+/*
 function preGame() //Transition into gameplay, remove extra sprites.
 {
 	for (var i = 0; i < sprites.length; i++)
@@ -159,6 +156,7 @@ function preGame() //Transition into gameplay, remove extra sprites.
 		}
 	}
 }
+*/
 
 
 function loadHandler()
@@ -263,7 +261,10 @@ function playGame()
   {
     gameState = OVER;
   }
-   if (score === 30) //Go to the next level
+  
+
+	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
+   if (score >= 30 && loadLevel === false) //Go to the next level
   {
     //temp so we dont repeat
     score ++;
@@ -314,7 +315,7 @@ function changingLevels ()
     
     //load the level just once
     loadGameLevel(levelNumber);
-    loadLevel = false;
+    //loadLevel = false;
   }
 }
 //JT:will load the game levels by taking in the argument of what level we are inn
@@ -377,28 +378,12 @@ function fireMissile()
   shootSound.play();
 }
 
-function endGame()
-{
-  gameOverMessage.visible = true;
-  if(score < scoreNeededToWin)
-  {
-    gameOverMessage.text = "EARTH DESTROYED!";
-  }
-  else
-  {
-    gameOverMessage.x = 120;
-    gameOverMessage.text = "EARTH SAVED!";
-  }
-}
-
 function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
   
-    //JT: Display the scenes. this code right here effectively does nothing right now
-    //because what renders the background is still done through the sprites array
-  
-  /*if(scenes.length !== 0)
+    //JT: Display the scenes.   
+  if(scenes.length !== 0)
   {
     for(var i = 0; i < scenes.length; i++)
     {
@@ -412,7 +397,7 @@ function render()
         scene.width, scene.height
       ); 
     }
-  }*/
+  }
   
   //Display the sprites
   if(sprites.length !== 0)

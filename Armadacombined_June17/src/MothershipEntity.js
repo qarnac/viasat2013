@@ -15,6 +15,7 @@ function Mothership() {
 	this.NORMAL = 1;
 	this.EXPLODED = 2;
 	this.state = this.NORMAL;
+	this.deathcounter = 60;
 }
 
 Mothership.prototype.update = function () {
