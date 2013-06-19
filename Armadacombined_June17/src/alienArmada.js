@@ -12,10 +12,13 @@ var motherShipCalled = false;
 //Create the background
 var background = new levelEntityClass();	//Object.create(spriteObject);
 
-//JT:the backgrounds have to be stored in a differnt array because it will be too messy
-//to try to splice in backgrounds after
+//JT: there is an error here. it seems that we have to load the bacground to the sprites array to get them to scroll
+//the scenes array should be the only one handling the background (that is ideal)
+//going to try to figure out a way that the program wont freeze without the background in the sprites
+sprites.push(background);  //try comenting this line out, and you will se the error im talking about
 scenes.push(background);
-sprites.push(background);
+
+
 //this variable will track what leve we are on
 var levelNumber = 0; //earth will be level 0, since it is the start
 var loadLevel = true;
@@ -54,6 +57,11 @@ image.addEventListener("load", loadHandler, false);
 image.src = "../images/alienArmadaRED3.png";
 assetsToLoad.push(image);
 
+//JT: this is just to load the background for the stars
+var bgimage = new Image();
+bgimage.addEventListener("load", loadHandler, false);
+bgimage.src = "../images/space.png";
+assetsToLoad.push(bgimage);
 
 //Push sounds
 music.addEventListener("canplaythrough", loadHandler, false);
@@ -387,8 +395,10 @@ function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
   
-    //JT: Display the scenes
-  if(scenes.length !== 0)
+    //JT: Display the scenes. this code right here effectively does nothing right now
+    //because what renders the background is still done through the sprites array
+  
+  /*if(scenes.length !== 0)
   {
     for(var i = 0; i < scenes.length; i++)
     {
@@ -402,7 +412,7 @@ function render()
         scene.width, scene.height
       ); 
     }
-  }
+  }*/
   
   //Display the sprites
   if(sprites.length !== 0)
