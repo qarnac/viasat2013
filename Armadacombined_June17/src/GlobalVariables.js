@@ -3,7 +3,10 @@
 var assetsToLoad = [];
 var messages = [];
 var sprites = [];
-//var scene = [];
+
+//JT:we will now use the array scene to hold the background tiles we will useto pan through
+//and manipulate the background
+var scenes = [];
 
 
 var score = 0;

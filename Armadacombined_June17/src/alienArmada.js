@@ -11,8 +11,11 @@ var motherShipCalled = false;
 
 //Create the background
 var background = new levelEntityClass();	//Object.create(spriteObject);
-sprites.push(background);
 
+//JT:the backgrounds have to be stored in a differnt array because it will be too messy
+//to try to splice in backgrounds after
+scenes.push(background);
+sprites.push(background);
 //this variable will track what leve we are on
 var levelNumber = 0; //earth will be level 0, since it is the start
 var loadLevel = true;
@@ -69,8 +72,6 @@ tealShip.vy = 0.5;
 sprites.push(pinkShip);
 sprites.push(tealShip);	
 //End ship creation 
-
-
 
 
 
@@ -250,7 +251,7 @@ function loadHandler()
 
 function playGame()
 {
-    
+  
   //Fire a missile if shoot is true
   if(shoot)
   {
@@ -259,9 +260,9 @@ function playGame()
   }
   
   //YO: add a loop to update all sprite objects
-  //this the first element in the object is the background it will not be able to implement the update method
+  //JT:this the first element in the object is the background it will not be able to implement the update method
   //therefore we will skip it
-  for(var i = 1; i < sprites.length; i++) {
+  for(var i = 0; i < sprites.length; i++) {
 	sprites[i].update();
   }
   
@@ -315,6 +316,12 @@ function playGame()
     gameState = CHANGE_LEVEL;
     
   }
+  
+  //JT:this will scroll the background, which is stored inside a new array
+  for (var i = 0; i < scenes.length;i++) {
+    
+    scenes[i].bgScroll();
+  }
 }
 
 function endGame()
@@ -354,18 +361,21 @@ function changingLevels ()
     loadLevel = false;
   }
 }
-
+//JT:will load the game levels by taking in the argument of what level we are inn
 function loadGameLevel(lv)
 {
+  //JT: this statement will track what level we are on
   switch (lv) {
     case 0:
       console.log("entering earth's orbit");
       break;
+    
     case 1:
       var marsBackground = new Mars();
       sprites.splice(0, 1, marsBackground);
       console.log("entering mars' orbit");
       break;
+    
     case 2:
       break;
   }
@@ -429,6 +439,23 @@ function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
   
+    //JT: Display the scenes
+  if(scenes.length !== 0)
+  {
+    for(var i = 0; i < scenes.length; i++)
+    {
+      var scene = scenes[i];
+      drawingSurface.drawImage
+      (
+        image, 
+        scene.sourceX, scene.sourceY, 
+        scene.sourceWidth, scene.sourceHeight,
+        Math.floor(scene.x), Math.floor(scene.y), 
+        scene.width, scene.height
+      ); 
+    }
+  }
+  
   //Display the sprites
   if(sprites.length !== 0)
   {
@@ -445,7 +472,7 @@ function render()
       ); 
     }
   }
-
+  
   //Display game messages
   if(messages.length !== 0)
   {
