@@ -44,32 +44,16 @@ messages.push(gameOverMessage);
 
 // Create the options buttons
 // Play sits centered at 1/4th over the screen, Ships at 3/4ths
-var playButton = new Options();
-playButton.x = canvas.width *1/4 - playButton.width/2;
-playButton.y = 0;
+var playButton = new Options("Play");
 sprites.push(playButton);
-var shipsButton = new Options();
-shipsButton.sourceX += 100;
-shipsButton.x = canvas.width *3/4 - shipsButton.width/2;
-shipsButton.y = 0;
+var shipsButton = new Options("Ships");
 sprites.push(shipsButton);
 //End button creation
 
 // Create different ships
-var pinkShip  = new Options();
-pinkShip.sourceX = 512;
-pinkShip.sourceWidth = pinkShip.width = pinkShip.sourceHeight = pinkShip.height= 32;
-pinkShip.x = canvas.width * 1/4 - pinkShip.width / 2;	//Centered at 1 quarter into the screen
-pinkShip.y = -200;	//High enough that player can't accidentally shoot (As missile will be removed at y===0)
-pinkShip.vy = 0.5;
-
-var tealShip  = new Options();
-tealShip.sourceX = 544;
-tealShip.sourceWidth = tealShip.width = tealShip.sourceHeight = tealShip.height= 32;
-tealShip.x = canvas.width * 3/4 - tealShip.width / 2;	//Centered at 3 quarters into the screen
-tealShip.y = -200;
-tealShip.vy = 0.5;
-sprites.push(pinkShip);
+var redShip  = new Options("Red");
+sprites.push(redShip);
+var tealShip  = new Options("Teal");
 sprites.push(tealShip);	
 //End ship creation 
 
@@ -180,16 +164,16 @@ function selectShip()
 				removeObject(shipsButton, sprites);
 				removeObject(playButton, sprites);
 				removeObject(missile, sprites);
-				tealShip.y = pinkShip.y = 0;
+				tealShip.y = redShip.y = 0;
 			}
 			//End buttons
 
 			//Ship choice collision
-			if (hitTestRectangle(missile, pinkShip) || hitTestRectangle(missile, tealShip))
+			if (hitTestRectangle(missile, redShip) || hitTestRectangle(missile, tealShip))
 			{
-				if (hitTestRectangle(missile, pinkShip))
+				if (hitTestRectangle(missile, redShip))
 				{
-					cannon.sourceX = pinkShip.sourceX;
+					cannon.sourceX = redShip.sourceX;
 					cannon.changeModel(1);
 				}
 				else if (hitTestRectangle(missile, tealShip))
@@ -399,7 +383,7 @@ function fireMissile()
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}
-	else if (cannon.model === 1) //pink ship
+	else if (cannon.model === 1) //red ship
 	{
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
