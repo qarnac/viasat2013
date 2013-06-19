@@ -46,18 +46,7 @@ messages.push(gameOverMessage);
 // Play sits centered at 1/4th over the screen, Ships at 3/4ths
 var playButton = new Options("Play");
 sprites.push(playButton);
-var shipsButton = new Options("Ships");
-sprites.push(shipsButton);
 //End button creation
-
-// Create different ships
-var redShip  = new Options("Red");
-sprites.push(redShip);
-var tealShip  = new Options("Teal");
-sprites.push(tealShip);	
-//End ship creation 
-
-
 
 //Load the tilesheet image
 var image = new Image();
@@ -142,53 +131,6 @@ function selectShip()
 		fireMissile();
 		shoot = false;	
 	}
-
-	//Check collisions
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i] instanceof Missile)
-		{
-			var missile = sprites[i];
-			//Button collision
-			
-			if (hitTestRectangle(missile, playButton))
-			{
-				missile.deathcounter--;
-				preGame();
-				gameState = PLAYING;				
-			}
-			else if (hitTestRectangle(missile, shipsButton))
-			{
-				missile.deathcounter--;
-				missile.x = 700;
-				shipsButton.x = playButton.x = 500;
-				removeObject(shipsButton, sprites);
-				removeObject(playButton, sprites);
-				removeObject(missile, sprites);
-				tealShip.y = redShip.y = 0;
-			}
-			//End buttons
-
-			//Ship choice collision
-			if (hitTestRectangle(missile, redShip) || hitTestRectangle(missile, tealShip))
-			{
-				if (hitTestRectangle(missile, redShip))
-				{
-					cannon.sourceX = redShip.sourceX;
-					cannon.changeModel(1);
-				}
-				else if (hitTestRectangle(missile, tealShip))
-				{
-					cannon.sourceX = tealShip.sourceX;
-					cannon.changeModel(2);
-				}
-				removeObject(missile, sprites);
-				preGame();
-				gameState = PLAYING;
-			}//End ship choices
-		}
-	}
-	//End collisions
 
 	//Update frame
 	for(var i = 1; i < sprites.length; i++) {
@@ -284,6 +226,27 @@ function playGame()
   		motherShipCalled = true;
     }
   }
+  
+  //Ship powerups redSpawn and tealTimer both defined in globalVariables
+  //Red spawns at a randomly defined score between 1 and 10.
+  if (score >= redSpawn && redSpawn > 0)
+  {
+	var redShip  = new Options("Red");
+	sprites.push(redShip);
+	redSpawn = 0;
+  }  
+  //Teal spawns at a randomly defined time between 20 and 30
+  if (timer === tealTimer)
+  {
+	var tealShip = new Options("Teal");
+	sprites.push(tealShip);  
+	timer++;
+  }
+  else if (timer < tealTimer) //Increment timer only until it has reached tealTimer. 
+  {
+	timer++;
+  }
+  
   
   //--- The score 
   //Display the score

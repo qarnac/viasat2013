@@ -45,7 +45,7 @@ Missile.prototype.update = function () {
 				removeObject(this, sprites);
 			}
 		}
-	}
+	}//End collisions
 	
 	
 	

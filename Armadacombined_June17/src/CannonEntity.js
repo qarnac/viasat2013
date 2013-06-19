@@ -36,12 +36,11 @@ Cannon.prototype.changeModel = function(type) {
 		case 0: //Default ship
 			Missile.prototype.damage = 2;
 			break;
-		case 1: //Pink??? ship
+		case 1: //Red ship
+			this.sourceX = 512;
 			break;
-		case 2: //Teal??? ship
+		case 2: //Teal ship
+			this.sourceX = 544;
 			break;
 	}
-
-
-
 }
