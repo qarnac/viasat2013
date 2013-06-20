@@ -92,7 +92,6 @@ function update()
 { 	
   //The animation loop
   requestAnimationFrame(update, canvas);
-
   //Change what the game is doing based on the game state
   switch(gameState)
   {
@@ -144,21 +143,6 @@ function selectShip()
 
 }
 
-/*
-function preGame() //Transition into gameplay, remove extra sprites.
-{
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i] instanceof Options || sprites[i].deathcounter === 0)
-		{
-			removeObject(sprites[i], sprites);
-			i--;
-		}
-	}
-}
-*/
-
-
 function loadHandler()
 {  
   assetsLoaded++;
@@ -193,8 +177,6 @@ function playGame()
   }
   
   //YO: add a loop to update all sprite objects
-  //JT:this the first element in the object is the background it will not be able to implement the update method
-  //therefore we will skip it
   for(var i = 0; i < sprites.length; i++) {
 	sprites[i].update();
   }
@@ -329,7 +311,7 @@ function loadGameLevel(lv)
     
     case 1:
       var marsBackground = new Mars();
-      sprites.splice(0, 1, marsBackground);
+      scenes.splice(0, 1, marsBackground);	//KN: Changed to splice from scenes, now that we're using that.
       console.log("entering mars' orbit");
       break;
     
@@ -381,6 +363,15 @@ function fireMissile()
 function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+  
+  drawingSurface.drawImage 
+  (
+	bgimage,
+	0, 0,
+	480, 320,
+	0, 0,
+	480, 320
+	);
   
     //JT: Display the scenes.   
   if(scenes.length !== 0)
