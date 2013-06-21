@@ -10,16 +10,12 @@ function Alien() {
 	this.y = 0 - this.height;
 	this.vy = 1;
 	this.sourceX = 32;
-	this.NORMAL = 1;
-	this.EXPLODED = 2;
+	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	this.health = 1;
-	this.state = this.NORMAL;
-	this.deathcounter = 60;
+	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
 }
 
 Alien.prototype.update = function () {
-	this.sourceX = this.state * this.width; //Alien or explosion
-
 	this.y += this.vy;
 	
 	if (this.y > 320 + this.height)
@@ -27,19 +23,27 @@ Alien.prototype.update = function () {
 		gameState = OVER;
 	}
 	
-	if (this.health <= 0 && this.state === this.NORMAL) //If they've lost all their health, and haven't yet exploded...
-	{ 
-		this.destroyAlien(); 
-		score++; 
+	if (this.exploded) {
+		this.sourceX += this.width;	//YO: the purpose of this line is to switch to a new sprite but need to plan and rearrange the tilesheet
+		this.deathcounter--;
+	} else if (this.health <= 0)
+	{ 	//YO: Instead of calling a new function, use a comment to explain what it is
+		this.exploded = true;
+		this.vy /= 4;
+	  
+		//Play the explosion sound
+		explosionSound.currentTime = 0;
+		explosionSound.play();
+  		score++; 
 		scoreToMotherShip++;
 	}
-	
-	if (this.state === this.EXPLODED) { this.deathcounter--; }
 }
 
+/* YO: No need for additional function if it's really short and used at only one place
 Alien.prototype.destroyAlien = function() {
   //Change the alien's state and update the object 
-  this.state = this.EXPLODED;
+  //this.state = this.EXPLODED;
+  this.exploded = true;
   this.vy /= 4;
   
   //Play the explosion sound
@@ -47,3 +51,4 @@ Alien.prototype.destroyAlien = function() {
   explosionSound.play();  
   
 }
+*/

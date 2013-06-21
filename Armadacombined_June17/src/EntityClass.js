@@ -31,9 +31,13 @@ EntityClass.prototype.halfHeight = function(){
 }
 
 EntityClass.prototype.update = function () {
+	this.x += this.vx;
+	this.y += this.vy;
 	//Used by background, health bar
+	/*
 	if (this.sourceX !== 256 && this.sourceX !== 480 && this.sourceX !== 0)
 	{
 	console.log("inside the update function for EntityClass " + this.sourceX + " " + this.sourceY);
 	}
+	*/
 } 

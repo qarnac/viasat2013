@@ -13,7 +13,7 @@ function Bar() {
 	this.deathcounter = 1;
 }
 
-
+//YO: A bar object is tightly coupled with its associated mothership/alien and should not be an independent object.
 Bar.prototype.update = function() {
 
 	var mothership = null;

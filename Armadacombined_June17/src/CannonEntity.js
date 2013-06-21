@@ -31,6 +31,7 @@ Cannon.prototype.update = function () {
 Cannon.prototype.changeModel = function(type) {
 	this.model = type;
 
+	/* YO: Does not seem to be needed
 	switch (type)
 	{
 		case 0: //Default ship
@@ -43,4 +44,5 @@ Cannon.prototype.changeModel = function(type) {
 			this.sourceX = 544;
 			break;
 	}
+	*/
 }

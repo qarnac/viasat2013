@@ -20,7 +20,7 @@ var levelNumber = 0; //earth will be level 0, since it is the start
 var loadLevel = false;
 
 //Create the cannon and center it
-var cannon = new Cannon(canvas.width / 2 - 32 / 2, 280);
+cannon = new Cannon(canvas.width / 2 - 32 / 2, 280);
 sprites.push(cannon);
 
 //Create the score message
@@ -39,13 +39,6 @@ gameOverMessage.x = 70;
 gameOverMessage.y = 120;
 gameOverMessage.visible = false;
 messages.push(gameOverMessage);
-
-
-// Create the options buttons
-// Play sits centered at 1/4th over the screen, Ships at 3/4ths
-var playButton = new Options("Play");
-sprites.push(playButton);
-//End button creation
 
 //Load the tilesheet image
 var image = new Image();
@@ -96,7 +89,6 @@ function update()
   switch(gameState)
   {
     case LOADING:
-		console.log("loading…");
 		break;
     
     case PLAYING:
@@ -153,7 +145,6 @@ function loadHandler()
     music.removeEventListener("canplaythrough", loadHandler, false);
     shootSound.removeEventListener("canplaythrough", loadHandler, false);
     explosionSound.removeEventListener("canplaythrough", loadHandler, false);
-    console.log(assetsLoaded + "/" + assetsToLoad.length + " assets loaded");
     //Play the music
     music.play();
 
@@ -162,7 +153,7 @@ function loadHandler()
 	music.volume = shootSound.volume = explosionSound.volume= .3;
     
     //Start the game 
-    gameState = OPTIONSMENU;
+    gameState = PLAYING;	//OPTIONSMENU;
   }
 }
 
@@ -323,12 +314,22 @@ function loadGameLevel(lv)
 //crates the mothership
 function makeMother()
 {  
-  var mothership = new Mothership();
-  sprites.push(mothership);
+  var mothership = new Alien();	//Mothership();
+	mothership.sourceX = 128;
+	mothership.sourceWidth = 64;
+	mothership.sourceHeight = 32;
+	mothership.width = 64;
+	mothership.height = 32;
+	mothership.y = 0;	// - mothership.height;	
+	mothership.x = 480/2 - mothership.width/2;
+	mothership.vy = .2;	  
+	mothership.health = 15;
+	
+	sprites.push(mothership);
   
-  //**along with the mothership we will create a health bar for it on the side
-  var innerMeter = new Bar();	  
-  sprites.push(innerMeter);
+	//**along with the mothership we will create a health bar for it on the side
+	var innerMeter = new Bar();	  
+	sprites.push(innerMeter);
 }
 
 function fireMissile()
@@ -339,7 +340,7 @@ function fireMissile()
 		sprites.push(missile);
 	}
 	else if (cannon.model === 1) //red ship
-	{
+	{	//YO: How is this different from model 0?
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}

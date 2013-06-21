@@ -17,38 +17,91 @@ function Missile(cannon) {
 	this.y = cannon.y - this.height;
 }
 
+Missile.prototype.hit = function(sprite)
+{
+  //A variable to determine whether there's a collision
+  var hit = false;
+  
+  //Calculate the distance vector
+  var vx = this.centerX() - sprite.centerX();
+  var vy = this.centerY() - sprite.centerY();
+  
+  //Figure out the combined half-widths and half-heights
+  var combinedHalfWidths = this.halfWidth() + sprite.halfWidth();
+  var combinedHalfHeights = this.halfHeight() + sprite.halfHeight();
+
+  //Check for a collision on the x axis
+  if(Math.abs(vx) < combinedHalfWidths)
+  {
+    //A collision might be occuring. Check for a collision on the y axis
+    if(Math.abs(vy) < combinedHalfHeights)
+    {
+      //There's definitely a collision happening
+      hit = true;
+    }
+    else
+    {
+      //There's no collision on the y axis
+      hit = false;
+    }   
+  }
+  else
+  {
+    //There's no collision on the x axis
+    hit = false;
+  }
+  
+  return hit;
+}
+
 Missile.prototype.update = function () {
 	this.y += this.vy;
 	this.x += this.vx;
-	
 	//Collisions
 	for (var i = 0; i < sprites.length; i++)
 	{
-		//Hit an alien
-		if (sprites[i] instanceof Alien) 
+		var sprite = sprites[i];
+		//Hit an alien or mothership
+		if (sprite instanceof Alien) 
 		{
-			var alien = sprites[i];
-			if (hitTestRectangle(this, alien) && alien.state === alien.NORMAL)
+			if (this.hit(sprite) && !sprite.exploded)
 			{
-				alien.health -= this.damage;
+				sprite.health -= this.damage;
 				this.deathcounter--;
 			}
 		}	
-		//Hit a mothership
-		if (sprites[i] instanceof Mothership) 
+
+		//Hit an option
+		if (sprite instanceof Options) 
 		{
-			var mothership = sprites[i];
-			if (hitTestRectangle(this, mothership) && mothership.state === mothership.NORMAL)
-			{
-				mothership.health -= this.damage; //Reduce mothership health
-				console.log("Health: " + mothership.health + "/" + mothership.MAXHEALTH); //Note to check progress
-				removeObject(this, sprites);
+			if (this.hit(sprite)) {
+				for (var j = 0; j < sprites.length; j++) //Find the cannon
+				{
+					if (sprites[j] instanceof Cannon) { cannon = sprites[j]; }
+				}
+				cannon.sourceX = sprite.sourceX; //Change the cannon's sprite
+				
+				switch(sprite.id)
+				{					
+					//Powerup choices
+					case "Red": //Red ship powerup
+						cannon.changeModel(1); //Change the cannon's type (which controls its missile behavior)
+						break;
+			
+					case "Teal":
+						cannon.changeModel(2);	//Change the cannon's type (which controls its missile behavior)
+						break;
+					//End powerups
+				}
+				
+				sprite.deathcounter = 0;
+				this.deathcounter = 0;
 			}
 		}
 	}//End collisions
 	
 	
-	
+	/* YO: commented out to avoid using mothership. Don't have time to understand this code yet
 	var mothership;
 	var cannon;
 	for (var i = 0; i < sprites.length; i++)
@@ -98,4 +151,5 @@ Missile.prototype.update = function () {
       //Remove the missile from the sprites array
 	this.deathcounter--;
     }
+	*/
 }
