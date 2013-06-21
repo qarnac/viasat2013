@@ -67,7 +67,7 @@ var assetsLoaded = 0;
 //All moved to keyhandler.js for now
 var LOADING = 0
 var PLAYING = 1;
-var OVER = 2;			//Moved to keyhandler.js
+var OVER = 2;	
 var PAUSED = 3;
 var CHANGE_LEVEL = 5;
 gameState = LOADING;
@@ -183,22 +183,42 @@ function playGame()
     }
   }
   
-  //Ship powerups redSpawn and tealTimer both defined in globalVariables
-  //Red spawns at a randomly defined score between 1 and 10.
-  if (score >= redSpawn && redSpawn > 0)
+  //Powerups, some spawn at random scores, some at random times. After they spawn, they will pick a new random time/score to spawn at. Original spawn rates defined in GlobalVariables
+  if (score >= redSpawn)
   {
-	var redShip  = new Powerup("Red");
+	var redShip = new Powerup("Red");
 	sprites.push(redShip);
-	redSpawn = 0;
+	redSpawn += Math.round(Math.random()*40); //Subsequent spawns will be within 40-score ranges
   }  
-  //Teal spawns at a randomly defined time between 20 and 30
+  if (score >= bombSpawn)
+  {
+	var bomb = new Powerup("Bomb");
+	sprites.push(bomb);
+	bombSpawn += Math.round(Math.random()*40); //Same as the original spawn rate
+  }
+  if (score >= scoreUpSpawn)
+  {
+	var scoreup = new Powerup("Scoreup");
+	sprites.push(scoreup);
+	scoreUpSpawn += Math.round(Math.random()*60); //Same as the original spawn rate
+	
+  }
+ 
   if (timer === tealTimer)
   {
 	var tealShip = new Powerup("Teal");
 	sprites.push(tealShip);  
+	tealTimer += Math.round(Math.random()*60*50+20); //Same as the original spawn rate
 	timer++;
   }
-  else if (timer < tealTimer) //Increment timer only until it has reached tealTimer. 
+  if (timer === slowTimer)
+  {
+	var slow = new Powerup("Slow");
+	sprites.push(slow);
+	slowTimer += Math.round (Math.random()*60*30+10); //Spawn a slow between 10 and 40 seconds
+	timer++;
+  }
+  else //Increment timer
   {
 	timer++;
   }

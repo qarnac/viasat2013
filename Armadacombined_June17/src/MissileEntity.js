@@ -72,24 +72,42 @@ Missile.prototype.update = function () {
 			}
 		}	
 
-		//Hit an option
+		//Hit a powerup
 		if (sprite instanceof Powerup) 
 		{
-			if (this.hit(sprite)) {
+			
+			if (this.hit(sprite)) 
+				{
+				console.log(sprite.id);
 				for (var j = 0; j < sprites.length; j++) //Find the cannon
 				{
 					if (sprites[j] instanceof Cannon) { cannon = sprites[j]; }
 				}
-				cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
 				switch(sprite.id)
 				{					
 					//Powerup choices
-					case "Red": //Red ship powerup
+					case "Red": //Red ship powerup -- Mothership-seeking missiles
+						cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
 						cannon.changeModel(1); //Change the cannon's type (which controls its missile behavior)
 						break;
 			
-					case "Teal":
+					case "Teal": //Fire missiles in a V pattern
+						cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
 						cannon.changeModel(2);	//Change the cannon's type (which controls its missile behavior)
+						break;
+					case "Bomb": //Damage enemies on screen
+						for (var k = 0; k < sprites.length; k++) { sprites[k].health -= this.damage; }
+						break;
+						
+					case "Slow": //Slow down enemies on screen
+						for (var k = 0; k < sprites.length; k++)
+						{
+							if (sprites[k] instanceof Alien) { sprites[k].vy /= 2; } //Cut the alien's speed in half
+						}
+						break;
+						
+					case "Scoreup":
+						score += 20;
 						break;
 					//End powerups
 				}
