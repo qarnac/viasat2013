@@ -36,13 +36,13 @@ function controlSound(event) //Overarching volume control function
 	if (target === "muteMusic") //If they pressed the "(Un)Mute music" button
 	{
 		music.muted = !music.muted; //Change the muted status
-		if (music.muted) { muteMusic.innerHTML = "Unmute music"; } //Update button
+		if (music.muted) { muteMusic.innerHTML = "<span>Un</span>mute music"; } //Update button
 		else {muteMusic.innerHTML = "Mute music"; } //Update button
 	}
 	if (target === "muteEffects") //If they pressed the "(Un)Mute effects" button
 	{
 		explosionSound.muted = shootSound.muted = !shootSound.muted; //Change the muted status
-		if (shootSound.muted) { muteEffects.innerHTML = "Unmute effects"; } //Update button
+		if (shootSound.muted) { muteEffects.innerHTML = "<span>Un</span>mute effects"; } //Update button
 		else {muteEffects.innerHTML = "Mute effects"; } //Update button
 	}
 	if (target === "volAll") //If they changed the "Master" slider
@@ -52,7 +52,7 @@ function controlSound(event) //Overarching volume control function
 		if (newvol === 0) //If it's 0, then they want everything muted
 		{
 			music.muted = shootSound.muted = explosionSound.muted = true; //Mute everything
-			muteMusic.innerHTML = muteEffects.innerHTML = "Unmute music"; //Update buttons
+			muteMusic.innerHTML = muteEffects.innerHTML = "<span>Un</span>mute music"; //Update buttons
 		}
 		else if (newvol <= 1) //Otherwise, change to this percentage
 		{
@@ -79,7 +79,7 @@ function controlSound(event) //Overarching volume control function
 		if (newvol === 0) //If it's 0, then they want everything muted
 		{
 			music.muted = shootSound.muted = explosionSound.muted = true; //Mute everything
-			muteMusic.innerHTML = muteEffects.innerHTML = "Unmute music"; //Update buttons
+			muteMusic.innerHTML = muteEffects.innerHTML = "<span>Un</span>mute music"; //Update buttons
 		}
 		else if (newvol <= 1) //Otherwise, change to this percentage
 		{

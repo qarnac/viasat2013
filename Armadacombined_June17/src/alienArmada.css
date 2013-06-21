@@ -4,14 +4,14 @@
   src: url("../fonts/emulogic.ttf");
 }
 
-table, td, th, #options {
+table, #Optionshead {
 	border-top-left-radius: 10px;
-border-top-right-radius: 10px;
-	
+	border-top-right-radius: 10px;
 	}
+
 	
 th {
-	background-color: black;
+	background-color: #585858 ;
 	color: white;
 	}
 
@@ -32,9 +32,6 @@ input {
 
 }
 
-canvas {
-	
-}
 
 #currVol {
 	display: inline;
@@ -44,3 +41,7 @@ canvas {
 
 	width: 60px;
 	}
+
+	span {
+	color: #D00000;
+}

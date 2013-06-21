@@ -11,7 +11,7 @@ EntityClass = function() {
 	this.vx = 0;
 	this.vy = 0;
 	this.visible = true;
-	this.deathcounter = 1; //When counter is 0, object gets removed. Alien/mothership have higher counter numbers, so there is a delay between being killed and disappearing.
+	this.deathcounter = 1; //When counter is 0, object gets removed. Alien/mothership have higher counter numbers, which will decrease by 1 every frame, so there is a delay between being killed and disappearing.
 }
 
 EntityClass.prototype.centerX = function() {
@@ -33,11 +33,4 @@ EntityClass.prototype.halfHeight = function(){
 EntityClass.prototype.update = function () {
 	this.x += this.vx;
 	this.y += this.vy;
-	//Used by background, health bar
-	/*
-	if (this.sourceX !== 256 && this.sourceX !== 480 && this.sourceX !== 0)
-	{
-	console.log("inside the update function for EntityClass " + this.sourceX + " " + this.sourceY);
-	}
-	*/
 } 

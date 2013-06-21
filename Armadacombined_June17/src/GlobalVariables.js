@@ -14,7 +14,7 @@ var scoreToMotherShip = 0;
 var scoreNeededToWin = 160;
 var alienFrequency = 100;
 var alienTimer = 0;
-var timer = 0;
+var timer = 0; //Currently just used for spawning of powerups
 
 var tealTimer = Math.round(Math.random()*60*10+20); //Choose when to spawn teal ship, anywhere between 20 and 30 seconds (60 because 60 frames per second, *10 to get a 10-second range, and +20 so that the range starts at 20, and goes to 30).
 var redSpawn = Math.round(Math.random()*10+1);  //Choose when to spawn red ship, anywhere between 1 and 10 score.

@@ -12,8 +12,7 @@ function Mars() {
 	this.damage = 1;
 }
 
-
-//
+/*
 Mars.prototype.updateBG = function () {
 	//Used by background
 	if (this.sourceX !== 256 && this.sourceX !== 480 && this.sourceX !== 0)
@@ -27,3 +26,4 @@ Mars.prototype.newEnvironment = function (){
         //this will change the new environment conditions
 
 }
+*/

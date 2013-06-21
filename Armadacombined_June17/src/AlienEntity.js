@@ -5,14 +5,16 @@ function Alien() {
   	
 	//Assign the alien a random x position
 	var randomPosition = Math.floor(Math.random() * 15);
-	this.x = randomPosition * this.width;
+	this.x = randomPosition * this.width; 
   
 	this.y = 0 - this.height;
 	this.vy = 1;
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
-	this.health = 1;
+	this.health = this.MAXHEALTH = 1;
+	this.bounty = 1; //Score value for killing
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
+	
 }
 
 Alien.prototype.update = function () {
@@ -29,26 +31,12 @@ Alien.prototype.update = function () {
 	} else if (this.health <= 0)
 	{ 	//YO: Instead of calling a new function, use a comment to explain what it is
 		this.exploded = true;
-		this.vy /= 4;
+		this.vy /= 4; //Slow down the alien greatly after death
 	  
 		//Play the explosion sound
 		explosionSound.currentTime = 0;
 		explosionSound.play();
-  		score++; 
+  		score += this.bounty; //Increase player's score by the monster's worth
 		scoreToMotherShip++;
 	}
 }
-
-/* YO: No need for additional function if it's really short and used at only one place
-Alien.prototype.destroyAlien = function() {
-  //Change the alien's state and update the object 
-  //this.state = this.EXPLODED;
-  this.exploded = true;
-  this.vy /= 4;
-  
-  //Play the explosion sound
-  explosionSound.currentTime = 0;
-  explosionSound.play();  
-  
-}
-*/

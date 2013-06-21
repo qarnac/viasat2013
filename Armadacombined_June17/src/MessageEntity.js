@@ -10,6 +10,3 @@ function Message() {
 	  this.fillStyle = "red";
 	  this.textBaseline = "top";
 }
-
-Message.prototype.update = function () {
-}

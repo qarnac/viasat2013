@@ -69,7 +69,6 @@ var LOADING = 0
 var PLAYING = 1;
 var OVER = 2;			//Moved to keyhandler.js
 var PAUSED = 3;
-var OPTIONSMENU = 4;
 var CHANGE_LEVEL = 5;
 gameState = LOADING;
 
@@ -99,10 +98,6 @@ function update()
 		endGame();
 		break;
 		
-    case OPTIONSMENU:
-		selectShip();
-		break;
-		
     case PAUSED:
 		pauseGame();
 		break;
@@ -115,24 +110,6 @@ function update()
   }
   //Render the game
   render();
-}
-
-//select ship function **
-function selectShip()
-{
-	//Shoot
-	if(shoot)
-	{
-		fireMissile();
-		shoot = false;	
-	}
-
-	//Update frame
-	for(var i = 0; i < sprites.length; i++) {
-		sprites[i].update();
-	}
-	   scoreDisplay.text = score; //Display the score
-
 }
 
 function loadHandler()
@@ -153,7 +130,7 @@ function loadHandler()
 	music.volume = shootSound.volume = explosionSound.volume= .3;
     
     //Start the game 
-    gameState = PLAYING;	//OPTIONSMENU;
+    gameState = PLAYING;
   }
 }
 
@@ -210,14 +187,14 @@ function playGame()
   //Red spawns at a randomly defined score between 1 and 10.
   if (score >= redSpawn && redSpawn > 0)
   {
-	var redShip  = new Options("Red");
+	var redShip  = new Powerup("Red");
 	sprites.push(redShip);
 	redSpawn = 0;
   }  
   //Teal spawns at a randomly defined time between 20 and 30
   if (timer === tealTimer)
   {
-	var tealShip = new Options("Teal");
+	var tealShip = new Powerup("Teal");
 	sprites.push(tealShip);  
 	timer++;
   }
@@ -323,7 +300,8 @@ function makeMother()
 	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
-	mothership.health = 15;
+	mothership.health = mothership.MAXHEALTH = 15;
+	mothership.bounty = 20;
 	
 	sprites.push(mothership);
   
@@ -365,6 +343,7 @@ function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
   
+  //Display the star field background
   drawingSurface.drawImage 
   (
 	bgimage,

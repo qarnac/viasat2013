@@ -13,7 +13,7 @@ levelEntityClass = function() {
 	this.vy = 0.25;
 }
 
-
+/*
 //JT:does nothing
 levelEntityClass.prototype.update = function()
 {
@@ -28,7 +28,7 @@ levelEntityClass.prototype.updateBG = function () {
 	console.log("inside the update function for EntityClass " + this.sourceX + " " + this.sourceY);
 	}
 }
-
+*/
 //JT:this fucntion will make the background move
 levelEntityClass.prototype.bgScroll = function () {
 	

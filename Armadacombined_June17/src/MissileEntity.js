@@ -57,6 +57,7 @@ Missile.prototype.hit = function(sprite)
 Missile.prototype.update = function () {
 	this.y += this.vy;
 	this.x += this.vx;
+	
 	//Collisions
 	for (var i = 0; i < sprites.length; i++)
 	{
@@ -64,23 +65,22 @@ Missile.prototype.update = function () {
 		//Hit an alien or mothership
 		if (sprite instanceof Alien) 
 		{
-			if (this.hit(sprite) && !sprite.exploded)
+			if (this.hit(sprite) && !sprite.exploded) //If the alien/mothership is alive
 			{
-				sprite.health -= this.damage;
-				this.deathcounter--;
+				sprite.health -= this.damage; //Reduce the alien/mothership's health by the missile's damage
+				this.deathcounter--; //Remove the missile
 			}
 		}	
 
 		//Hit an option
-		if (sprite instanceof Options) 
+		if (sprite instanceof Powerup) 
 		{
 			if (this.hit(sprite)) {
 				for (var j = 0; j < sprites.length; j++) //Find the cannon
 				{
 					if (sprites[j] instanceof Cannon) { cannon = sprites[j]; }
 				}
-				cannon.sourceX = sprite.sourceX; //Change the cannon's sprite
-				
+				cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
 				switch(sprite.id)
 				{					
 					//Powerup choices
@@ -94,8 +94,8 @@ Missile.prototype.update = function () {
 					//End powerups
 				}
 				
-				sprite.deathcounter = 0;
-				this.deathcounter = 0;
+				sprite.deathcounter = 0; //Remove the option button
+				this.deathcounter = 0; //Remove the missile
 			}
 		}
 	}//End collisions

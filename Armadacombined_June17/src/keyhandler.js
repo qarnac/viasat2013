@@ -19,7 +19,7 @@ var SPACE = 32;
 var ESC = 27;
 var S = 83;
 var E = 69;
-var PLUSNP = 107;					//Moved to keyhandler.js
+var PLUSNP = 107;					
 var PLUS = 187;
 var MINUSNP = 109;
 var MINUS = 189;
@@ -47,7 +47,6 @@ function keydownhandler() {
 			break;
 
 		case SPACE:
-			//shoot = true;
 			if(!spaceKeyIsDown)
 			{
 				shoot = true;
@@ -57,8 +56,8 @@ function keydownhandler() {
 			
 		case ESC:
 			//Will not change state if game is over, or still loading. Only if currently playing, doing options, or paused.
+			//Uses prevState so that it knows which to return to on unpause
 			if (gameState === PLAYING) 			{ gameState = PAUSED; prevState = PLAYING;		pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
-
 			else if (gameState === OPTIONSMENU) { gameState = PAUSED; prevState = OPTIONSMENU; 	pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
 			else if (gameState === PAUSED) 		{ gameState = prevState;						pauseMessage.innerHTML = "Press \"ESC\" to pause";					}
 			break;
@@ -84,10 +83,7 @@ function keydownhandler() {
 		case MINUSNP:
 			controlSound("MINUS");
 			break;
-
-		
 	}
-
 }
 
 function keyuphandler() 
