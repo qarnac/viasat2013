@@ -26,7 +26,9 @@ Alien.prototype.update = function () {
 	}
 	
 	if (this.exploded) {
-		this.sourceX += this.width;	//YO: the purpose of this line is to switch to a new sprite but need to plan and rearrange the tilesheet
+		//Temporary solution for death animations. Need to rearrange tilesheet.
+		if (this.MAXHEALTH === 15) {this.sourceX = 192; }
+		else {this.sourceX = 64; } //YO: the purpose of this line is to switch to a new sprite but need to plan and rearrange the tilesheet
 		this.deathcounter--;
 	} else if (this.health <= 0)
 	{ 	//YO: Instead of calling a new function, use a comment to explain what it is

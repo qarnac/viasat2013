@@ -5,6 +5,7 @@ function Cannon(x, y) {
 	this.x = x; 
 	this.y = y;	
 	this.model = 0; //Model affects the looks and behavior of the ship.
+	this.health = this.MAXHEALTH = 2;
 }
 
 Cannon.prototype.update = function () {

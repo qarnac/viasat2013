@@ -188,19 +188,19 @@ function playGame()
   {
 	var redShip = new Powerup("Red");
 	sprites.push(redShip);
-	redSpawn += Math.round(Math.random()*40); //Subsequent spawns will be within 40-score ranges
+	redSpawn += Math.round(Math.random()*40+6); //Subsequent spawns will be within 40-score ranges
   }  
   if (score >= bombSpawn)
   {
 	var bomb = new Powerup("Bomb");
 	sprites.push(bomb);
-	bombSpawn += Math.round(Math.random()*40); //Same as the original spawn rate
+	bombSpawn += Math.round(Math.random()*40+6); //Same as the original spawn rate
   }
   if (score >= scoreUpSpawn)
   {
 	var scoreup = new Powerup("Scoreup");
 	sprites.push(scoreup);
-	scoreUpSpawn += Math.round(Math.random()*60); //Same as the original spawn rate
+	scoreUpSpawn += Math.round(Math.random()*60+6); //Same as the original spawn rate
 	
   }
  
