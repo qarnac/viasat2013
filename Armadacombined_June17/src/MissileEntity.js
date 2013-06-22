@@ -109,9 +109,10 @@ Missile.prototype.update = function () {
 					case "Scoreup": //Minor boost in score
 						score += 5;
 						break;
-					case "Heal": //For future levels where player and planet have individual health values, this will heal the player.
-						cannon.health = Math.min(cannon.health+2, cannon.MAXHEALTH); //Grants bonus health, but won't go over max health.
+					case "Repair": //Grants extra lives.
+						lives++;
 						break;
+						
 					//End powerups
 				}
 				

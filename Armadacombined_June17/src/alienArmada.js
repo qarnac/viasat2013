@@ -25,11 +25,12 @@ sprites.push(cannon);
 
 //Create the score message
 var scoreDisplay = new Message();
-scoreDisplay.font = "normal bold 30px emulogic";
+scoreDisplay.font = "normal bold 14px emulogic";
 scoreDisplay.fillStyle = "#00FF00";
-scoreDisplay.x = 400;
+scoreDisplay.x = 300;
 scoreDisplay.y = 10;
 messages.push(scoreDisplay);
+
 
 //The game over message
 var gameOverMessage = new Message();
@@ -201,7 +202,6 @@ function playGame()
 	var scoreup = new Powerup("Scoreup");
 	sprites.push(scoreup);
 	scoreUpSpawn += Math.round(Math.random()*60+6); //Same as the original spawn rate
-	
   }
  
   if (timer === tealTimer)
@@ -209,30 +209,30 @@ function playGame()
 	var tealShip = new Powerup("Teal");
 	sprites.push(tealShip);  
 	tealTimer += Math.round(Math.random()*60*50+20); //Same as the original spawn rate
-	timer++;
   }
   if (timer === slowTimer)
   {
 	var slow = new Powerup("Slow");
 	sprites.push(slow);
 	slowTimer += Math.round (Math.random()*60*30+10); //Spawn a slow between 10 and 40 seconds
-	timer++;
   }
-  else //Increment timer
+  if (timer === repairTimer)
   {
-	timer++;
+	var repair = new Powerup("Repair");
+	sprites.push(repair);
+	repairTimer += Math.round(Math.random()*60*30+10); //Same as original spawn rate
   }
+  timer++;
   
   
   //--- The score 
   //Display the score
-  scoreDisplay.text = score;
+  scoreDisplay.text = "Score: " + score;
   if(score === scoreNeededToWin)
   {
     gameState = OVER;
   }
   
-
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
    if (score >= 30 && loadLevel === false) //Go to the next level
   {
@@ -373,6 +373,9 @@ function render()
 	480, 320
 	);
   
+  
+
+  
     //JT: Display the scenes.   
   if(scenes.length !== 0)
   {
@@ -422,5 +425,20 @@ function render()
 	  }
 	}
   }
-}
+  
+    //Display a lives counter
+	for (var i = 0; i < lives; i++)
+	{
+		
+		drawingSurface.drawImage 
+		(
+			image,
+			cannon.sourceX, cannon.sourceY, //Uses cannon's current source, to react to model changes
+			32, 32,
+			(10 + i*24), 290, //The draw is going to start at 10px over, and then each additional life is going to be 24 pixels further over (16 for the sprite size, +8 for some spacing)
+			16, 16
+		);
+	}
+  }
+
 }());

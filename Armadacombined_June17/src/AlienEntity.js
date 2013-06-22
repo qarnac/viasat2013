@@ -22,7 +22,13 @@ Alien.prototype.update = function () {
 	
 	if (this.y > 320 + this.height)
 	{
-		gameState = OVER;
+		//gameState = OVER;
+		lives--;
+		this.deathcounter=0;
+		if (lives <= 0)
+		{
+			gameState = OVER;
+		}
 	}
 	
 	if (this.exploded) {

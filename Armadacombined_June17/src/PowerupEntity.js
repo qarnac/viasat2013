@@ -16,7 +16,7 @@ function Powerup(type) {
 	if (this.id === "Bomb")  { this.sourceX = 576; }
 	if (this.id === "Slow")  { this.sourceX = 608; }
 	if (this.id === "Scoreup"){this.sourceX = 640; }
-	//if (this.id === "Shield") { this.sourceX = 672; }
+	if (this.id === "Repair") { this.sourceX = 672; }
 	
 	//else { this.sourceX = 64; } //Temp value just to make sure the powerups function correctly, currently using alien explosion sprite. Will have their own eventually
 }
