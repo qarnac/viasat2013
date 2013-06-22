@@ -1,8 +1,11 @@
 (function(){
 
 //The canvas
-var canvas = document.querySelector("canvas"); 
+var canvas = document.querySelector("#gameScreen"); 
 var drawingSurface = canvas.getContext("2d");
+
+var miniMap = document.querySelector("#miniMap");
+var drawingMiniMap = miniMap.getContext("2d");
 
 //Game Level Maps
 //Arrays to store the level maps
@@ -38,27 +41,7 @@ var map0 =
 
 //Push map0 into the leveMaps array
 levelMaps.push(map0);
-/*
-var gameObjects0 = 
-[
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0],
-  [0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,4,0,0,0,0,0,0,3,0,0,4,0,0,3,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,3,0,0,0,5,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0],
-  [0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,3,0,0,0,3,0,0,0,0,3,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-];
-*/
+
 
 var gameObjects0 = 
 [
@@ -132,6 +115,51 @@ var gameObjects1 =
 //Push gameObjects1 into the levelGameObjects array
 levelGameObjects.push(gameObjects1);
 
+
+var map2 = 
+[
+	[6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+	[6,1,1,2,1,1,1,1,1,1,1,1,1,1,1,6],
+	[6,1,1,2,1,2,2,2,2,2,2,2,2,1,1,6],
+	[6,1,1,2,1,2,1,1,1,1,1,1,2,2,1,6],
+	[6,1,1,2,1,1,2,1,2,2,2,1,1,2,1,6],
+	[6,1,1,2,2,1,2,1,2,1,1,2,1,2,1,6],
+	[6,1,1,1,2,1,2,1,2,2,1,2,1,2,1,6],
+	[6,2,2,1,2,1,2,1,1,1,1,2,1,2,1,6],
+	[6,1,1,1,2,1,1,2,2,2,2,2,1,2,1,6],
+	[6,1,2,2,2,2,1,1,1,1,1,1,1,2,1,6],
+	[6,1,1,1,1,2,2,2,2,2,2,2,2,2,1,6],
+	[6,2,2,2,1,2,1,1,1,2,1,1,1,2,1,6],
+	[6,1,1,1,1,2,1,2,1,2,1,2,1,2,1,6],
+	[6,1,2,2,2,2,1,2,1,2,1,2,1,2,1,6],
+	[6,1,1,1,1,1,1,2,1,1,1,2,1,1,1,6],
+	[6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+];
+
+levelMaps.push(map2);
+
+var gameObjects2 = 
+[
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,4,8,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,8,4,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+];
+
+levelGameObjects.push(gameObjects2);
 //Map code
 var EMPTY = 0;
 var FLOOR = 1;
@@ -181,6 +209,7 @@ var BUILD_MAP = 1;
 var PLAYING = 2;
 var OVER = 3;
 var LEVEL_COMPLETE = 4;
+var PAUSED = 5;
 var gameState = LOADING;
 
 //--- The gameWorld object
@@ -228,6 +257,7 @@ var UP = 38;
 var DOWN = 40;
 var RIGHT = 39;
 var LEFT = 37;
+var ESC = 27;
 
 //Directions
 var moveUp = false;
@@ -255,6 +285,10 @@ window.addEventListener("keydown", function(event)
     case RIGHT:
       moveRight = true;
       break; 
+	  
+	case ESC:
+	  if (gameState === PLAYING) { gameState = PAUSED; }
+	  else if (gameState === PAUSED) { gameState = PLAYING; }
   }
 }, false);
 
@@ -288,6 +322,7 @@ function update()
   //The animation loop
   requestAnimationFrame(update, canvas);
   
+  
   //Change what the game is doing based on the game state
   switch(gameState)
   {
@@ -313,6 +348,9 @@ function update()
     case OVER:
       endGame();
       break;
+	  
+	case PAUSED:
+	  console.log("Paused");
   }
   
   //Render the game
@@ -461,6 +499,9 @@ function buildMap(levelMap)
             alien.sourceY = tilesheetY;            
             alien.x = column * SIZE;
             alien.y = row * SIZE;
+			alien.height = 48;
+			alien.width = 48;
+			//var alien = new Player();
             sprites.push(alien);
             break;
         }
@@ -535,13 +576,16 @@ function playGame()
   }
 
   //Set the alien's velocity to zero if none of the keys are being pressed
+  var DECEL = 0.25;
   if(!moveUp && !moveDown)
   {
-    alien.vy = 0;
+    if (alien.vy > 0) { alien.vy -= DECEL; }
+	else if (alien.vy < 0) { alien.vy += DECEL; }
   }
   if(!moveLeft && !moveRight)
   {
-    alien.vx = 0;
+    if (alien.vx > 0) { alien.vx -= DECEL; }
+	else if (alien.vx < 0) { alien.vx += DECEL; }
   }
 
   //Move the alien and set its screen boundaries
@@ -718,17 +762,14 @@ function changeDirection(monster)
   {
     //Find out if the monster is at an intersection
     var upOrDownPassage 
-	  = (monster.validDirections.indexOf(monster.UP) !== -1 
-	  || monster.validDirections.indexOf(monster.DOWN) !== -1);
+	  = (monster.validDirections.indexOf(monster.UP) !== -1 || monster.validDirections.indexOf(monster.DOWN) !== -1);
 	
 	var leftOrRightPassage
-	  = (monster.validDirections.indexOf(monster.LEFT) !== -1 
-	  || monster.validDirections.indexOf(monster.RIGHT) !== -1);
+	  = (monster.validDirections.indexOf(monster.LEFT) !== -1 || monster.validDirections.indexOf(monster.RIGHT) !== -1);
     
     //Change the monster's direction if it's at an intersection or
     //in a cul-de-sac (dead-end)
-    if(upOrDownPassage && leftOrRightPassage 
-	|| monster.validDirections.length === 1)
+    if(upOrDownPassage && leftOrRightPassage || monster.validDirections.length === 1)
     {
       //Optionally find the closest distance to the alien
       if(alien !== null && monster.hunt === true)
@@ -836,12 +877,14 @@ function endGame()
 
 function render()
 { 
-  //Render the gameWorld
+  //Render the gameWorld & minimap
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+  drawingMiniMap.clearRect(0, 0, miniMap.width, miniMap.height);
   
   //Position the gameWorld inside the camera
   drawingSurface.save();
   drawingSurface.translate(-camera.x, -camera.y);
+  
   
   //Display the sprites on the gameWorld
   if(sprites.length !== 0)
@@ -880,6 +923,26 @@ function render()
   
   drawingSurface.restore();
   
+  //Display the sprites on the minimap
+  if (sprites.length !== 0)
+  {
+	for (var i = 0; i < sprites.length; i++)
+	{
+	  var sprite = sprites[i];
+	  
+	  if (sprite.visible && sprite.scrollable && sprite.sourceX !== SIZE*2)
+	  {
+	    drawingMiniMap.drawImage 
+		(
+		image, 
+	       sprite.sourceX, sprite.sourceY, 
+	       sprite.sourceWidth, sprite.sourceHeight,
+	       Math.floor(sprite.x/4), Math.floor(sprite.y/4), 
+	       sprite.width/4, sprite.height/4
+	     ); 
+	   }
+	 }
+	}
   //Display any game messages
   if(messages.length !== 0)
   {
