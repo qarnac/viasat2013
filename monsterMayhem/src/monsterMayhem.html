@@ -3,7 +3,6 @@
 <title>Monster Mayhem</title>
 <link rel="stylesheet" href="monsterMayhem.css">
 
-
 <!-- The canvas -->
 <table>
 	<tr>
@@ -15,23 +14,25 @@
 			<table> 
 				<th>Minimap</th>
 				<tr> <td> <canvas id="miniMap" width="256" height="256"/> </tr> </td>
-				<th> Inventory: </th>
+			<!--<th> Inventory: </th>
+				<tr> <td> <canvas id="inventory" width="256" height="198"/> </tr> </td>-->
 				
-				
-				<!--<th>Options: </th>
-				<tr> <td align="right"> Control all </td></th>
-				<tr> <td align="right"> Mute music </td> </th>
-				<tr> <td align="right"> Mute effects </td> </th>-->
 			</table>
 		</td>
 	</tr>
 
 </table>
 
-	<!-- The game code -->
 
+<!-- The game code -->
 <script src="requestAnimationFramePolyfill.js"></script>
-<script src="PlayerEntity.js"></script>
-<script src="objects.js"></script>
 <script src="collision.js"></script>
+<script src="Levels.js"></script>
+<script src="GlobalVariables.js"></script>
+<script src="Camera.js"></script>
+
+<script src="spriteObject.js"></script>
+<script src="Monster.js"></script>
+<script src="Player.js"></script>
+
 <script src="monsterMayhem.js"></script>
