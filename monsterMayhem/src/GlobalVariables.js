@@ -1,13 +1,13 @@
 
-//The canvas
+//The canvases
 var canvas = document.querySelector("canvas"); 
 var drawingSurface = canvas.getContext("2d");
 
 var miniMap = document.querySelector("#miniMap");
 var drawingMiniMap = miniMap.getContext("2d");
 
-//var inventory = document.querySelector("#inventory");
-//var drawingInventory = inventory.getContext("2d");
+var inventory = document.querySelector("#inventory");
+var drawingInventory = inventory.getContext("2d");
 
 var alien = null;
 
@@ -17,8 +17,12 @@ var FLOOR = 1;
 var BOX = 2;
 var MONSTER = 3;
 var STAR = 4;
-var ALIEN = 5;
-var WALL = 6;
+var BOMB = 5;
+var ALIEN = 6;
+var WALL = 7;
+
+//The number of columns on the tilesheet
+var tilesheetColumns = 5;
 
 //The size of each tile cell
 var SIZE = 64;
@@ -33,17 +37,27 @@ var COLUMNS = map0[0].length;
 
 //Arrays to store the game objects
 var sprites = [];
-var monsters = [];
-var boxes = [];
 var messages = [];
-var stars = [];
+var floors = [];
+var starsTotal = 0;
 
 var assetsToLoad = [];
 var assetsLoaded = 0;
 
 //Game variables
 //Any game variables you need
-var starsCollected = 0;
+
+
+var inventory = 
+	[
+		[STAR, 0],
+		[BOMB, 0]
+	];
+var inventoryDisplay = null;	
+	
+//The timer
+var timeDisplay = null; //The image
+var timerMessage = null;//The actual timer numbers
 
 //Game states
 var LOADING = 0;

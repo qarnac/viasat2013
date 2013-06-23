@@ -1,28 +1,17 @@
 (function(){
-/* Moved to GlobalVariables, so that they can be accessed in Camera
-//The canvas
-var canvas = document.querySelector("canvas"); 
-var drawingSurface = canvas.getContext("2d");
-
-var miniMap = document.querySelector("#miniMap");
-var drawingMiniMap = miniMap.getContext("2d");
-
-//var inventory = document.querySelector("#inventory");
-//var drawingInventory = inventory.getContext("2d");
-*/
-
 //Load the tilesheet image
 var image = new Image();
 image.addEventListener("load", loadHandler, false);
 image.src = "../images/monsterMayhem.png";
 assetsToLoad.push(image);
 
-//The number of columns on the tilesheet
-var tilesheetColumns = 4;
-
 //Add keyboard listeners, handled in keyhandler.js
 window.addEventListener("keydown", keydownhandler, false); 
 window.addEventListener("keyup", keyuphandler, false);
+
+//Start the game timer
+gameTimer.time = 60;
+gameTimer.start();
 
 //Start the game animation loop
 update();
@@ -31,7 +20,6 @@ function update()
 { 
 	//The animation loop
 	requestAnimationFrame(update, canvas);
-
 	//Change what the game is doing based on the game state
 	switch(gameState)
 	{
@@ -40,9 +28,9 @@ function update()
 			break;
 
 		case BUILD_MAP:
-			buildMap(levelMaps[levelCounter]);
-			buildMap(levelGameObjects[levelCounter]);
-			createOtherSprites();
+			buildMap(levelMaps[levelCounter]);	//Draw the static objects
+			buildMap(levelGameObjects[levelCounter]);	//Draw monster, player, stars
+			createOtherSprites();	//Make message objects
 			gameState = PLAYING;
 			break;
 
@@ -88,14 +76,13 @@ function levelComplete()
 		if(levelCounter < levelMaps.length)
 		{
 			//Clear the arrays of objects
-
 			sprites = [];
-			monsters = [];
-			boxes = [];
-			stars = [];
 
 			//Reset any gameVariables
-			starsCollected = 0;
+			starsTotal = 0;			//A counter of how many stars are on the map (Formerly was a separate array)
+			inventory[0][1] = 0;	//Star counter
+			timerMessage.text = "";	//The message
+			gameTimer.time = 60;	//The timer itself
 
 			//Make sure the gameWorld size matches the size of the next level
 			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
@@ -113,17 +100,11 @@ function levelComplete()
 			gameState = OVER;
 		}
 	}
-
-	/*function loadNextLevel()
-	{
-		
-	}*/
 }
 
 function loadHandler()
 { 
 	assetsLoaded++;
-	//console.log("Loaded " + assetsLoaded + " / " + assetsToLoad.length);
 	if(assetsLoaded === assetsToLoad.length)
 	{
 		//Remove the load handlers
@@ -147,14 +128,14 @@ function buildMap(levelMap)
 				//Find the tile's x and y position on the tile sheet
 				var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
 				var tilesheetY = Math.floor((currentTile - 1) / tilesheetColumns) * SIZE;
-
+			
 				switch (currentTile)
 				{
 					case FLOOR:
 						var floor = new spriteObject(row, column);
 						floor.sourceX = tilesheetX;
 						floor.sourceY = tilesheetY;
-						sprites.push(floor);
+						floors.push(floor);
 						break;
 
 					case BOX:
@@ -162,7 +143,6 @@ function buildMap(levelMap)
 						box.sourceX = tilesheetX;
 						box.sourceY = tilesheetY;
 						sprites.push(box);
-						boxes.push(box);
 						break;
 
 					case WALL:
@@ -176,7 +156,6 @@ function buildMap(levelMap)
 						var monster = new Monster(row, column);
 						//Make the monster choose a random start direction 
 						monster.changeDirection();
-						monsters.push(monster);
 						sprites.push(monster);
 						break; 
 
@@ -190,12 +169,25 @@ function buildMap(levelMap)
 						star.height = 48;          
 						star.x += 8;
 						star.y += 8;	//They are smaller than a tile size, so an offset centers them.
-						stars.push(star);
+						starsTotal++; //counter of how many stars are on the map
 						sprites.push(star);
+						break;
+						
+					case BOMB:
+						var bomb = new spriteObject(row, column);
+						bomb.sourceX = tilesheetX;
+						bomb.sourceY = tilesheetY; 
+						bomb.sourceWidth = 48;
+						bomb.sourceHeight = 36;
+						bomb.width = 48;  
+						bomb.height = 36;          
+						bomb.x = column * SIZE + 10;
+						bomb.y = row * SIZE + 16;
+						sprites.push(bomb);
 						break;
 
 					case ALIEN:
-						alien = new Player(row, column); //spriteObject();
+						alien = new Player(row, column);
 						alien.sourceX = tilesheetX;
 						alien.sourceY = tilesheetY;            
 						sprites.push(alien);
@@ -221,6 +213,35 @@ function createOtherSprites()
 	levelCompleteDisplay.scrollable = false;
 	sprites.push(levelCompleteDisplay);
 
+	timeDisplay = new spriteObject();
+	timeDisplay.sourceX = 256;
+	timeDisplay.sourceY = 128;
+	timeDisplay.sourceWidth = 128;
+	timeDisplay.sourceHeight = 48;
+	timeDisplay.width = 128;  
+	timeDisplay.height = 48;            
+	timeDisplay.x = canvas.width / 2 - timeDisplay.width / 2;
+	timeDisplay.y = 8;
+	timeDisplay.scrollable = false;
+	sprites.push(timeDisplay);
+	
+	timerMessage = Object.create(messageObject);
+	timerMessage.x = 330;
+	timerMessage.y = 10;
+	timerMessage.font = "bold 40px Helvetica";
+	timerMessage.fillStyle = "white";
+	timerMessage.text = "";
+	messages.push(timerMessage);
+	
+	//Supposed to be used for showing counter of items in inventory, in the inventory canvas.
+	inventoryMessage = Object.create(messageObject);
+	inventoryMessage.x = 60;
+	inventoryMessage.y = 40;
+	inventoryMessage.font = "14px Helvetica";
+	inventoryMessage.fillStyle = "white";
+	inventoryMessage.text = "";
+	
+	
 	//SourceY will determine either "You won" or "you lost", in endGame function
 	gameOverDisplay = new spriteObject();
 	gameOverDisplay.sourceX = 0;
@@ -232,25 +253,35 @@ function createOtherSprites()
 	gameOverDisplay.y = canvas.height / 2 - gameOverDisplay.height / 2;
 	gameOverDisplay.scrollable = false;
 	gameOverDisplay.visible = false;
-	
 }
 
 function playGame()
 { 
-
-	//Update alien, camera, check collisions.
-	alien.update();
-  
-	//Update monsters
-	for(var i = 0; i < monsters.length; i++)
+	
+	//Update alien (where collisions are checked) and monsters
+	for (var i = 0; i < sprites.length; i++)
 	{
-		monsters[i].update();
+		sprites[i].update();
+	}
+	//Update the timer message
+	timerMessage.text = gameTimer.time;
+	if(gameTimer.time < 10)
+	{
+		timerMessage.text = "0" + gameTimer.time;	//If the number is single-digit, show it as a double-digit number, e.g. 09 instead of 9.
+	}
+
+	//Check whether the time is over
+	if(gameTimer.time === 0)
+	{
+		gameState = OVER;
 	}
 	
 } //End playGame function
 
 function endGame()
 {
+	gameTimer.stop();
+	
 	//Make the levelCompleteDisplay invisible
 	levelCompleteDisplay.visible = false;
 
@@ -259,7 +290,7 @@ function endGame()
 	{
 		//You win if you're on the last level and 
 		//you've collected all the stars
-		if(levelCounter === levelMaps.length && starsCollected === stars.length)
+		if(levelCounter === levelMaps.length && inventory[0][1] === starsTotal)
 		{
 			gameOverDisplay.sourceY = 256;
 		}
@@ -278,13 +309,28 @@ function render()
 	//Render the gameWorld & minimap
 	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
 	drawingMiniMap.clearRect(0, 0, miniMap.width, miniMap.height);
-	//drawingInventory.clearRect(0, 0, inventory.width, inventory.height);
+
+	//drawingInventory.clearRect(0, 0, inventory.width, inventory.height); //Won't work
+	drawingInventory.clearRect(0, 0, 256, 184); //Works fine
 
 	//Position the gameWorld inside the camera
 	drawingSurface.save();
 	drawingSurface.translate(-camera.x, -camera.y);
 
-	//Display the sprites on the gameWorld
+	//Display the sprites on the gameWorld and minimap
+	for (var i = 0; i < floors.length; i++)
+	{
+		var floor = floors[i];
+		drawingSurface.drawImage
+		(
+			image, 
+			floor.sourceX, floor.sourceY, 
+			floor.sourceWidth, floor.sourceHeight,
+			Math.floor(floor.x), Math.floor(floor.y), 
+			floor.width, floor.height
+		); 
+	}
+	
 	if(sprites.length !== 0)
 	{
 		for(var i = 0; i < sprites.length; i++)
@@ -330,7 +376,7 @@ function render()
 				); 
 			}
 		} 
-	}  
+	}//End map and minimap display
 	drawingSurface.restore();
 
 	//Display any game messages
@@ -347,6 +393,34 @@ function render()
 				drawingSurface.fillText(message.text, message.x, message.y);  
 			}
 		}
+	}//End message display
+	
+	//Display inventory
+	for (var i = 0; i < inventory.length; i++)
+	{
+		//Image
+		drawingInventory.drawImage
+		(
+			image,
+			(192 + 64*i), 0,	//source X and Y
+			48, 48,				//source W and H
+			10,	(10 + i*58),	//dest X and Y
+			48, 48				//dest W and H
+		);
+		//Text
+		
+		drawingInventory.font = "14px Helvetica";
+		drawingInventory.fillstyle = "white";
+		drawingInventory.fillText(inventory[i][1] + "x", 60, 40 + i*58);
+		
+		/* 
+		//This does not work, even though I have defined inventoryMessage the same way as all the other messages, 
+		//and I execute it the same way too.
+		drawingInventory.font = inventoryMessage.font;
+		drawingInventory.fillstyle = inventoryMessage.fillStyle;
+		drawingInventory.fillText(inventory[i][1] + "x", inventoryMessage.x, (inventoryMessage.y + i*58));
+		*/
+		
 	}
 }//End render function
 

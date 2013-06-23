@@ -19,59 +19,53 @@ Player.prototype.update = function() {
 
 //Control the velocity of the alien
 	//On keydown, set vy and/or vx
-	/*Up*/	if(moveUp && !moveDown)		{ this.vy = -4;}
-	/*Down*/if(moveDown && !moveUp)		{ this.vy = 4; }
-	/*Left*/if(moveLeft && !moveRight)	{ this.vx = -4;}
-	/*Right*/if(moveRight && !moveLeft)	{ this.vx = 4; }
+	if(moveUp && !moveDown)		{ this.vy = -4;}	//Move up
+	if(moveDown && !moveUp)		{ this.vy = 4; }	//Move down
+	if(moveLeft && !moveRight)	{ this.vx = -4;}	//Move left
+	if(moveRight && !moveLeft)	{ this.vx = 4; }	//Move right
 
 	//On keyup, decelerate vy and/or vx.
 	var DECEL = 0.25;
-	if(!moveUp && !moveDown)
+	if(!moveUp && !moveDown) //No longer pressing up nor down
 	{
 		if (this.vy > 0) { this.vy -= DECEL; }
 		else if (this.vy < 0) { this.vy += DECEL; }
 	}
-	if(!moveLeft && !moveRight)
+	if(!moveLeft && !moveRight) //No longer pressing left nor right
 	{
 		if (this.vx > 0) { this.vx -= DECEL; }
 		else if (this.vx < 0) { this.vx += DECEL; }
 	}
 
-	//Move the alien
+	//Move the alien, and ensure that it stays within the game world.
 	this.x = Math.max(64, Math.min(this.x + this.vx, gameWorld.width - this.width - 64)); 
 	this.y = Math.max(64, Math.min(this.y + this.vy, gameWorld.height - this.height - 64));
 	
-	//Check for collisions with monsters
-	for(var i = 0; i < monsters.length; i++)
-	{ 
-		if(hitTestCircle(this, monsters[i]))
+	
+	//Collisions
+	for (var i = 0; i < sprites.length; i++)
+	{
+		//Monsters
+		if (sprites[i] instanceof Monster && hitTestCircle(this, sprites[i]))
 		{
 			gameState = OVER;
 		}
-	}
-	
-	//Check collision between the alien and the boxes
-	for(var i = 0; i < boxes.length; i++)
-	{
-		blockRectangle(this, boxes[i]);
-	}
-	
-	//Check for collisions with stars
-	for(var i = 0; i < stars.length; i++)
-	{ 
-		var star = stars[i];
-		if(hitTestRectangle(this, star) && star.visible)
+		
+		//Boxes
+		if (sprites[i].sourceX === 64)
 		{
-			star.visible = false;
-			starsCollected++;
-
-			//Check whether the level is over
-			//by checking if the starsCollected matches
-			//the total number in the stars array
-			if(starsCollected === stars.length)
+			blockRectangle(this, sprites[i])
+		}
+		
+		//Stars
+		if (sprites[i].sourceX === 192 && hitTestRectangle(this, sprites[i]) && sprites[i].visible)
+		{
+			sprites[i].visible = false;
+			inventory[0][1]++; //Increase star counter in inventory
+			if (inventory[0][1] === starsTotal) //If you have all of the stars on the map, win the level
 			{
 				gameState = LEVEL_COMPLETE;
-			}    
+			}
 		}
 	}
 	

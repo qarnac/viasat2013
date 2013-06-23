@@ -50,15 +50,8 @@ Monster.prototype.update = function() {
 	//Find the distance between the circles by calculating
 	//the vector's magnitude (how long the vector is)  
 	var magnitude = Math.sqrt(vectorx * vectorx + vectory * vectory);
-
-	if(magnitude < 192)
-	{
-		this.state = this.SCARED;
-	}
-	else
-	{
-		this.state = this.NORMAL;
-	}
+	if(magnitude < 192)	{ this.state = this.SCARED;}
+	else				{ this.state = this.NORMAL;}
 
 }
 

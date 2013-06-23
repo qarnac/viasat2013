@@ -31,9 +31,20 @@ function keydownhandler()
 			moveRight = true;
 			break; 
 		
-		case ESC:
-			if (gameState === PAUSED) { gameState = prevState; pauseMessage.innerHTML = "Press \"ESC\" to pause";	} 
-			else { prevState = gameState; gameState = PAUSED; pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";}
+		case ESC: //Toggle between paused and unpaused, update the message, and pause/resume the timer.
+			if (gameState === PAUSED) 
+				{ 
+					gameState = prevState; 
+					pauseMessage.innerHTML = "Press \"ESC\" to pause"; 
+					gameTimer.start();
+				} 
+			else 
+				{ 
+					prevState = gameState; //Set a previous state, so it knows what to return to
+					gameState = PAUSED; 
+					pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause"; 
+					gameTimer.stop(); 
+				}
 			break;
 	}
 }
