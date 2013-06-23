@@ -1,5 +1,5 @@
 (function(){
-/*
+/* Moved to GlobalVariables, so that they can be accessed in Camera
 //The canvas
 var canvas = document.querySelector("canvas"); 
 var drawingSurface = canvas.getContext("2d");
@@ -10,6 +10,7 @@ var drawingMiniMap = miniMap.getContext("2d");
 //var inventory = document.querySelector("#inventory");
 //var drawingInventory = inventory.getContext("2d");
 */
+
 //Load the tilesheet image
 var image = new Image();
 image.addEventListener("load", loadHandler, false);
@@ -19,80 +20,9 @@ assetsToLoad.push(image);
 //The number of columns on the tilesheet
 var tilesheetColumns = 4;
 
-//Game variables
-//Any game variables you need
-var starsCollected = 0;
-
-//Game states
-var LOADING = 0;
-var BUILD_MAP = 1;
-var PLAYING = 2;
-var OVER = 3;
-var LEVEL_COMPLETE = 4;
-var PAUSED = 5;
-var gameState = LOADING;
-
-//Arrow key codes
-var UP = 38;
-var DOWN = 40;
-var RIGHT = 39;
-var LEFT = 37;
-var ESC = 27;
-//Directions
-var moveUp = false;
-var moveDown = false;
-var moveRight = false;
-var moveLeft = false;
-
-//Add keyboard listeners
-window.addEventListener("keydown", function(event)
-{
-	switch(event.keyCode)
-	{
-		case UP:
-			moveUp = true;
-			break;
-
-		case DOWN:
-			moveDown = true;
-			break;
-
-		case LEFT:
-			moveLeft = true;
-			break;  
-
-		case RIGHT:
-			moveRight = true;
-			break; 
-		
-		case ESC:
-			if (gameState === PAUSED) { gameState = prevState;} 
-			else { prevState = gameState; gameState = PAUSED; }
-			break;
-	}
-}, false);
-
-window.addEventListener("keyup", function(event)
-{
-	switch(event.keyCode)
-	{
-		case UP:
-			moveUp = false;
-			break;
-
-		case DOWN:
-			moveDown = false;
-			break;
-
-		case LEFT:
-			moveLeft = false;
-			break;  
-
-		case RIGHT:
-			moveRight = false;
-			break; 
-	}
-}, false);
+//Add keyboard listeners, handled in keyhandler.js
+window.addEventListener("keydown", keydownhandler, false); 
+window.addEventListener("keyup", keyuphandler, false);
 
 //Start the game animation loop
 update();
@@ -106,29 +36,31 @@ function update()
 	switch(gameState)
 	{
 		case LOADING:
-		console.log("loading...");
-		break;
+			console.log("loading...");
+			break;
 
 		case BUILD_MAP:
-		buildMap(levelMaps[levelCounter]);
-		buildMap(levelGameObjects[levelCounter]);
-		createOtherSprites();
-		gameState = PLAYING;
-		break;
+			buildMap(levelMaps[levelCounter]);
+			buildMap(levelGameObjects[levelCounter]);
+			createOtherSprites();
+			gameState = PLAYING;
+			break;
 
 		case PLAYING:
-		playGame();
-		break;
+			playGame();
+			break;
 
 		case LEVEL_COMPLETE:
-		levelComplete();
-		break;
+			levelComplete();
+			break;
 
 		case OVER:
-		endGame();
-		break;
+			endGame();
+			break;
+		
 		case PAUSED:
-		console.log("Paused");
+			console.log("Paused");
+			break;
 	}
 
 	//Render the game
@@ -145,11 +77,6 @@ function levelComplete()
 
 	//Load the next level after 60 frames
 	if(levelChangeTimer === 60)
-	{
-		loadNextLevel();
-	}
-
-	function loadNextLevel()
 	{
 		//Reset the timer that changes the level
 		levelChangeTimer = 0;
@@ -186,11 +113,17 @@ function levelComplete()
 			gameState = OVER;
 		}
 	}
+
+	/*function loadNextLevel()
+	{
+		
+	}*/
 }
 
 function loadHandler()
 { 
 	assetsLoaded++;
+	//console.log("Loaded " + assetsLoaded + " / " + assetsToLoad.length);
 	if(assetsLoaded === assetsToLoad.length)
 	{
 		//Remove the load handlers
@@ -288,145 +221,32 @@ function createOtherSprites()
 	levelCompleteDisplay.scrollable = false;
 	sprites.push(levelCompleteDisplay);
 
-	youLostDisplay = new spriteObject();
-	youLostDisplay.sourceX = 0;
-	youLostDisplay.sourceY = 128;
-	youLostDisplay.sourceWidth = 256;
-	youLostDisplay.sourceHeight = 128;
-	youLostDisplay.width = 256;  
-	youLostDisplay.height = 128;            
-	youLostDisplay.x = canvas.width / 2 - youLostDisplay.width / 2;
-	youLostDisplay.y = canvas.height / 2 - youLostDisplay.height / 2;
-	youLostDisplay.visible = false;
-	youLostDisplay.scrollable = false;
-	sprites.push(youLostDisplay);
-
-	youWonDisplay = new spriteObject();
-	youWonDisplay.sourceX = 0;
-	youWonDisplay.sourceY = 256;
-	youWonDisplay.sourceWidth = 256;
-	youWonDisplay.sourceHeight = 128;
-	youWonDisplay.width = 256;  
-	youWonDisplay.height = 128;            
-	youWonDisplay.x = canvas.width / 2 - youWonDisplay.width / 2;
-	youWonDisplay.y = canvas.height / 2 - youWonDisplay.height / 2;
-	youWonDisplay.visible = false;
-	youWonDisplay.scrollable = false;
-	sprites.push(youWonDisplay);
+	//SourceY will determine either "You won" or "you lost", in endGame function
+	gameOverDisplay = new spriteObject();
+	gameOverDisplay.sourceX = 0;
+	gameOverDisplay.sourceWidth = 256;
+	gameOverDisplay.sourceHeight = 128;
+	gameOverDisplay.width = 256;  
+	gameOverDisplay.height = 128;            
+	gameOverDisplay.x = canvas.width / 2 - gameOverDisplay.width / 2;
+	gameOverDisplay.y = canvas.height / 2 - gameOverDisplay.height / 2;
+	gameOverDisplay.scrollable = false;
+	gameOverDisplay.visible = false;
+	
 }
 
 function playGame()
 { 
-	//Up
-	if(moveUp && !moveDown)
-	{
-		alien.vy = -4;
-	}
-	//Down
-	if(moveDown && !moveUp)
-	{
-		alien.vy = 4;
-	}
-	//Left
-	if(moveLeft && !moveRight)
-	{
-		alien.vx = -4;
-	}
-	//Right
-	if(moveRight && !moveLeft)
-	{
-		alien.vx = 4;
-	}
 
-	//Set the alien's velocity to zero if none of the keys are being pressed
-	var DECEL = 0.25;
-	if(!moveUp && !moveDown)
-	{
-		if (alien.vy > 0) { alien.vy -= DECEL; }
-		else if (alien.vy < 0) { alien.vy += DECEL; }
-	}
-	if(!moveLeft && !moveRight)
-	{
-		if (alien.vx > 0) { alien.vx -= DECEL; }
-		else if (alien.vx < 0) { alien.vx += DECEL; }
-	}
-
-
-	//Move the alien and set its screen boundaries
+	//Update alien, camera, check collisions.
 	alien.update();
+  
+	//Update monsters
+	for(var i = 0; i < monsters.length; i++)
+	{
+		monsters[i].update();
+	}
 	
-	//Check collision between the alien and the boxes
-	for(var i = 0; i < boxes.length; i++)
-	{
-		blockRectangle(alien, boxes[i]);
-	}
-
-	//Check for collisions with stars
-	for(var i = 0; i < stars.length; i++)
-	{ 
-		var star = stars[i];
-		if(hitTestRectangle(alien, star) && star.visible)
-		{
-			star.visible = false;
-			starsCollected++;
-
-			//Check whether the level is over
-			//by checking if the starsCollected matches
-			//the total number in the stars array
-			if(starsCollected === stars.length)
-			{
-				gameState = LEVEL_COMPLETE;
-			}    
-		}
-	}
-   
-	//Check for collisions with monsters
-	for(var i = 0; i < monsters.length; i++)
-	{ 
-		var monster = monsters[i];
-		if(hitTestCircle(alien, monster))
-		{
-			gameState = OVER;
-		}
-	}
-
-	//The monsters
-	for(var i = 0; i < monsters.length; i++)
-	{
-		var monster = monsters[i];
-
-		//Move the monsters
-		monster.x += monster.vx;
-		monster.y += monster.vy;
-
-		//Check whether the monster is at a tile corner
-		if(Math.floor(monster.x) % SIZE === 0 && Math.floor(monster.y) % SIZE === 0)
-		{
-			//Change the monster's direction
-			monster.changeDirection();  
-		}
-
-		//Change the monster's state to SCARED if
-		//it's 128 pixels from the alien
-		var vx = alien.centerX() - monster.centerX();
-		var vy = alien.centerY() - monster.centerY();
-
-		//Find the distance between the circles by calculating
-		//the vector's magnitude (how long the vector is)  
-		var magnitude = Math.sqrt(vx * vx + vy * vy);
-
-		if(magnitude < 192)
-		{
-			monster.state = monster.SCARED;
-		}
-		else
-		{
-			monster.state = monster.NORMAL;
-		}
-
-		//Update the monster to reflect state changes
-		monster.update();
-	}
 } //End playGame function
 
 function endGame()
@@ -434,16 +254,23 @@ function endGame()
 	//Make the levelCompleteDisplay invisible
 	levelCompleteDisplay.visible = false;
 
-	//You win if you're on the last level and 
-	//you've collected all the stars
-	if(levelCounter === levelMaps.length && starsCollected === stars.length)
+
+	if (gameOverDisplay.visible === false) //To ensure the message isn't drawn multiple times
 	{
-		youWonDisplay.visible = true;
+		//You win if you're on the last level and 
+		//you've collected all the stars
+		if(levelCounter === levelMaps.length && starsCollected === stars.length)
+		{
+			gameOverDisplay.sourceY = 256;
+		}
+		else
+		{
+			gameOverDisplay.sourceY = 128;
+		}
+		gameOverDisplay.visible = true;
+		sprites.push(gameOverDisplay);
 	}
-	else
-	{
-		youLostDisplay.visible = true;
-	}
+	
 }
 
 function render()

@@ -2,7 +2,6 @@
 This is more than just the alien object. This also controls the camera.
 */
 
-
 Player.prototype = new spriteObject();
 Player.prototype.constructor = Player;
 function Player(row, column) {
@@ -17,8 +16,64 @@ function Player(row, column) {
 
 	
 Player.prototype.update = function() {
+
+//Control the velocity of the alien
+	//On keydown, set vy and/or vx
+	/*Up*/	if(moveUp && !moveDown)		{ this.vy = -4;}
+	/*Down*/if(moveDown && !moveUp)		{ this.vy = 4; }
+	/*Left*/if(moveLeft && !moveRight)	{ this.vx = -4;}
+	/*Right*/if(moveRight && !moveLeft)	{ this.vx = 4; }
+
+	//On keyup, decelerate vy and/or vx.
+	var DECEL = 0.25;
+	if(!moveUp && !moveDown)
+	{
+		if (this.vy > 0) { this.vy -= DECEL; }
+		else if (this.vy < 0) { this.vy += DECEL; }
+	}
+	if(!moveLeft && !moveRight)
+	{
+		if (this.vx > 0) { this.vx -= DECEL; }
+		else if (this.vx < 0) { this.vx += DECEL; }
+	}
+
+	//Move the alien
 	this.x = Math.max(64, Math.min(this.x + this.vx, gameWorld.width - this.width - 64)); 
 	this.y = Math.max(64, Math.min(this.y + this.vy, gameWorld.height - this.height - 64));
+	
+	//Check for collisions with monsters
+	for(var i = 0; i < monsters.length; i++)
+	{ 
+		if(hitTestCircle(this, monsters[i]))
+		{
+			gameState = OVER;
+		}
+	}
+	
+	//Check collision between the alien and the boxes
+	for(var i = 0; i < boxes.length; i++)
+	{
+		blockRectangle(this, boxes[i]);
+	}
+	
+	//Check for collisions with stars
+	for(var i = 0; i < stars.length; i++)
+	{ 
+		var star = stars[i];
+		if(hitTestRectangle(this, star) && star.visible)
+		{
+			star.visible = false;
+			starsCollected++;
+
+			//Check whether the level is over
+			//by checking if the starsCollected matches
+			//the total number in the stars array
+			if(starsCollected === stars.length)
+			{
+				gameState = LEVEL_COMPLETE;
+			}    
+		}
+	}
 	
 	//Scroll the camera
 	if(this.x < camera.leftInnerBoundary())

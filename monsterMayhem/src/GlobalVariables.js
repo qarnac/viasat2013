@@ -9,6 +9,7 @@ var drawingMiniMap = miniMap.getContext("2d");
 //var inventory = document.querySelector("#inventory");
 //var drawingInventory = inventory.getContext("2d");
 
+var alien = null;
 
 //Map code
 var EMPTY = 0;
@@ -39,6 +40,19 @@ var stars = [];
 
 var assetsToLoad = [];
 var assetsLoaded = 0;
+
+//Game variables
+//Any game variables you need
+var starsCollected = 0;
+
+//Game states
+var LOADING = 0;
+var BUILD_MAP = 1;
+var PLAYING = 2;
+var OVER = 3;
+var LEVEL_COMPLETE = 4;
+var PAUSED = 5;
+var gameState = LOADING;
 
 var gameWorld = 
 {

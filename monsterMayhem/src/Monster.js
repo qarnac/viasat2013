@@ -24,12 +24,42 @@ function Monster(row, column) {
 	this.validDirections = [];
 	this.direction = this.NONE;
 	this.hunt = Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
-	//console.log(this.hunt); //Just to see the distribution of 1 and 0
 }
 
 Monster.prototype.update = function() {
+	//Change between the 2 sprites
 	this.sourceX = this.state[0] * this.width;
 	this.sourceY = this.state[1] * this.height;
+	
+	//Move
+	this.x += this.vx;
+	this.y += this.vy;
+	
+	//Change directions, if at a corner.
+	if(Math.floor(this.x) % SIZE === 0 && Math.floor(this.y) % SIZE === 0)
+	{
+		//Change the monster's direction
+		this.changeDirection();  
+	}
+		
+	//Change the monster's state to SCARED if
+	//it's 128 pixels from the alien
+	var vectorx = alien.centerX() - this.centerX();
+	var vectory = alien.centerY() - this.centerY();
+		
+	//Find the distance between the circles by calculating
+	//the vector's magnitude (how long the vector is)  
+	var magnitude = Math.sqrt(vectorx * vectorx + vectory * vectory);
+
+	if(magnitude < 192)
+	{
+		this.state = this.SCARED;
+	}
+	else
+	{
+		this.state = this.NORMAL;
+	}
+
 }
 
 //Called every time the monster crosses a tile.
@@ -99,14 +129,6 @@ Monster.prototype.changeDirection = function() {
 		if(upOrDownPassage && leftOrRightPassage || this.validDirections.length === 1)
 		{
 			//Optionally find the closest distance to the alien
-			
-			//Find the alien in the array
-			var alien = null;
-			for (var i = 0; i < sprites.length; i++) {
-				if (sprites[i].sourceX === 0 && sprites[i].sourceY === 64)	{
-					alien = sprites[i];
-				}
-			}
 			if(alien !== null && this.hunt === true)
 			{
 				this.findClosestDirection();
