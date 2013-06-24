@@ -7,6 +7,9 @@ Player.prototype.constructor = Player;
 function Player(row, column) {
 	spriteObject.call(this);
 	
+	this.sourceX = 0;
+	this.sourceY = 64;
+	
 	this.x = column * SIZE + 8;	//8 offset to center it on the tile, since it is smaller
 	this.y = row * SIZE + 8;	//8 offset to center it on the tile, since it is smaller
 	this.width = 48;
@@ -41,6 +44,20 @@ Player.prototype.update = function() {
 	this.x = Math.max(64, Math.min(this.x + this.vx, gameWorld.width - this.width - 64)); 
 	this.y = Math.max(64, Math.min(this.y + this.vy, gameWorld.height - this.height - 64));
 	
+	//Drop a bomb
+	if (inventory[1][1] > 0 && dropBomb)
+	{
+		dropBomb = false;
+		inventory[1][1]--;
+		
+		var xcoord = Math.floor(this.x / 64);
+		var ycoord = Math.floor(this.y / 64);
+		
+		var bomb = new Bomb(ycoord, xcoord);
+		bomb.timer = 60;
+		sprites.push(bomb);
+	}
+	
 	
 	//Collisions
 	for (var i = 0; i < sprites.length; i++)
@@ -52,13 +69,13 @@ Player.prototype.update = function() {
 		}
 		
 		//Boxes
-		if (sprites[i].sourceX === 64)
+		if (sprites[i] instanceof Box)
 		{
-			blockRectangle(this, sprites[i])
+			blockRectangle(this, sprites[i]);
 		}
 		
-		//Stars
-		if (sprites[i].sourceX === 192 && hitTestRectangle(this, sprites[i]) && sprites[i].visible)
+		//Stars -- Make sure it is visible, too.
+		if (sprites[i] instanceof Star && hitTestRectangle(this, sprites[i]) && sprites[i].visible)
 		{
 			sprites[i].visible = false;
 			inventory[0][1]++; //Increase star counter in inventory
@@ -66,6 +83,13 @@ Player.prototype.update = function() {
 			{
 				gameState = LEVEL_COMPLETE;
 			}
+		}
+		
+		//Bomb
+		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].visible && sprites[i].timer === -1)
+		{
+			sprites[i].visible = false;
+			inventory[1][1]++;
 		}
 	}
 	

@@ -12,6 +12,9 @@ function Monster(row, column) {
 	this.SCARED = [2, 1];
 	this.state = this.NORMAL;
 	
+	this.sourceX = this.state[0] * this.width;
+	this.sourceY = this.state[1] * this.height;
+	
 	//The monster's allowed speed
 	this.speed = 1;
 
@@ -165,14 +168,6 @@ Monster.prototype.changeDirection = function() {
 Monster.prototype.findClosestDirection = function() {
 	var closestDirection = undefined;
 
-	var alien;
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i].sourceX === 0 && sprites[i].sourceY === 64)
-		{
-			alien = sprites[i];
-		}
-	}
 	//Find the distance between the monster and the alien
 	var vx = alien.centerX() - this.centerX(); 
 	var vy = alien.centerY() - this.centerY();

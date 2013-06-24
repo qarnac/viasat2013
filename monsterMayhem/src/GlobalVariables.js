@@ -6,8 +6,8 @@ var drawingSurface = canvas.getContext("2d");
 var miniMap = document.querySelector("#miniMap");
 var drawingMiniMap = miniMap.getContext("2d");
 
-var inventory = document.querySelector("#inventory");
-var drawingInventory = inventory.getContext("2d");
+var inventoryDraw = document.querySelector("#inventory");
+var drawingInventory = inventoryDraw.getContext("2d");
 
 var alien = null;
 
@@ -38,7 +38,7 @@ var COLUMNS = map0[0].length;
 //Arrays to store the game objects
 var sprites = [];
 var messages = [];
-var floors = [];
+var floorsAndWalls = [];
 var starsTotal = 0;
 
 var assetsToLoad = [];
@@ -46,7 +46,7 @@ var assetsLoaded = 0;
 
 //Game variables
 //Any game variables you need
-
+var bombTimer = 0;
 
 var inventory = 
 	[
@@ -75,3 +75,22 @@ var gameWorld =
 	width: map0[0].length * SIZE,
 	height: map0.length * SIZE,
 };
+
+
+
+//Supposed to be used for showing counter of items in inventory, in the inventory canvas.
+inventoryMessage = Object.create(messageObject);
+inventoryMessage.x = 60;
+inventoryMessage.y = 40;
+inventoryMessage.font = "14px Helvetica";
+inventoryMessage.fillStyle = "white";
+inventoryMessage.text = "";
+	
+function removeObject(objectToRemove, array) 
+{ 
+  var i = array.indexOf(objectToRemove);
+  if (i !== -1)
+  {
+    array.splice(i, 1);
+  }
+}

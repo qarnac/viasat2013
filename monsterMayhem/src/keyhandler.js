@@ -3,12 +3,14 @@ var UP = 38;
 var DOWN = 40;
 var RIGHT = 39;
 var LEFT = 37;
+var SPACE = 32;
 var ESC = 27;
 //Directions
 var moveUp = false;
 var moveDown = false;
 var moveRight = false;
 var moveLeft = false;
+var dropBomb = false;
 
 //Add keyboard listeners
 function keydownhandler() 
@@ -30,6 +32,10 @@ function keydownhandler()
 		case RIGHT:
 			moveRight = true;
 			break; 
+		
+		case SPACE:
+			dropBomb = true;
+			break;
 		
 		case ESC: //Toggle between paused and unpaused, update the message, and pause/resume the timer.
 			if (gameState === PAUSED) 
@@ -68,5 +74,9 @@ function keyuphandler()
 		case RIGHT:
 			moveRight = false;
 			break; 
+			
+		case SPACE:
+			dropBomb = false;
+			break;
 	}
 }

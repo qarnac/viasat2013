@@ -77,10 +77,16 @@ function levelComplete()
 		{
 			//Clear the arrays of objects
 			sprites = [];
+			floorsAndWalls = [];
 
 			//Reset any gameVariables
-			starsTotal = 0;			//A counter of how many stars are on the map (Formerly was a separate array)
-			inventory[0][1] = 0;	//Star counter
+			starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
+			
+			//Reset inventory counts
+			for (var i = 0; i < inventory.length; i++)
+			{
+				inventory[i][1] = 0;
+			}
 			timerMessage.text = "";	//The message
 			gameTimer.time = 60;	//The timer itself
 
@@ -128,20 +134,18 @@ function buildMap(levelMap)
 				//Find the tile's x and y position on the tile sheet
 				var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
 				var tilesheetY = Math.floor((currentTile - 1) / tilesheetColumns) * SIZE;
-			
+				console.log("Sprites: " + sprites.length + " W/F: " + floorsAndWalls.length);
 				switch (currentTile)
 				{
 					case FLOOR:
 						var floor = new spriteObject(row, column);
 						floor.sourceX = tilesheetX;
 						floor.sourceY = tilesheetY;
-						floors.push(floor);
+						floorsAndWalls.push(floor);
 						break;
 
 					case BOX:
-						var box = new spriteObject(row, column);
-						box.sourceX = tilesheetX;
-						box.sourceY = tilesheetY;
+						var box = new Box(row, column);//spriteObject(row, column);
 						sprites.push(box);
 						break;
 
@@ -149,47 +153,29 @@ function buildMap(levelMap)
 						var wall = new spriteObject(row, column);
 						wall.sourceX = tilesheetX;
 						wall.sourceY = tilesheetY;            
-						sprites.push(wall);
+						//sprites.push(wall);
+						floorsAndWalls.push(wall);
 						break;
 
 					case MONSTER:
 						var monster = new Monster(row, column);
-						//Make the monster choose a random start direction 
-						monster.changeDirection();
+						monster.changeDirection(); //Make the monster choose a random start direction 
 						sprites.push(monster);
 						break; 
 
 					case STAR:
-						var star = new spriteObject(row, column);
-						star.sourceX = tilesheetX;
-						star.sourceY = tilesheetY;
-						star.sourceWidth = 48;
-						star.sourceHeight = 48;
-						star.width = 48;  
-						star.height = 48;          
-						star.x += 8;
-						star.y += 8;	//They are smaller than a tile size, so an offset centers them.
+						var star = new Star(row, column);
 						starsTotal++; //counter of how many stars are on the map
 						sprites.push(star);
 						break;
 						
 					case BOMB:
-						var bomb = new spriteObject(row, column);
-						bomb.sourceX = tilesheetX;
-						bomb.sourceY = tilesheetY; 
-						bomb.sourceWidth = 48;
-						bomb.sourceHeight = 36;
-						bomb.width = 48;  
-						bomb.height = 36;          
-						bomb.x = column * SIZE + 10;
-						bomb.y = row * SIZE + 16;
+						var bomb = new Bomb(row, column);						
 						sprites.push(bomb);
 						break;
 
 					case ALIEN:
-						alien = new Player(row, column);
-						alien.sourceX = tilesheetX;
-						alien.sourceY = tilesheetY;            
+						alien = new Player(row, column);						
 						sprites.push(alien);
 						break;
 				}
@@ -232,15 +218,6 @@ function createOtherSprites()
 	timerMessage.fillStyle = "white";
 	timerMessage.text = "";
 	messages.push(timerMessage);
-	
-	//Supposed to be used for showing counter of items in inventory, in the inventory canvas.
-	inventoryMessage = Object.create(messageObject);
-	inventoryMessage.x = 60;
-	inventoryMessage.y = 40;
-	inventoryMessage.font = "14px Helvetica";
-	inventoryMessage.fillStyle = "white";
-	inventoryMessage.text = "";
-	
 	
 	//SourceY will determine either "You won" or "you lost", in endGame function
 	gameOverDisplay = new spriteObject();
@@ -310,17 +287,16 @@ function render()
 	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
 	drawingMiniMap.clearRect(0, 0, miniMap.width, miniMap.height);
 
-	//drawingInventory.clearRect(0, 0, inventory.width, inventory.height); //Won't work
-	drawingInventory.clearRect(0, 0, 256, 184); //Works fine
+	drawingInventory.clearRect(0, 0, inventoryDraw.width, inventoryDraw.height);
 
 	//Position the gameWorld inside the camera
 	drawingSurface.save();
 	drawingSurface.translate(-camera.x, -camera.y);
 
-	//Display the sprites on the gameWorld and minimap
-	for (var i = 0; i < floors.length; i++)
+	//Display the walls and floors on just the map
+	for (var i = 0; i < floorsAndWalls.length; i++)
 	{
-		var floor = floors[i];
+		var floor = floorsAndWalls[i];
 		drawingSurface.drawImage
 		(
 			image, 
@@ -331,13 +307,14 @@ function render()
 		); 
 	}
 	
+	//Display the sprites on the gameWorld and minimap
 	if(sprites.length !== 0)
 	{
 		for(var i = 0; i < sprites.length; i++)
 		{
 			var sprite = sprites[i];
 
-			//display the scrolling sprites
+			//display the scrolling sprites on the map
 			if(sprite.visible && sprite.scrollable)
 			{
 				drawingSurface.drawImage
@@ -349,7 +326,8 @@ function render()
 					sprite.width, sprite.height
 				); 
 
-				//Draw the scrollable sprites on the minimap, as long as they aren't monsters
+				//Draw on minimap: player, boxes, bombs, stars. 
+				//Offset destination x/y because I won't draw the walls, so it's 1 block less
 				if (!(sprite instanceof Monster))
 				{
 					drawingMiniMap.drawImage 
@@ -357,7 +335,7 @@ function render()
 						image, 
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
-						Math.floor(sprite.x/4), Math.floor(sprite.y/4), 
+						Math.floor(sprite.x/4)-16, Math.floor(sprite.y/4)-16,  
 						sprite.width/4, sprite.height/4
 					); 
 				}
@@ -408,18 +386,10 @@ function render()
 			48, 48				//dest W and H
 		);
 		//Text
-		
-		drawingInventory.font = "14px Helvetica";
-		drawingInventory.fillstyle = "white";
-		drawingInventory.fillText(inventory[i][1] + "x", 60, 40 + i*58);
-		
-		/* 
-		//This does not work, even though I have defined inventoryMessage the same way as all the other messages, 
-		//and I execute it the same way too.
 		drawingInventory.font = inventoryMessage.font;
 		drawingInventory.fillstyle = inventoryMessage.fillStyle;
 		drawingInventory.fillText(inventory[i][1] + "x", inventoryMessage.x, (inventoryMessage.y + i*58));
-		*/
+		
 		
 	}
 }//End render function
