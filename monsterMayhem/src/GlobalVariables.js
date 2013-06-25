@@ -31,9 +31,11 @@ var SIZE = 64;
 var alien = null;
 var levelCompleteDisplay = null;
 
+
 //The number of rows and columns
-var ROWS = map0.length;
-var COLUMNS = map0[0].length;
+var levelCounter = 0;
+var ROWS = levelMaps[levelCounter].length//map0.length;
+var COLUMNS = levelMaps[levelCounter][0].length//map0[0].length;
 
 //Arrays to store the game objects
 var sprites = [];

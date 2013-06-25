@@ -21,6 +21,7 @@ function update()
 	//The animation loop
 	requestAnimationFrame(update, canvas);
 	//Change what the game is doing based on the game state
+
 	switch(gameState)
 	{
 		case LOADING:
@@ -123,6 +124,10 @@ function loadHandler()
 
 function buildMap(levelMap)
 {
+
+	var ROWS = levelMap.length//map0.length;
+	var COLUMNS = levelMap[0].length//map0[0].length;
+
 	for(var row = 0; row < ROWS; row++) 
 	{	
 		for(var column = 0; column < COLUMNS; column++) 
@@ -134,7 +139,6 @@ function buildMap(levelMap)
 				//Find the tile's x and y position on the tile sheet
 				var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
 				var tilesheetY = Math.floor((currentTile - 1) / tilesheetColumns) * SIZE;
-				console.log("Sprites: " + sprites.length + " W/F: " + floorsAndWalls.length);
 				switch (currentTile)
 				{
 					case FLOOR:
@@ -175,7 +179,7 @@ function buildMap(levelMap)
 						break;
 
 					case ALIEN:
-						alien = new Player(row, column);						
+						alien = new Player(row, column);			
 						sprites.push(alien);
 						break;
 				}
@@ -246,12 +250,17 @@ function playGame()
 	{
 		timerMessage.text = "0" + gameTimer.time;	//If the number is single-digit, show it as a double-digit number, e.g. 09 instead of 9.
 	}
-
+	if (gameTimer.time < 0)
+	{
+		gameTimer.time = 1;
+	}
 	//Check whether the time is over
 	if(gameTimer.time === 0)
 	{
+		
 		gameState = OVER;
 	}
+	
 	
 } //End playGame function
 
@@ -326,20 +335,26 @@ function render()
 					sprite.width, sprite.height
 				); 
 
+				
 				//Draw on minimap: player, boxes, bombs, stars. 
 				//Offset destination x/y because I won't draw the walls, so it's 1 block less
 				if (!(sprite instanceof Monster))
 				{
+					var SIZECONST = Math.floor(gameWorld.width/miniMap.width);
 					drawingMiniMap.drawImage 
 					(
 						image, 
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
-						Math.floor(sprite.x/4)-16, Math.floor(sprite.y/4)-16,  
-						sprite.width/4, sprite.height/4
+						Math.floor(sprite.x/SIZECONST)-16, Math.floor(sprite.y/SIZECONST)-16,  
+						sprite.width/SIZECONST, sprite.height/SIZECONST
+						
+						//(miniMap.height/(sprites.length-2))
+						//(miniMap.height/(levelMaps[levelCounter].length-2))
 					); 
-				}
-			} //End minimap draw
+				} //End minimap draw
+			
+			}
 
 			//display the non-scrolling sprites
 			if(sprite.visible && !sprite.scrollable)

@@ -49,9 +49,8 @@ Player.prototype.update = function() {
 	{
 		dropBomb = false;
 		inventory[1][1]--;
-		
-		var xcoord = Math.floor(this.x / 64);
-		var ycoord = Math.floor(this.y / 64);
+		var xcoord = Math.floor(this.centerX() / 64);
+		var ycoord = Math.floor(this.centerY() / 64);
 		
 		var bomb = new Bomb(ycoord, xcoord);
 		bomb.timer = 60;
@@ -112,20 +111,26 @@ Player.prototype.update = function() {
 	}
 
 	//The camera's gameWorld boundaries
-	if(camera.x < gameWorld.x)
+	/* The and-not condition in these checks make it so that, for any map that can fit entirely within the canvas (ie, the camera goes out of bounds on both the left AND the right), the camera will be allowed to scroll past the gameworld for the sake of staying centered on the middle of the map.
+	Larger maps (like the default 16x16) will not allow that behavior, only ones that're 11x8 or smaller.
+	
+	*/
+	if((camera.x < gameWorld.x) && !(camera.x + camera.width > gameWorld.x + gameWorld.width))
 	{
 		camera.x = gameWorld.x;
 	}
-	if(camera.y < gameWorld.y)
-	{
-		camera.y = gameWorld.y;
-	}
-	if(camera.x + camera.width > gameWorld.x + gameWorld.width)
+	if((camera.x + camera.width > gameWorld.x + gameWorld.width) && !(camera.x < gameWorld.x))
 	{
 		camera.x = gameWorld.x + gameWorld.width - camera.width;
 	}
-	if(camera.y + camera.height > gameWorld.height)
+	
+	if((camera.y < gameWorld.y) && !(camera.y + camera.height > gameWorld.height))
+	{
+		camera.y = gameWorld.y;
+	}
+	if((camera.y + camera.height > gameWorld.height) && !(camera.y < gameWorld.y))
 	{
 		camera.y = gameWorld.height - camera.height;
 	}  
+	
 }

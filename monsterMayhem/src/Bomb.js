@@ -41,9 +41,13 @@ Bomb.prototype.update = function() {
 				//See if it was a monster or a box
 				if (sprites[i] instanceof Monster || (sprites[i] instanceof Box))
 				{
-					//If so, create a floor in its place, and remove the monster/box
-					var floor = new spriteObject(Math.floor(sprites[i].y/64), Math.floor(sprites[i].x/64));
-					floorsAndWalls.push(floor);
+					//If it was a box, draw a floor under it
+					if (sprites[i] instanceof Box)
+					{
+						var floor = new spriteObject(Math.floor(sprites[i].y/64), Math.floor(sprites[i].x/64));
+						floorsAndWalls.push(floor);
+					}
+					//And in either case, remove the box/monster.
 					removeObject(sprites[i], sprites);
 				}
 			}

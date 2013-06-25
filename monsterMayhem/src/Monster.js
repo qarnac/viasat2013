@@ -19,6 +19,7 @@ function Monster(row, column) {
 	this.speed = 1;
 
 	//Properties to help the monster change direction
+	this.NEVERMOVED = -1;
 	this.NONE = 0;
 	this.UP = 1;
 	this.DOWN = 2;
@@ -26,7 +27,7 @@ function Monster(row, column) {
 	this.RIGHT = 4;
 	this.validDirections = [];
 	this.direction = this.NONE;
-	this.hunt = Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
+	this.hunt = true;// Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
 }
 
 Monster.prototype.update = function() {
@@ -60,9 +61,9 @@ Monster.prototype.update = function() {
 
 //Called every time the monster crosses a tile.
 Monster.prototype.changeDirection = function() {
-	//Clear any previous direction the monster has chosen
+	//Clear the list of valid directions, and clear current direction IF it was already moving somewhere (not if it hasn't moved at all)
 	this.validDirections = [];
-	this.direction = this.NONE;
+	if (this.direction != this.NEVERMOVED) { this.direction = this.NONE; }
 
 	//Find the monster's column and row in the array
 	var monsterColumn = Math.floor(this.x / SIZE);
@@ -115,6 +116,7 @@ Monster.prototype.changeDirection = function() {
 	//maze passage intersection.
 	if(this.validDirections.length !== 0)
 	{
+		
 		//Find out if the monster is at an intersection
 		var upOrDownPassage = (this.validDirections.indexOf(this.UP) !== -1 || this.validDirections.indexOf(this.DOWN) !== -1);
 
@@ -160,7 +162,14 @@ Monster.prototype.changeDirection = function() {
 				this.vx = 0;
 				this.vy = this.speed;
 			}
-		} 
+		}
+		
+		//If the monster has NEVER moved yet, just pick a random direction
+		else if (this.direction === this.NEVERMOVED)
+		{
+			var randomNumber = Math.floor(Math.random() * this.validDirections.length);
+			this.direction = this.validDirections[randomNumber];
+		}
 	}  
 }
 
