@@ -49,6 +49,7 @@ Bomb.prototype.update = function() {
 					}
 					//And in either case, remove the box/monster.
 					removeObject(sprites[i], sprites);
+					i--;
 				}
 			}
 		}
