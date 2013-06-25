@@ -134,7 +134,7 @@ function buildMap(levelMap)
 		{ 
 			var currentTile = levelMap[row][column];
 
-			if(currentTile != EMPTY)
+			if(currentTile !== EMPTY)
 			{
 				//Find the tile's x and y position on the tile sheet
 				var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
@@ -337,20 +337,23 @@ function render()
 
 				
 				//Draw on minimap: player, boxes, bombs, stars. 
-				//Offset destination x/y because I won't draw the walls, so it's 1 block less
 				if (!(sprite instanceof Monster))
 				{
-					var SIZECONST = Math.floor(gameWorld.width/miniMap.width);
+				
+					//Divide the playable game space (ie, everything inside walls) by 4, to get a constant that'll be used as a size multiplier
+					//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
+					//Destination x/y also have SIZE/SIZECONST as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
+					//var SIZECONST = Math.round((gameWorld.width-128)/miniMap.width);
+					var SIZECONST = ((levelMaps[levelCounter].length-1)/4);
+					
 					drawingMiniMap.drawImage 
 					(
 						image, 
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
-						Math.floor(sprite.x/SIZECONST)-16, Math.floor(sprite.y/SIZECONST)-16,  
-						sprite.width/SIZECONST, sprite.height/SIZECONST
 						
-						//(miniMap.height/(sprites.length-2))
-						//(miniMap.height/(levelMaps[levelCounter].length-2))
+						Math.floor(sprite.x/SIZECONST)-(SIZE/SIZECONST), Math.floor(sprite.y/SIZECONST)-(SIZE/SIZECONST),  
+						sprite.width/SIZECONST, sprite.height/SIZECONST
 					); 
 				} //End minimap draw
 			

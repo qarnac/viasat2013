@@ -26,8 +26,8 @@ function Monster(row, column) {
 	this.LEFT = 3;
 	this.RIGHT = 4;
 	this.validDirections = [];
-	this.direction = this.NONE;
-	this.hunt = true;// Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
+	this.direction = this.NEVERMOVED;
+	this.hunt = false;// Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
 }
 
 Monster.prototype.update = function() {
@@ -63,7 +63,7 @@ Monster.prototype.update = function() {
 Monster.prototype.changeDirection = function() {
 	//Clear the list of valid directions, and clear current direction IF it was already moving somewhere (not if it hasn't moved at all)
 	this.validDirections = [];
-	if (this.direction != this.NEVERMOVED) { this.direction = this.NONE; }
+	if (this.direction !== this.NEVERMOVED) { this.direction = this.NONE; }
 
 	//Find the monster's column and row in the array
 	var monsterColumn = Math.floor(this.x / SIZE);
