@@ -344,7 +344,8 @@ function render()
 					//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
 					//Destination x/y also have SIZE/SIZECONST as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
 					//var SIZECONST = Math.round((gameWorld.width-128)/miniMap.width);
-					var SIZECONST = ((levelMaps[levelCounter].length-1)/4);
+										var SIZECONST = (	(Math.min(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
+
 					
 					drawingMiniMap.drawImage 
 					(
@@ -352,7 +353,7 @@ function render()
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
 						
-						Math.floor(sprite.x/SIZECONST)-(SIZE/SIZECONST), Math.floor(sprite.y/SIZECONST)-(SIZE/SIZECONST),  
+						Math.floor(sprite.x/SIZECONST)-16, Math.floor(sprite.y/SIZECONST)-16,  
 						sprite.width/SIZECONST, sprite.height/SIZECONST
 					); 
 				} //End minimap draw

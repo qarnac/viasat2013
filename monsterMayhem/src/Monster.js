@@ -63,7 +63,7 @@ Monster.prototype.update = function() {
 Monster.prototype.changeDirection = function() {
 	//Clear the list of valid directions, and clear current direction IF it was already moving somewhere (not if it hasn't moved at all)
 	this.validDirections = [];
-	if (this.direction !== this.NEVERMOVED) { this.direction = this.NONE; }
+	if (this.direction != this.NEVERMOVED) { this.direction = this.NONE;}
 
 	//Find the monster's column and row in the array
 	var monsterColumn = Math.floor(this.x / SIZE);
@@ -124,7 +124,13 @@ Monster.prototype.changeDirection = function() {
 
 		//Change the monster's direction if it's at an intersection or
 		//in a cul-de-sac (dead-end)
-		if(upOrDownPassage && leftOrRightPassage || this.validDirections.length === 1)
+		
+		if (this.direction === this.NEVERMOVED)
+		{
+			var randomNumber = Math.floor(Math.random() * this.validDirections.length);
+			this.direction = this.validDirections[randomNumber];
+		}
+		else if(upOrDownPassage && leftOrRightPassage || this.validDirections.length === 1)
 		{
 			//Optionally find the closest distance to the alien
 			if(alien !== null && this.hunt === true)
@@ -141,35 +147,29 @@ Monster.prototype.changeDirection = function() {
 			}
 
 			//Choose the monster's final direction
-			switch(this.direction)
-			{
-				case this.RIGHT:
-				this.vx = this.speed;
-				this.vy = 0;
-				break;
-
-				case this.LEFT:
-				this.vx = -this.speed;
-				this.vy = 0;
-				break;
-
-				case this.UP:
-				this.vx = 0;
-				this.vy = -this.speed;
-				break;
-
-				case this.DOWN:
-				this.vx = 0;
-				this.vy = this.speed;
-			}
 		}
-		
-		//If the monster has NEVER moved yet, just pick a random direction
-		else if (this.direction === this.NEVERMOVED)
+		switch(this.direction)
 		{
-			var randomNumber = Math.floor(Math.random() * this.validDirections.length);
-			this.direction = this.validDirections[randomNumber];
+			case this.RIGHT:
+			this.vx = this.speed;
+			this.vy = 0;
+			break;
+
+			case this.LEFT:
+			this.vx = -this.speed;
+			this.vy = 0;
+			break;
+
+			case this.UP:
+			this.vx = 0;
+			this.vy = -this.speed;
+			break;
+
+			case this.DOWN:
+			this.vx = 0;
+			this.vy = this.speed;
 		}
+		//If the monster has NEVER moved yet, just pick a random direction
 	}  
 }
 
