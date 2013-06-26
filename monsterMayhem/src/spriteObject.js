@@ -12,7 +12,6 @@ spriteObject = function(row, column) {
 	this.vy = 0;
 	this.visible = true;
 	this.scrollable = true;
-	this.deathcounter = 1; //When counter is 0, object gets removed. 
 }
 
 spriteObject.prototype.centerX = function() {

@@ -14,6 +14,7 @@ var gameTimer =
     this.time--;
   },
   
+  //"stop" is really just a pause, it can be resumed with "start", does not reset anything.
   stop: function()
   {
     clearInterval(this.interval);

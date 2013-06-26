@@ -20,7 +20,7 @@ function Player(row, column) {
 	
 Player.prototype.update = function() {
 
-//Control the velocity of the alien
+	//Control the velocity of the alien
 	//On keydown, set vy and/or vx
 	if(moveUp && !moveDown)		{ this.vy = -4;}	//Move up
 	if(moveDown && !moveUp)		{ this.vy = 4; }	//Move down
@@ -73,10 +73,12 @@ Player.prototype.update = function() {
 			blockRectangle(this, sprites[i]);
 		}
 		
-		//Stars -- Make sure it is visible, too.
-		if (sprites[i] instanceof Star && hitTestRectangle(this, sprites[i]) && sprites[i].visible)
+		//Stars
+		if (sprites[i] instanceof Star && hitTestRectangle(this, sprites[i]))
 		{
-			sprites[i].visible = false;
+			//sprites[i].visible = false;
+			removeObject(sprites[i], sprites);
+			i--;
 			inventory[0][1]++; //Increase star counter in inventory
 			if (inventory[0][1] === starsTotal) //If you have all of the stars on the map, win the level
 			{
@@ -85,10 +87,11 @@ Player.prototype.update = function() {
 		}
 		
 		//Bomb
-		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].visible && sprites[i].timer === -1)
+		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].timer === -1)
 		{
-			sprites[i].visible = false;
 			inventory[1][1]++;
+			removeObject(sprites[i], sprites);
+			i--;
 		}
 	}
 	

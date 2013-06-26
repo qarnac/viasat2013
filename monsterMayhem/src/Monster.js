@@ -26,7 +26,7 @@ function Monster(row, column) {
 	this.LEFT = 3;
 	this.RIGHT = 4;
 	this.validDirections = [];
-	this.direction = this.NEVERMOVED;
+	this.direction = this.NEVERMOVED; //KN: This is to help the case where monsters spawned in certain spots previously wouldn't ever end up getting a direction to go to. Made use of in changeDirection
 	this.hunt = false;// Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
 }
 
@@ -61,8 +61,10 @@ Monster.prototype.update = function() {
 
 //Called every time the monster crosses a tile.
 Monster.prototype.changeDirection = function() {
-	//Clear the list of valid directions, and clear current direction IF it was already moving somewhere (not if it hasn't moved at all)
+	//Clear the list of valid directions
 	this.validDirections = [];
+	
+	//If the monster has already moved from its spawn position, then clear its current direction.
 	if (this.direction != this.NEVERMOVED) { this.direction = this.NONE;}
 
 	//Find the monster's column and row in the array
@@ -122,14 +124,16 @@ Monster.prototype.changeDirection = function() {
 
 		var leftOrRightPassage = (this.validDirections.indexOf(this.LEFT) !== -1 || this.validDirections.indexOf(this.RIGHT) !== -1);
 
-		//Change the monster's direction if it's at an intersection or
-		//in a cul-de-sac (dead-end)
-		
+		//KN: Here is the case in which the monster was just spawned, and hasn't moved anywhere before. The list of valid directions has been set, and now it just picks a random one.
 		if (this.direction === this.NEVERMOVED)
 		{
 			var randomNumber = Math.floor(Math.random() * this.validDirections.length);
 			this.direction = this.validDirections[randomNumber];
 		}
+		
+		//Otherwise, it has moved before. So continue with the behavior that was coded into the original program:
+		//Change the monster's direction if it's at an intersection or
+		//in a cul-de-sac (dead-end)
 		else if(upOrDownPassage && leftOrRightPassage || this.validDirections.length === 1)
 		{
 			//Optionally find the closest distance to the alien
@@ -148,28 +152,29 @@ Monster.prototype.changeDirection = function() {
 
 			//Choose the monster's final direction
 		}
+		
+		//After it has picked a direction, from either source, here's where it makes use of that direction.
 		switch(this.direction)
 		{
 			case this.RIGHT:
-			this.vx = this.speed;
-			this.vy = 0;
-			break;
+				this.vx = this.speed;
+				this.vy = 0;
+				break;
 
 			case this.LEFT:
-			this.vx = -this.speed;
-			this.vy = 0;
-			break;
+				this.vx = -this.speed;
+				this.vy = 0;
+				break;
 
 			case this.UP:
-			this.vx = 0;
-			this.vy = -this.speed;
-			break;
+				this.vx = 0;
+				this.vy = -this.speed;
+				break;
 
 			case this.DOWN:
-			this.vx = 0;
-			this.vy = this.speed;
+				this.vx = 0;
+				this.vy = this.speed;
 		}
-		//If the monster has NEVER moved yet, just pick a random direction
 	}  
 }
 

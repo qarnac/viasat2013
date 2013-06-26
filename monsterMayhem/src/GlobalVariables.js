@@ -26,6 +26,7 @@ var tilesheetColumns = 5;
 
 //The size of each tile cell
 var SIZE = 64;
+var sizeconst; 	//This is used in the rendering phase for the minimap, so that the maps will all scale to perfectly fit in there. Created here, defined in buildMap, and used in render.
 
 //Sprites we need to access by name
 var alien = null;

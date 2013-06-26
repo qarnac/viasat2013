@@ -13,6 +13,7 @@ window.addEventListener("keyup", keyuphandler, false);
 gameTimer.time = 60;
 gameTimer.start();
 
+
 //Start the game animation loop
 update();
 
@@ -125,12 +126,19 @@ function loadHandler()
 function buildMap(levelMap)
 {
 
-	var ROWS = levelMap.length//map0.length;
-	var COLUMNS = levelMap[0].length//map0[0].length;
+	var rows = levelMap.length//map0.length;
+	var columns = levelMap[0].length//map0[0].length;
 
-	for(var row = 0; row < ROWS; row++) 
+	//Divide the playable game space (ie, everything inside walls) by 4, to get a constant that'll be used as a size multiplier
+	//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
+	//Destination x/y also have SIZE/sizeconst as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
+	//var sizeconst = Math.round((gameWorld.width-128)/miniMap.width);
+	var sizeconst = (	(Math.min(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
+
+	
+	for(var row = 0; row < rows; row++) 
 	{	
-		for(var column = 0; column < COLUMNS; column++) 
+		for(var column = 0; column < columns; column++) 
 		{ 
 			var currentTile = levelMap[row][column];
 
@@ -337,24 +345,17 @@ function render()
 
 				
 				//Draw on minimap: player, boxes, bombs, stars. 
+				//sizeconst is set in buildMap (It's based off of the gameWorld size compared to the minimap size). It's used to make big maps shrink to fit into the minimap, and small maps grow to fit.
 				if (!(sprite instanceof Monster))
-				{
-				
-					//Divide the playable game space (ie, everything inside walls) by 4, to get a constant that'll be used as a size multiplier
-					//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
-					//Destination x/y also have SIZE/SIZECONST as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
-					//var SIZECONST = Math.round((gameWorld.width-128)/miniMap.width);
-										var SIZECONST = (	(Math.min(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
-
-					
+				{					
 					drawingMiniMap.drawImage 
 					(
 						image, 
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
 						
-						Math.floor(sprite.x/SIZECONST)-16, Math.floor(sprite.y/SIZECONST)-16,  
-						sprite.width/SIZECONST, sprite.height/SIZECONST
+						Math.floor(sprite.x/sizeconst)-16, Math.floor(sprite.y/sizeconst)-16,  
+						sprite.width/sizeconst, sprite.height/sizeconst
 					); 
 				} //End minimap draw
 			

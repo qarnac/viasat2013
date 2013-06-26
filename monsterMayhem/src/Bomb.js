@@ -17,20 +17,26 @@ function Bomb(row, column) {
 }
 
 Bomb.prototype.update = function() {
-	//Do nothing if timer === -1, that means it's able to be picked up
+
+	/*If the timer is -1, the default, it means that it is just an inert object waiting to be picked up. Once it's picked up, its timer is changed to 60 (done in Player.update).
+	Then, in Bomb.update, the timer decrements by 1 every frame.
+	Once the timer equals 0, it explodes.
 	
-	//Blow up the bomb if the timer ran out and it is visible (ie, it hasn't yet blown up)
-	if (this.timer === 0 && this.visible === true)
+	The explosion works by making the bomb take up a 3x3 space surrounding where it previously was (By moving it up and left by 1 block each, and then making the width and height 3x bigger),
+	and then doing collision detection. Any box or monster it has collided with, gets removed and replaced by floor.
+	*/	
+	if (this.timer === 0)
 	{
-		this.visible = false;
+		//Figure out the row and column the bomb is in.
 		row = (this.y - 16) / 64;
 		column = (this.x - 10) / 64;
 		
-		//Grow the bomb to the size of 3x3 tiles
+		//Grow the bomb to the size of 3x3 tiles, surrounding the placement of it.
 		this.x -= 74;
 		this.y -= 80;
 		this.width = 192;
 		this.height = 192;
+		
 		
 		//Loop through sprites
 		for (var i = 0; i < sprites.length; i++)
@@ -49,7 +55,7 @@ Bomb.prototype.update = function() {
 					}
 					//And in either case, remove the box/monster.
 					removeObject(sprites[i], sprites);
-					i--;
+					i--; //Decrement i, because the for loop won't realize that the elements got shifted back by 1.
 				}
 			}
 		}
