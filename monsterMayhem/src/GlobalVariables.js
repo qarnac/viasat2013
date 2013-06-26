@@ -57,6 +57,7 @@ var inventory =
 		[BOMB, 0]
 	];
 var inventoryDisplay = null;	
+var lives = 3;
 	
 //The timer
 var timeDisplay = null; //The image
@@ -69,6 +70,7 @@ var PLAYING = 2;
 var OVER = 3;
 var LEVEL_COMPLETE = 4;
 var PAUSED = 5;
+var RESET_LEVEL = 6; //When the character dies, restart the level, unless they've run out of extra lives.
 var gameState = LOADING;
 
 var gameWorld = 

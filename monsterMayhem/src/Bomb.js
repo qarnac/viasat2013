@@ -57,6 +57,12 @@ Bomb.prototype.update = function() {
 					removeObject(sprites[i], sprites);
 					i--; //Decrement i, because the for loop won't realize that the elements got shifted back by 1.
 				}
+				//If it hit an inert bomb, ignite it.
+				else if (sprites[i] instanceof Bomb && sprites[i].timer === -1)
+				{
+					sprites[i].timer = 60;
+					
+				}
 			}
 		}
 		removeObject(this, sprites); //Remove the bomb itself after the loop finishes

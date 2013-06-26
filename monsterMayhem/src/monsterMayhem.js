@@ -22,7 +22,6 @@ function update()
 	//The animation loop
 	requestAnimationFrame(update, canvas);
 	//Change what the game is doing based on the game state
-
 	switch(gameState)
 	{
 		case LOADING:
@@ -48,6 +47,11 @@ function update()
 			endGame();
 			break;
 		
+		case RESET_LEVEL:
+			clearLevel();
+			//gameState = BUILD_MAP;
+			break;
+			
 		case PAUSED:
 			console.log("Paused");
 			break;
@@ -57,8 +61,69 @@ function update()
 	render();
 }
 
+/*Called directly in update for RESET_LEVEL (after a player loses a life), and called by levelComplete when transitioning between levels.
+
+*/
+function clearLevel()
+{
+	levelChangeTimer++;	
+	if ((gameState === RESET_LEVEL && levelChangeTimer === 30) || (gameState === LEVEL_COMPLETE))
+	{
+		//Clear the arrays of objects
+		sprites = [];
+		floorsAndWalls = [];
+
+		//Reset any gameVariables
+		starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
+		
+		//Reset inventory counts
+		for (var i = 0; i < inventory.length; i++)
+		{
+			inventory[i][1] = 0;
+		}
+		timerMessage.text = "";	//The message
+		gameTimer.time = 60;	//The timer itself
+
+		//Re-center the camera
+		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+		
+		if (gameState === RESET_LEVEL) { levelChangeTimer = 0; gameState = BUILD_MAP;}
+	}	
+}
+
 function levelComplete()
 {
+	levelCompleteDisplay.visible = true;
+	
+	levelChangeTimer++;
+	
+	//Wait a half-second before continuing with the function
+	if (levelChangeTimer === 30)
+	{
+		levelChangeTimer = 0;
+		levelCounter++;
+		clearLevel(); //Another half-second will pass in here
+			
+		if (levelCounter < levelMaps.length)
+		{
+			//Make sure the gameWorld size matches the size of the next level
+			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
+			gameWorld.height = levelMaps[levelCounter].length * SIZE;
+
+			//Re-center the camera
+			camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+			camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+		
+			//Build the maps for the next level
+			gameState = BUILD_MAP;
+		}
+		else
+		{
+			gameState = OVER;
+		}
+	}
+	/*
 	//Make the leveCompleteDisplay visible
 	levelCompleteDisplay.visible = true;
 
@@ -69,7 +134,7 @@ function levelComplete()
 	if(levelChangeTimer === 60)
 	{
 		//Reset the timer that changes the level
-		levelChangeTimer = 0;
+	//	levelChangeTimer = 0;
 
 		//Update the levelCounter by 1
 		levelCounter++;
@@ -78,27 +143,27 @@ function levelComplete()
 		if(levelCounter < levelMaps.length)
 		{
 			//Clear the arrays of objects
-			sprites = [];
-			floorsAndWalls = [];
+	//		sprites = [];
+	//		floorsAndWalls = [];
 
 			//Reset any gameVariables
-			starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
+	//		starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
 			
 			//Reset inventory counts
-			for (var i = 0; i < inventory.length; i++)
-			{
-				inventory[i][1] = 0;
-			}
-			timerMessage.text = "";	//The message
-			gameTimer.time = 60;	//The timer itself
+	//		for (var i = 0; i < inventory.length; i++)
+	//		{
+	//			inventory[i][1] = 0;
+	//		}
+	//		timerMessage.text = "";	//The message
+	//		gameTimer.time = 60;	//The timer itself
 
 			//Make sure the gameWorld size matches the size of the next level
 			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
 			gameWorld.height = levelMaps[levelCounter].length * SIZE;
 
 			//Re-center the camera
-			camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
-			camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+	//		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+	//		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
 
 			//Build the maps for the next level
 			gameState = BUILD_MAP;
@@ -108,6 +173,7 @@ function levelComplete()
 			gameState = OVER;
 		}
 	}
+	*/
 }
 
 function loadHandler()
@@ -133,7 +199,7 @@ function buildMap(levelMap)
 	//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
 	//Destination x/y also have SIZE/sizeconst as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
 	//var sizeconst = Math.round((gameWorld.width-128)/miniMap.width);
-	var sizeconst = (	(Math.min(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
+	sizeconst = (	(Math.max(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
 
 	
 	for(var row = 0; row < rows; row++) 

@@ -14,6 +14,7 @@ function Player(row, column) {
 	this.y = row * SIZE + 8;	//8 offset to center it on the tile, since it is smaller
 	this.width = 48;
 	this.height = 48;	
+	this.lives = 3;
 }
 	
 
@@ -64,7 +65,20 @@ Player.prototype.update = function() {
 		//Monsters
 		if (sprites[i] instanceof Monster && hitTestCircle(this, sprites[i]))
 		{
-			gameState = OVER;
+			//Reduce lives.
+			lives--;
+			
+			//If they lost their last life, then end the game.
+			if (lives === 0)
+			{
+				gameState = OVER;
+			}
+			
+			//If they have more lives remaining, then reset the current level the player is on.
+			else 
+			{
+				gameState = RESET_LEVEL;
+			}
 		}
 		
 		//Boxes
@@ -86,7 +100,7 @@ Player.prototype.update = function() {
 			}
 		}
 		
-		//Bomb
+		//Bomb -- Have to check timer, to make sure it isn't one that has been planted by the player.
 		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].timer === -1)
 		{
 			inventory[1][1]++;
