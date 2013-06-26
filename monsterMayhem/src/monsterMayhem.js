@@ -81,6 +81,7 @@ function clearLevel()
 		{
 			inventory[i][1] = 0;
 		}
+		inventory[2][1] = lives;
 		timerMessage.text = "";	//The message
 		gameTimer.time = 60;	//The timer itself
 
@@ -123,57 +124,6 @@ function levelComplete()
 			gameState = OVER;
 		}
 	}
-	/*
-	//Make the leveCompleteDisplay visible
-	levelCompleteDisplay.visible = true;
-
-	//Update the timer that changes the level by one
-	levelChangeTimer++;
-
-	//Load the next level after 60 frames
-	if(levelChangeTimer === 60)
-	{
-		//Reset the timer that changes the level
-	//	levelChangeTimer = 0;
-
-		//Update the levelCounter by 1
-		levelCounter++;
-
-		//Load the next level if there is one or end the game if there isn't
-		if(levelCounter < levelMaps.length)
-		{
-			//Clear the arrays of objects
-	//		sprites = [];
-	//		floorsAndWalls = [];
-
-			//Reset any gameVariables
-	//		starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
-			
-			//Reset inventory counts
-	//		for (var i = 0; i < inventory.length; i++)
-	//		{
-	//			inventory[i][1] = 0;
-	//		}
-	//		timerMessage.text = "";	//The message
-	//		gameTimer.time = 60;	//The timer itself
-
-			//Make sure the gameWorld size matches the size of the next level
-			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
-			gameWorld.height = levelMaps[levelCounter].length * SIZE;
-
-			//Re-center the camera
-	//		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
-	//		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
-
-			//Build the maps for the next level
-			gameState = BUILD_MAP;
-		}
-		else
-		{
-			gameState = OVER;
-		}
-	}
-	*/
 }
 
 function loadHandler()
@@ -463,18 +413,30 @@ function render()
 	for (var i = 0; i < inventory.length; i++)
 	{
 		//Image
+		/*
+		Source X and Source Y are elements in the inventory array.
+		For destination x, the Math.floor(i/3) will make sure that the 4th, 5th, and 6th items will be moved over a column.
+		"Floor" will always round down, even if it is .9999. So Math.floor(2/3) = Math.floor(.66) = 0. But Math.floor(4/3) = Math.floor(1.33) = 1.
+		For destination y, i%3 will make sure that they restart at the top of the canvas.		
+		*/
 		drawingInventory.drawImage
 		(
 			image,
-			(192 + 64*i), 0,	//source X and Y
-			48, 48,				//source W and H
-			10,	(10 + i*58),	//dest X and Y
+			inventory[i][2], inventory[i][3],	//source X and Y
+			64, 64,				//source W and H
+			(10+112*Math.floor(i/3)),	(10 + ((i%3)*58)),	//dest X and Y
 			48, 48				//dest W and H
 		);
 		//Text
+		
 		drawingInventory.font = inventoryMessage.font;
 		drawingInventory.fillstyle = inventoryMessage.fillStyle;
-		drawingInventory.fillText(inventory[i][1] + "x", inventoryMessage.x, (inventoryMessage.y + i*58));
+		/*
+			First parameter prints out the quanitity and an x, so like "3x" for lives.
+			Second parameter is the destination x. inventoryMessage.x is 60. this makes sure that the message is at least 60*1 over, but for i > 3, it will be 60*3 over
+			Third parameter is the destination y. inventoryMessage.y is 40. It goes down by 58 more for every iteration (i*58), but then once i > 3, it resets and starts back at 40 (ie, starting a new column)
+		*/
+		drawingInventory.fillText(	inventory[i][1] + "x", inventoryMessage.x * (1 + 2*Math.floor(i/3)), (inventoryMessage.y + (i%3)*58)	);
 		
 		
 	}

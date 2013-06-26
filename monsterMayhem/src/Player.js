@@ -67,6 +67,7 @@ Player.prototype.update = function() {
 		{
 			//Reduce lives.
 			lives--;
+			inventory[2][1]--;
 			
 			//If they lost their last life, then end the game.
 			if (lives === 0)

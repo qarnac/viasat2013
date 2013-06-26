@@ -53,8 +53,11 @@ var bombTimer = 0;
 
 var inventory = 
 	[
-		[STAR, 0],
-		[BOMB, 0]
+		//[Name, quantity, sourceX, sourceY]
+		[STAR, 0, 192, 0],
+		[BOMB, 0, 256, 0],
+		[ALIEN, 3, 0, 64],
+		[6, 0, 192, 64], //KN: Not utilized. Just implemented here to test/setup the second column in the inventory
 	];
 var inventoryDisplay = null;	
 var lives = 3;
