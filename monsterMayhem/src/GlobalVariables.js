@@ -24,9 +24,8 @@ var WALL = 7;
 //The number of columns on the tilesheet
 var tilesheetColumns = 5;
 
-//The size of each tile cell
-var SIZE = 64;
-var sizeconst; 	//This is used in the rendering phase for the minimap, so that the maps will all scale to perfectly fit in there. Created here, defined in buildMap, and used in render.
+var SIZE = 64;	//The size of each tile cell
+var sizemult; 	//Size Multiplier. This is used in the rendering phase for the minimap, so that the maps will all scale to perfectly fit in there. Created here, defined in buildMap, and used in render.
 
 //Sprites we need to access by name
 var alien = null;
@@ -39,40 +38,39 @@ var ROWS = levelMaps[levelCounter].length//map0.length;
 var COLUMNS = levelMaps[levelCounter][0].length//map0[0].length;
 
 //Arrays to store the game objects
-var sprites = [];
-var messages = [];
-var floorsAndWalls = [];
-var starsTotal = 0;
+var sprites = [];		//Does NOT hold walls or floors. DOES hold blocks, player, alien, stars, monsters, bombs
+var floorsAndWalls = [];	//Holds all the floor and wall sprites. Separated from sprites to greatly reduce workload when checking collisions.
+var messages = [];		//Onscreen messages (the timer for example)
 
 var assetsToLoad = [];
 var assetsLoaded = 0;
 
 //Game variables
 //Any game variables you need
-var bombTimer = 0;
+var starsTotal = 0; //Total amount of stars on a map.
+var lives = 3; //Player's lives
+var timeTaken = 0; //Saves the total amount of time taken.
 
 var inventory = 
 	[
 		//[Name, quantity, sourceX, sourceY, #picked up, #used]
 		[STAR, 0, 192, 0, 0, 0],
 		[BOMB, 0, 256, 0, 0, 0],
-		[6, 0, 192, 64, 0, 0], //KN: Not utilized. Just implemented here to test/setup the second column in the inventory
-		[ALIEN, 3, 0, 64, 0, 0],
+		[6, 0, 192, 64, 0, 0], //KN: This just shows the blue stars. Not of any significance, just used to show how multiple columns in the inventory work.
+		[ALIEN, 3, 0, 64, 0, 0] //For the time being, Alien (lives) must be the last element of the array, because of how the array is handled in clearLevel function (It will reset the second slot for everything but the last element.
 	];
-var inventoryDisplay = null;	
-var lives = 3;
+var inventoryDisplay = null;	//Will be the text showing the quantity of items.
 	
 //The timer
 var timeDisplay = null; //The image
 var timerMessage = null;//The actual timer numbers
-var timeTaken = 0; //Saves the total amount of time taken.
 
 //Game states
 var LOADING = 0;
 var BUILD_MAP = 1;
 var PLAYING = 2;
-var OVER = 3;
-var LEVEL_COMPLETE = 4;
+var OVER = 3;	//Show game over screen
+var LEVEL_COMPLETE = 4; //Transition to next level
 var PAUSED = 5;
 var RESET_LEVEL = 6; //When the character dies, restart the level, unless they've run out of extra lives.
 var gameState = LOADING;
@@ -103,12 +101,3 @@ function removeObject(objectToRemove, array)
     array.splice(i, 1);
   }
 }
-
-/*
-function writeToFile(score) {
-	set fso = createObject("Scripting.FileSystemObject");
-	set s = fso.CreateTextFile("scores.txt", true);
-	s.writeline (score);
-	s.close();
-
-}*/

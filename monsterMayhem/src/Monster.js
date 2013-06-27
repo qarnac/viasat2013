@@ -27,13 +27,13 @@ function Monster(row, column) {
 	this.RIGHT = 4;
 	this.validDirections = [];
 	this.direction = this.NEVERMOVED; //KN: This is to help the case where monsters spawned in certain spots previously wouldn't ever end up getting a direction to go to. Made use of in changeDirection
-	this.hunt = false;// Math.round(Math.random());//Randomize whether the alien is hunting or not. So, some will be aggressive.
+	this.hunt = false;				// Math.round(Math.random()); //Randomize whether the alien is hunting or not. So, some will be aggressive.
 }
 
 Monster.prototype.update = function() {
 	//Change between the 2 sprites
-	this.sourceX = this.state[0] * this.width;
-	this.sourceY = this.state[1] * this.height;
+	this.sourceX = this.state[0] * this.width;	//Will be 2*width in either case
+	this.sourceY = this.state[1] * this.height; //Will be 0*height when normal or 1*height when scared
 	
 	//Move
 	this.x += this.vx;
@@ -48,14 +48,14 @@ Monster.prototype.update = function() {
 		
 	//Change the monster's state to SCARED if
 	//it's 128 pixels from the alien
-	var vectorx = alien.centerX() - this.centerX();
-	var vectory = alien.centerY() - this.centerY();
+	var vectorx = alien.centerX() - this.centerX(); //The distance on the X axis between alien and the monster
+	var vectory = alien.centerY() - this.centerY(); //Distance on the Y axis between alien and monster
 		
 	//Find the distance between the circles by calculating
 	//the vector's magnitude (how long the vector is)  
-	var magnitude = Math.sqrt(vectorx * vectorx + vectory * vectory);
-	if(magnitude < 192)	{ this.state = this.SCARED;}
-	else				{ this.state = this.NORMAL;}
+	var magnitude = Math.sqrt(vectorx * vectorx + vectory * vectory); //c^2 = (a^2 + b^2)
+	if(magnitude < 192)	{ this.state = this.SCARED;} //If within 3 squares, monster panics.
+	else				{ this.state = this.NORMAL;} //Otherwise, no worries
 
 }
 
@@ -175,22 +175,26 @@ Monster.prototype.changeDirection = function() {
 				this.vx = 0;
 				this.vy = this.speed;
 		}
-	}  
+	} //End "if (this.validDirections.length !== 0)"
 }
 
-//Called by changeDirection, if hunt is enabled.
+/*Called by changeDirection, if hunt is enabled.
+Figures out the distance between this monster and the alien, on both the X and the Y axis.
+Compares the distances and figures out which one is the lowest. 
+If the closest one is valid, then the monster's direction will be set to that.
+*/
 Monster.prototype.findClosestDirection = function() {
 	var closestDirection = undefined;
 
 	//Find the distance between the monster and the alien
-	var vx = alien.centerX() - this.centerX(); 
-	var vy = alien.centerY() - this.centerY();
+	var vectorx = alien.centerX() - this.centerX(); 
+	var vectory = alien.centerY() - this.centerY();
 
 	//If the distance is greater on the x axis...
-	if(Math.abs(vx) >= Math.abs(vy))
+	if(Math.abs(vectorx) >= Math.abs(vectory))
 	{
 		//Try left and right
-		if(vx <= 0)
+		if(vectorx <= 0)
 		{
 			closestDirection = this.LEFT;        
 		}
@@ -203,7 +207,7 @@ Monster.prototype.findClosestDirection = function() {
 	else
 	{
 		//Try up and down
-		if(vy <= 0)
+		if(vectory <= 0)
 		{
 			closestDirection = this.UP;
 		}

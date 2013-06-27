@@ -1,5 +1,13 @@
 /*
 Every level has 2 arrays associated with it. mapn for static objects (Wall, floor, blocks), gameObjectsn for dynamic objects (player, monster, stars)
+
+The level names are of no significance, but here's the current order:
+1) "0" 		- 16x16, 	with 1 star , 1 bomb , 0 enemies
+2) "Test" 	- 8x8, 		with 3 stars, 1 bomb , 2 enemies
+3) "Tall"	- 8x16,		with 7 stars, 3 bombs, 3 enemies
+4) "Long"	- 16x8,		with 1 star, 10 bombs, 10 enemies
+5) "1"		- 16x16,	with 7 stars, 0 bombs, 7 enemies
+
 */
 
 //Game Level Maps
@@ -103,7 +111,7 @@ var gameObjectsTest =
 ];
 levelGameObjects.push(gameObjectsTest);
 
-
+//Level 2 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 var mapTall = 
 [
 	[7,7,7,7,7,7,7,7],
@@ -146,6 +154,7 @@ var gameObjectsTall =
 ];
 levelGameObjects.push(gameObjectsTall);
 
+//Level 3 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 var mapLong = 
 [
 	[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],
@@ -185,7 +194,7 @@ levelGameObjects.push(gameObjectsLong);
 
 
 
-
+//Level 4 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 var map1 = 
 [
 	[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],

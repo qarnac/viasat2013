@@ -25,9 +25,10 @@ Bomb.prototype.update = function() {
 	The explosion works by making the bomb take up a 3x3 space surrounding where it previously was (By moving it up and left by 1 block each, and then making the width and height 3x bigger),
 	and then doing collision detection. Any box or monster it has collided with, gets removed and replaced by floor.
 	*/	
-	if (this.timer === 0)
+	if (this.timer === 0) //Preciesly 0, because <0 would include inert bombs.
 	{
-		inventory[1][5]++;
+		inventory[1][5]++;	//Increaes the counter of total bombs used
+		
 		//Figure out the row and column the bomb is in.
 		row = (this.y - 16) / 64;
 		column = (this.x - 10) / 64;

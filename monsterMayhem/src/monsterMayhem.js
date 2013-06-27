@@ -13,7 +13,6 @@ window.addEventListener("keyup", keyuphandler, false);
 gameTimer.time = 60;
 gameTimer.start();
 
-
 //Start the game animation loop
 update();
 
@@ -49,11 +48,9 @@ function update()
 		
 		case RESET_LEVEL:
 			clearLevel();
-			//gameState = BUILD_MAP;
 			break;
 			
 		case PAUSED:
-			console.log("Paused");
 			break;
 	}
 
@@ -62,7 +59,10 @@ function update()
 }
 
 /*Called directly in update for RESET_LEVEL (after a player loses a life), and called by levelComplete when transitioning between levels.
+Waits a half-second before doing anything.
 
+Note that the for loop ignores the very last inventory element (lives).
+Otherwise, it sets almost everything back to default: Sprites on the map, items in inventory, the timer, and the camera.
 */
 function clearLevel()
 {
@@ -77,12 +77,18 @@ function clearLevel()
 		starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
 		
 		//Reset inventory counts
+		/*	Loops 1 less than inventory.length because the last element will be lives (which will not get reset)
+		If the player died (gameState === RESET_LEVEL), then reset the total counter of items they picked up
+			(done by just reducing their total count by the amount they had during this run).
+		And in either case, reset their current counter of items afterward.
+		*/
 		for (var i = 0; i < inventory.length-1; i++)
 		{
 			if (gameState === RESET_LEVEL) {inventory[i][4] -= inventory[i][1]; }
 			inventory[i][1] = 0;
 		}
-		inventory[3][1] = lives;
+		
+
 		timerMessage.text = "";	//The message
 		gameTimer.time = 60;	//The timer itself
 
@@ -90,15 +96,16 @@ function clearLevel()
 		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
 		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
 		
+		//If the level was being reset, then reset the timer, and rebuild the map. 
 		if (gameState === RESET_LEVEL) { levelChangeTimer = 0; gameState = BUILD_MAP;}
 	}	
 }
 
 function levelComplete()
 {
-	levelCompleteDisplay.visible = true;
+	levelCompleteDisplay.visible = true; 
 	
-	levelChangeTimer++;
+	levelChangeTimer++; //To add a delay in-between levels.
 	
 	//Wait a half-second before continuing with the function
 	if (levelChangeTimer === 30)
@@ -106,7 +113,7 @@ function levelComplete()
 		levelChangeTimer = 0;
 		levelCounter++;
 		clearLevel(); //Another half-second will pass in here
-		displayScore();
+		displayScore(); //Console.log statements at the moment.
 		
 		if (levelCounter < levelMaps.length)
 		{
@@ -121,7 +128,7 @@ function levelComplete()
 			//Build the maps for the next level
 			gameState = BUILD_MAP;
 		}
-		else
+		else //Otherwise, levelCounter === levelMaps.length, so the player has beat all of the levels, so end the game
 		{
 			gameState = OVER;
 		}
@@ -133,7 +140,7 @@ function loadHandler()
 	assetsLoaded++;
 	if(assetsLoaded === assetsToLoad.length)
 	{
-		//Remove the load handlers
+		//Remove the load handler
 		image.removeEventListener("load", loadHandler, false);
 
 		//Build the map 
@@ -144,14 +151,15 @@ function loadHandler()
 function buildMap(levelMap)
 {
 
-	var rows = levelMap.length//map0.length;
-	var columns = levelMap[0].length//map0[0].length;
+	var rows = levelMap.length
+	var columns = levelMap[0].length	
 
-	//Divide the playable game space (ie, everything inside walls) by 4, to get a constant that'll be used as a size multiplier
-	//The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
-	//Destination x/y also have SIZE/sizeconst as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. Bigger maps have smaller minimap icons, so they need smaller offsets.
-	//var sizeconst = Math.round((gameWorld.width-128)/miniMap.width);
-	sizeconst = (	(Math.max(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
+	/*sizemult: Divide the playable game space (ie, everything inside walls) by 4, to get a constant that'll be used as a size multiplier
+	The destination x/y and width/height will be divided by this number, so that bigger maps get smaller icons, to fit everything properly in the minimap
+	Destination x/y also have SIZE/sizemult as an offset, where SIZE is 64 (defined in GlobalVariables). Needed to adjust the minimap left and upward, to account for the lack of walls being drawn. 
+	Bigger maps have smaller minimap icons, so they need smaller offsets.
+	*/
+	sizemult = (	(Math.max(levelMaps[levelCounter].length, levelMaps[levelCounter][0].length))	/4);
 
 	
 	for(var row = 0; row < rows; row++) 
@@ -183,7 +191,6 @@ function buildMap(levelMap)
 						var wall = new spriteObject(row, column);
 						wall.sourceX = tilesheetX;
 						wall.sourceY = tilesheetY;            
-						//sprites.push(wall);
 						floorsAndWalls.push(wall);
 						break;
 
@@ -277,28 +284,25 @@ function playGame()
 	{
 		timerMessage.text = "0" + gameTimer.time;	//If the number is single-digit, show it as a double-digit number, e.g. 09 instead of 9.
 	}
-	if (gameTimer.time < 0)
+	if (gameTimer.time < 0) //Takes care of cases where the player tabs away from the game. They can return to a timer below 0, and the game won't end. But combining this and the below if statement will make the game end with the timer showing the negative.
 	{
 		gameTimer.time = 1;
 	}
 	//Check whether the time is over
 	if(gameTimer.time === 0)
 	{
-		
 		gameState = OVER;
-	}
-	
+	}	
 	
 } //End playGame function
 
 function endGame()
 {
 	gameTimer.stop();
-	displayScore();
-	writeToFile(5000);
+	displayScore(); //Console.log statements 
+
 	//Make the levelCompleteDisplay invisible
 	levelCompleteDisplay.visible = false;
-
 
 	if (gameOverDisplay.visible === false) //To ensure the message isn't drawn multiple times
 	{
@@ -308,6 +312,7 @@ function endGame()
 		{
 			gameOverDisplay.sourceY = 256;
 		}
+		//Otherwise, you lost
 		else
 		{
 			gameOverDisplay.sourceY = 128;
@@ -318,11 +323,11 @@ function endGame()
 	
 }
 
-/* Presently just called either on loss, or on level complete (but not on level reset).
+/* displayScore: presently just called either on loss, or on level complete (but not on level reset).
 Lists the amount of bombs, stars, and lives picked up and used.
 Intentionally does not count the amounts that were picked up and then lost on a death, those get removed during the clearLevel function (Reduces the "picked up" quantity by the "current" quantity, and then resets the current quantity too).
 
-The goal would be to have some kind of high score system eventually, saved in an output file somewhere
+The goal would be to have some kind of high score system eventually, saved in an output file (But I'll have to figure out php for that).
 */
 function displayScore()
 {
@@ -330,7 +335,6 @@ function displayScore()
 	console.log("Stars: " + inventory[0][4] + " picked up.");
 	console.log("Bombs: " + inventory[1][4] + " picked up, " + inventory[1][5] + " used.");
 	console.log("Lives: " + inventory[3][4] + " picked up, " + inventory[3][5] + " used.");
-
 }
 
 function render()
@@ -380,7 +384,7 @@ function render()
 
 				
 				//Draw on minimap: player, boxes, bombs, stars. 
-				//sizeconst is set in buildMap (It's based off of the gameWorld size compared to the minimap size). It's used to make big maps shrink to fit into the minimap, and small maps grow to fit.
+				//sizemult is set in buildMap (It's based off of the gameWorld size compared to the minimap size). It's used to make big maps shrink to fit into the minimap, and small maps grow to fit.
 				if (!(sprite instanceof Monster))
 				{					
 					drawingMiniMap.drawImage 
@@ -389,8 +393,8 @@ function render()
 						sprite.sourceX, sprite.sourceY, 
 						sprite.sourceWidth, sprite.sourceHeight,
 						
-						Math.floor(sprite.x/sizeconst)-16, Math.floor(sprite.y/sizeconst)-16,  
-						sprite.width/sizeconst, sprite.height/sizeconst
+						Math.floor(sprite.x/sizemult)-16, Math.floor(sprite.y/sizemult)-16,  
+						sprite.width/sizemult, sprite.height/sizemult
 					); 
 				} //End minimap draw
 			
@@ -455,9 +459,7 @@ function render()
 			Second parameter is the destination x. inventoryMessage.x is 60. this makes sure that the message is at least 60*1 over, but for i > 3, it will be 60*3 over
 			Third parameter is the destination y. inventoryMessage.y is 40. It goes down by 58 more for every iteration (i*58), but then once i > 3, it resets and starts back at 40 (ie, starting a new column)
 		*/
-		drawingInventory.fillText(	inventory[i][1] + "x", inventoryMessage.x * (1 + 2*Math.floor(i/3)), (inventoryMessage.y + (i%3)*58)	);
-		
-		
+		drawingInventory.fillText(	inventory[i][1] + "x", inventoryMessage.x * (1 + 2*Math.floor(i/3)), (inventoryMessage.y + (i%3)*58)	);		
 	}
 }//End render function
 

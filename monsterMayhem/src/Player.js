@@ -67,8 +67,8 @@ Player.prototype.update = function() {
 		{
 			//Reduce lives.
 			lives--;
-			inventory[3][1]--;
-			inventory[3][5]++;
+			inventory[3][1]--; //Decrement the amount of lives available
+			inventory[3][5]++; //Increment the amount of lives used
 			
 			//If they lost their last life, then end the game.
 			if (lives === 0)
@@ -95,8 +95,8 @@ Player.prototype.update = function() {
 			//sprites[i].visible = false;
 			removeObject(sprites[i], sprites);
 			i--;
-			inventory[0][1]++; //Increase star counter in inventory
-			inventory[0][4]++;
+			inventory[0][1]++; //Increase current star counter in inventory 
+			inventory[0][4]++; //Increase the total counter of stars (persists between levels,  used for score)
 			if (inventory[0][1] === starsTotal) //If you have all of the stars on the map, win the level
 			{
 				gameState = LEVEL_COMPLETE;
@@ -106,9 +106,9 @@ Player.prototype.update = function() {
 		//Bomb -- Have to check timer, to make sure it isn't one that has been planted by the player.
 		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].timer === -1)
 		{
-			inventory[1][1]++;
-			inventory[1][4]++;
-			removeObject(sprites[i], sprites);
+			inventory[1][1]++; //Increase amount of available bombs
+			inventory[1][4]++; //Increaes the total quantity of bombs picked up (used for score)
+			removeObject(sprites[i], sprites); 
 			i--;
 		}
 	}
@@ -134,7 +134,6 @@ Player.prototype.update = function() {
 	//The camera's gameWorld boundaries
 	/* The and-not condition in these checks make it so that, for any map that can fit entirely within the canvas (ie, the camera goes out of bounds on both the left AND the right), the camera will be allowed to scroll past the gameworld for the sake of staying centered on the middle of the map.
 	Larger maps (like the default 16x16) will not allow that behavior, only ones that're 11x8 or smaller.
-	
 	*/
 	if((camera.x < gameWorld.x) && !(camera.x + camera.width > gameWorld.x + gameWorld.width))
 	{
