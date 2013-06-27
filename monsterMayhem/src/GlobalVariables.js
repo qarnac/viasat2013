@@ -53,11 +53,11 @@ var bombTimer = 0;
 
 var inventory = 
 	[
-		//[Name, quantity, sourceX, sourceY]
-		[STAR, 0, 192, 0],
-		[BOMB, 0, 256, 0],
-		[ALIEN, 3, 0, 64],
-		[6, 0, 192, 64], //KN: Not utilized. Just implemented here to test/setup the second column in the inventory
+		//[Name, quantity, sourceX, sourceY, #picked up, #used]
+		[STAR, 0, 192, 0, 0, 0],
+		[BOMB, 0, 256, 0, 0, 0],
+		[6, 0, 192, 64, 0, 0], //KN: Not utilized. Just implemented here to test/setup the second column in the inventory
+		[ALIEN, 3, 0, 64, 0, 0],
 	];
 var inventoryDisplay = null;	
 var lives = 3;
@@ -65,6 +65,7 @@ var lives = 3;
 //The timer
 var timeDisplay = null; //The image
 var timerMessage = null;//The actual timer numbers
+var timeTaken = 0; //Saves the total amount of time taken.
 
 //Game states
 var LOADING = 0;
@@ -102,3 +103,12 @@ function removeObject(objectToRemove, array)
     array.splice(i, 1);
   }
 }
+
+/*
+function writeToFile(score) {
+	set fso = createObject("Scripting.FileSystemObject");
+	set s = fso.CreateTextFile("scores.txt", true);
+	s.writeline (score);
+	s.close();
+
+}*/

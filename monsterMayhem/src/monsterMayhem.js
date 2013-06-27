@@ -77,11 +77,12 @@ function clearLevel()
 		starsTotal = 0;	//A counter of how many stars are on the map (Formerly was a separate array)
 		
 		//Reset inventory counts
-		for (var i = 0; i < inventory.length; i++)
+		for (var i = 0; i < inventory.length-1; i++)
 		{
+			if (gameState === RESET_LEVEL) {inventory[i][4] -= inventory[i][1]; }
 			inventory[i][1] = 0;
 		}
-		inventory[2][1] = lives;
+		inventory[3][1] = lives;
 		timerMessage.text = "";	//The message
 		gameTimer.time = 60;	//The timer itself
 
@@ -105,7 +106,8 @@ function levelComplete()
 		levelChangeTimer = 0;
 		levelCounter++;
 		clearLevel(); //Another half-second will pass in here
-			
+		displayScore();
+		
 		if (levelCounter < levelMaps.length)
 		{
 			//Make sure the gameWorld size matches the size of the next level
@@ -262,6 +264,7 @@ function createOtherSprites()
 
 function playGame()
 { 
+	timeTaken++; //Will record the total amount of time taken
 	
 	//Update alien (where collisions are checked) and monsters
 	for (var i = 0; i < sprites.length; i++)
@@ -291,7 +294,8 @@ function playGame()
 function endGame()
 {
 	gameTimer.stop();
-	
+	displayScore();
+	writeToFile(5000);
 	//Make the levelCompleteDisplay invisible
 	levelCompleteDisplay.visible = false;
 
@@ -312,6 +316,21 @@ function endGame()
 		sprites.push(gameOverDisplay);
 	}
 	
+}
+
+/* Presently just called either on loss, or on level complete (but not on level reset).
+Lists the amount of bombs, stars, and lives picked up and used.
+Intentionally does not count the amounts that were picked up and then lost on a death, those get removed during the clearLevel function (Reduces the "picked up" quantity by the "current" quantity, and then resets the current quantity too).
+
+The goal would be to have some kind of high score system eventually, saved in an output file somewhere
+*/
+function displayScore()
+{
+	console.log("Time taken: " + Math.floor(timeTaken/60));
+	console.log("Stars: " + inventory[0][4] + " picked up.");
+	console.log("Bombs: " + inventory[1][4] + " picked up, " + inventory[1][5] + " used.");
+	console.log("Lives: " + inventory[3][4] + " picked up, " + inventory[3][5] + " used.");
+
 }
 
 function render()

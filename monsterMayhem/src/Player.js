@@ -67,7 +67,8 @@ Player.prototype.update = function() {
 		{
 			//Reduce lives.
 			lives--;
-			inventory[2][1]--;
+			inventory[3][1]--;
+			inventory[3][5]++;
 			
 			//If they lost their last life, then end the game.
 			if (lives === 0)
@@ -95,6 +96,7 @@ Player.prototype.update = function() {
 			removeObject(sprites[i], sprites);
 			i--;
 			inventory[0][1]++; //Increase star counter in inventory
+			inventory[0][4]++;
 			if (inventory[0][1] === starsTotal) //If you have all of the stars on the map, win the level
 			{
 				gameState = LEVEL_COMPLETE;
@@ -105,6 +107,7 @@ Player.prototype.update = function() {
 		if (sprites[i] instanceof Bomb && hitTestCircle(this, sprites[i]) && sprites[i].timer === -1)
 		{
 			inventory[1][1]++;
+			inventory[1][4]++;
 			removeObject(sprites[i], sprites);
 			i--;
 		}

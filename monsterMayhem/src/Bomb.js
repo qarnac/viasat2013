@@ -27,6 +27,7 @@ Bomb.prototype.update = function() {
 	*/	
 	if (this.timer === 0)
 	{
+		inventory[1][5]++;
 		//Figure out the row and column the bomb is in.
 		row = (this.y - 16) / 64;
 		column = (this.x - 10) / 64;
