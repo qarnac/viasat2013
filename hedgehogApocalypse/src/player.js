@@ -9,21 +9,31 @@ function Cat(column, row){
 
 Cat.prototype.update = function()
 {
+  ///JT: if just standing still
+	if (this.isOnGround)
+	{
+		this.sourceX = 0;
+	}
+	
   //Left
   if(moveLeft && !moveRight)
   {
+	
+	this.sourceX = 128;
     this.accelerationX = -0.2;
     this.friction = 1;
   }
   //Right
   if(moveRight && !moveLeft)
   {
+	this.sourceX = 64;
     this.accelerationX = 0.2;
     this.friction = 1;
   }
   //Space
   if(jump && this.isOnGround)
   {
+	this.sourceX = 192;
     this.vy += this.jumpForce;
     this.isOnGround = false;
     this.friction = 1;

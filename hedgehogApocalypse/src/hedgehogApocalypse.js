@@ -5,6 +5,13 @@ image.addEventListener("load", loadHandler, false);
 image.src = "../images/hedgehogApocalypse.png";
 assetsToLoad.push(image);
 
+//JT:added a new sprite sheet for the cat astronaught
+var astro = new Image();
+astro.addEventListener("load", loadHandler, false);
+astro.src = "../images/astro.png";
+assetsToLoad.push(astro);
+
+
 //Add keyboard listeners
 window.addEventListener("keydown", keydownhandler, false); 
 window.addEventListener("keyup", keyuphandler, false);
@@ -79,7 +86,7 @@ function buildMap(levelMap)
             cat = new Cat(column, row);//spriteObject;
             cat.sourceX = tilesheetX;
             cat.sourceY = tilesheetY;
-            sprites.push(cat);
+            players.push(cat);
             break;
             
           case HEDGEHOG:
@@ -140,7 +147,13 @@ function createOtherObjects()
 }
 
 function playGame()
-{   
+{
+	//JT:update player
+	for (var i = 0; i < players.length; i++)
+	{
+	    players[i].update();
+	}
+	
 	for (var i = 0; i < sprites.length; i++)
 	{
 		sprites[i].update();
@@ -204,6 +217,28 @@ function render()
           sprite.sourceWidth, sprite.sourceHeight,
           Math.floor(sprite.x), Math.floor(sprite.y), 
           sprite.width, sprite.height
+        ); 
+      }
+    }
+  }
+  
+  //JT: Display the player
+  if(players.length !== 0)
+  {
+    console.log("inside the player");
+    
+    for(var i = 0; i < players.length; i++)
+    {
+      var player = players[i];
+      if(player.visible)
+      {
+        drawingSurface.drawImage
+        (
+          astro, 
+          player.sourceX, player.sourceY, 
+          player.sourceWidth, player.sourceHeight,
+          Math.floor(player.x), Math.floor(player.y), 
+          player.width, player.height
         ); 
       }
     }

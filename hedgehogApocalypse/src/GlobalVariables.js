@@ -30,6 +30,7 @@ var backdrop = [];
 var sprites = [];
 var boxes = [];
 var messages = [];
+var players = [];
 
 var assetsToLoad = [];
 var assetsLoaded = 0;
