@@ -1,3 +1,12 @@
+//The canvas
+var canvas = document.querySelector("canvas"); 
+var drawingSurface = canvas.getContext("2d");
+
+//Sprites we need to access by name
+var cat = null;
+var door = null;
+var gameOverDisplay = null;
+var gameOverMessage = null;
 
 //Map code
 var EMPTY = 0;
@@ -8,12 +17,6 @@ var DOOR = 5;
 
 //The size of each tile cell
 var SIZE = 64;
-
-//Sprites we need to access by name
-var cat = null;
-var door = null;
-var gameOverDisplay = null;
-var gameOverMessage = null;
 
 //The number of rows and columns
 var ROWS = map.length;
@@ -31,11 +34,6 @@ var messages = [];
 var assetsToLoad = [];
 var assetsLoaded = 0;
 
-//The canvas
-var canvas = document.querySelector("canvas"); 
-var drawingSurface = canvas.getContext("2d");
-
-
 //Game variables
 var hedgehogsSquashed = 0;
 
@@ -46,6 +44,14 @@ var PLAYING = 2;
 var OVER = 3;
 var PAUSED = 4;
 var gameState = LOADING;
+
+var gameWorld = 
+{
+	x: 0,
+	y: 0,
+	width: map[0].length * SIZE,
+	height: map.length * SIZE,
+};
 
 //Key codes
 var RIGHT = 39;

@@ -3,7 +3,7 @@ Cat.prototype.constructor = Cat;
 function Cat(column, row){
 	spriteObject.call(this);
 	this.x = column * SIZE;
-  this.y = row * SIZE;
+	this.y = row * SIZE;
 
 }
 
@@ -134,10 +134,6 @@ Cat.prototype.update = function()
 		}
 	}
   
-
-  
-  
-  
     //Screen boundaries
 	//Left
 	if (this.x < 0)
@@ -152,17 +148,59 @@ Cat.prototype.update = function()
 		this.y = 0;
 	}
 	//Right
-	if (this.x + this.width > canvas.width)
+	if (this.x + this.width > gameWorld.width)
 	{
 		this.vx = 0;
-		this.x = canvas.width - this.width;
+		this.x = gameWorld.width - this.width;
 	}
 	//Down
-	if (this.y + this.height > canvas.height)
+	if (this.y + this.height > gameWorld.height)
 	{
 		this.vy = 0;
-		this.y = canvas.height - this.height;
+		this.y = gameWorld.height - this.height;
 		this.isOnGround = true;
 		this.vy = -this.gravity;
 	}
+	
+	
+	//Scroll the camera
+	if(this.x < camera.leftInnerBoundary())
+	{
+		camera.x = Math.floor(this.x - (camera.width / 4));
+	}
+	if(this.y < camera.topInnerBoundary())
+	{
+		camera.y = Math.floor(this.y - (camera.height / 4));
+	}
+	if(this.x + this.width > camera.rightInnerBoundary())
+	{
+		camera.x = Math.floor(this.x + this.width - (camera.width / 4 * 3));
+	}
+	if(this.y + this.height > camera.bottomInnerBoundary())
+	{
+		camera.y = Math.floor(this.y + this.height - (camera.height / 4 * 3));
+	}
+
+	//The camera's gameWorld boundaries
+	/* The and-not condition in these checks make it so that, for any map that can fit entirely within the canvas (ie, the camera goes out of bounds on both the left AND the right), the camera will be allowed to scroll past the gameworld for the sake of staying centered on the middle of the map.
+	Larger maps (like the default 16x16) will not allow that behavior, only ones that're 11x8 or smaller.
+	*/
+	if((camera.x < gameWorld.x) && !(camera.x + camera.width > gameWorld.x + gameWorld.width))
+	{
+		camera.x = gameWorld.x;
+	}
+	if((camera.x + camera.width > gameWorld.x + gameWorld.width) && !(camera.x < gameWorld.x))
+	{
+		camera.x = gameWorld.x + gameWorld.width - camera.width;
+	}
+	
+	if((camera.y < gameWorld.y) && !(camera.y + camera.height > gameWorld.height))
+	{
+		camera.y = gameWorld.y;
+	}
+	if((camera.y + camera.height > gameWorld.height) && !(camera.y < gameWorld.y))
+	{
+		camera.y = gameWorld.height - camera.height;
+	}  
+	
 }

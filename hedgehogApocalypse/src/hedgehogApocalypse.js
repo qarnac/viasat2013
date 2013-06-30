@@ -1,12 +1,9 @@
 (function(){
-
-
 //Load the tilesheet image
 var image = new Image();
 image.addEventListener("load", loadHandler, false);
 image.src = "../images/hedgehogApocalypse.png";
 assetsToLoad.push(image);
-
 
 //Add keyboard listeners
 window.addEventListener("keydown", keydownhandler, false); 
@@ -169,6 +166,9 @@ function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
   
+  drawingSurface.save();
+  drawingSurface.translate(-camera.x, -camera.y);
+  
   //Display sky and clouds
 	if(backdrop.length !== 0)
 	{
@@ -208,6 +208,9 @@ function render()
       }
     }
   }
+  
+  	drawingSurface.restore();
+
   
   //Display the game messages
   if(messages.length !== 0)
