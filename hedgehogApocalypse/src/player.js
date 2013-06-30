@@ -86,7 +86,8 @@ Cat.prototype.update = function()
 		//with Door
 		if (sprites[i] === door)
 		{
-		   if(hedgehogsSquashed === 3 && hitTestRectangle(this, door))
+			//Test collision with the right side of the door. That way, the player is standing all the way inside of it, not just barely touching the edge.
+			if (hitTestPoint(door.right(), door.centerY(), this) && hedgehogsSquashed === 3)
 			{
 			  gameState = OVER;
 			}  

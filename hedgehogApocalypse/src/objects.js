@@ -41,6 +41,27 @@ spriteObject.prototype.halfHeight = function(){
 	return this.height / 2;
 }
 
+spriteObject.prototype.left = function()
+{
+	return this.x;
+}
+
+spriteObject.prototype.right = function()
+{
+	return this.x + this.width;
+}
+
+spriteObject.prototype.top = function()
+{
+	return this.y;
+}
+
+spriteObject.prototype.bottom = function()
+{
+	return this.y + this.height;
+}
+
+
 
 spriteObject.prototype.update = function () {
 	this.x += this.vx;

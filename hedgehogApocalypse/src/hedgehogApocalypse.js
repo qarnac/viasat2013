@@ -224,9 +224,7 @@ function render()
   
   //JT: Display the player
   if(players.length !== 0)
-  {
-    console.log("inside the player");
-    
+  {    
     for(var i = 0; i < players.length; i++)
     {
       var player = players[i];
