@@ -1,66 +1,51 @@
 //--- The sprite object
-
-var spriteObject =
-{
-  sourceX: 0,
-  sourceY: 0,
-  sourceWidth: 64,
-  sourceHeight: 64,
-  width: 64,
-  height: 64,
-  x: 0,
-  y: 0,
-  vx: 0,
-  vy: 0,
-  visible: true,
+spriteObject = function(column, row) {
+  this.sourceX = 0;
+  this.sourceY = 0;
+  this.sourceWidth = 64;
+  this.sourceHeight = 64;
+  this.width = 64;
+  this.height = 64;
+  this.x = column * SIZE;
+  this.y = row * SIZE;
+  this.vx = 0;
+  this.vy = 0;
+  this.visible = true;
   
   //Physics properties
-  accelerationX: 0, 
-  accelerationY: 0, 
-  speedLimit: 5, 
-  friction: 0.96,
-  bounce: -0.7,
-  gravity: 0.3,
+  this.accelerationX = 0; 
+  this.accelerationY = 0; 
+  this.speedLimit = 5; 
+  this.friction = 0.96;
+  this.bounce = -0.7;
+  this.gravity = 0.3;
     
   //Platform game properties   
-  isOnGround: undefined,
-  jumpForce: -10,
-
-  //Getters
-  centerX: function()
-  {
-    return this.x + (this.width / 2);
-  },
-  centerY: function()
-  {
-    return this.y + (this.height / 2);
-  },
-  halfWidth: function()
-  {
-    return this.width / 2;
-  },
-  halfHeight: function()
-  {
-    return this.height / 2;
-  }
+  this.isOnGround = undefined;
+  this.jumpForce = -10;
 };
 
-//--- The hedgehog object
-hedgehogObject = Object.create(spriteObject);
+spriteObject.prototype.centerX = function() {
+	return this.x + this.width/2;
+}
 
-//The hedgehog's states
-hedgehogObject.NORMAL = [1,0];
-hedgehogObject.SQUASHED = [2,0];
-hedgehogObject.state = hedgehogObject.NORMAL;
-   
-hedgehogObject.update = function()
-{ 
-  this.sourceX = this.state[0] * this.sourceWidth;
-  this.sourceY = this.state[1] * this.sourceHeight;
-};
+spriteObject.prototype.centerY = function(){
+	return this.y + (this.height / 2);
+}
 
-//The hedgehog's allowed speed
-hedgehogObject.speed = 1;
+spriteObject.prototype.halfWidth = function(){
+	return this.width / 2;
+}
+
+spriteObject.prototype.halfHeight = function(){
+	return this.height / 2;
+}
+
+
+spriteObject.prototype.update = function () {
+	this.x += this.vx;
+	this.y += this.vy;
+} 
 
 //--- The message object
 
