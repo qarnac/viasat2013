@@ -3,6 +3,7 @@ Hedgehog.prototype.constructor = Hedgehog;
 function Hedgehog(column, row)
 {
 	spriteObject.call(this);
+	
 	this.NORMAL = [1,0];
 	this.SQUASHED = [2, 0];
 	this.state = this.NORMAL;

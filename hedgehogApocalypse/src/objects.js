@@ -1,5 +1,6 @@
 //--- The sprite object
 spriteObject = function(column, row) {
+
   this.sourceX = 0;
   this.sourceY = 0;
   this.sourceWidth = 64;

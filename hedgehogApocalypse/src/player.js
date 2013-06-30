@@ -2,6 +2,7 @@ Cat.prototype = new spriteObject();
 Cat.prototype.constructor = Cat;
 function Cat(column, row){
 	spriteObject.call(this);
+	
 	this.x = column * SIZE;
 	this.y = row * SIZE;
 

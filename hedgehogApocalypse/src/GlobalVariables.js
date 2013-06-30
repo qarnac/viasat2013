@@ -32,7 +32,6 @@ var backdrop = [];
 var sprites = [];
 var boxes = [];
 var messages = [];
-var players = [];
 
 //Arrays for the maps
 

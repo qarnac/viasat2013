@@ -81,7 +81,6 @@ function clearLevel() {
 		//Clear the sprite arrays
 		sprites = [];
 		backdrop = [];
-		players = [];
 		
 		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
 		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
@@ -119,7 +118,6 @@ function levelComplete() {
 			gameState = OVER;
 		}
 	}
-
 }
 
 
@@ -146,11 +144,13 @@ function buildMap(levelMap)
             cat = new Cat(column, row);//spriteObject;
             cat.sourceX = tilesheetX;
             cat.sourceY = tilesheetY;
-            players.push(cat);
+			cat.sheet = astro;
+			sprites.push(cat);
             break;
             
           case HEDGEHOG:
             var hedgehog = new Hedgehog(column, row);
+			hedgehog.sheet = image;
             hedgehog.sourceX = tilesheetX;
             hedgehog.sourceY = tilesheetY;
 			hedgehogsRemaining++;
@@ -160,6 +160,7 @@ function buildMap(levelMap)
           
           case BOX:
             var box = new Box(column, row);
+			box.sheet = image;
             box.sourceX = tilesheetX;
             box.sourceY = tilesheetY;
             sprites.push(box);
@@ -168,6 +169,7 @@ function buildMap(levelMap)
           
           case DOOR:
             door = new spriteObject(column, row);
+			door.sheet = image;
             door.sourceX = tilesheetX;
             door.sourceY = tilesheetY;
             sprites.push(door);
@@ -175,6 +177,7 @@ function buildMap(levelMap)
             
           default:
             var sprite = new spriteObject(column, row);
+			sprite.sheet = image;
             sprite.sourceX = tilesheetX;
             sprite.sourceY = tilesheetY;
 			backdrop.push(sprite);
@@ -210,11 +213,6 @@ function createOtherObjects()
 
 function playGame()
 {
-	//JT:update player
-	for (var i = 0; i < players.length; i++)
-	{
-	    players[i].update();
-	}
 	
 	for (var i = 0; i < sprites.length; i++)
 	{
@@ -254,7 +252,7 @@ function render()
 		  {
 			drawingSurface.drawImage
 			(
-			  image, 
+			  sprite.sheet, 
 			  sprite.sourceX, sprite.sourceY, 
 			  sprite.sourceWidth, sprite.sourceHeight,
 			  Math.floor(sprite.x), Math.floor(sprite.y), 
@@ -274,7 +272,7 @@ function render()
       {
         drawingSurface.drawImage
         (
-          image, 
+          sprite.sheet, 
           sprite.sourceX, sprite.sourceY, 
           sprite.sourceWidth, sprite.sourceHeight,
           Math.floor(sprite.x), Math.floor(sprite.y), 
@@ -284,27 +282,7 @@ function render()
     }
   }
   
-  //JT: Display the player
-  if(players.length !== 0)
-  {    
-    for(var i = 0; i < players.length; i++)
-    {
-      var player = players[i];
-      if(player.visible)
-      {
-        drawingSurface.drawImage
-        (
-          astro, 
-          player.sourceX, player.sourceY, 
-          player.sourceWidth, player.sourceHeight,
-          Math.floor(player.x), Math.floor(player.y), 
-          player.width, player.height
-        ); 
-      }
-    }
-  }
-  
-  	drawingSurface.restore();
+	drawingSurface.restore();
 
   
   //Display the game messages
