@@ -28,27 +28,34 @@ function update()
   switch(gameState)
   {
     case LOADING:
-      break;
+		break;
       
     case BUILD_MAP:
-      buildMap(map);
-      buildMap(gameObjects);
-      createOtherObjects();
-      gameState = PLAYING;
-      break;
+		buildMap(levelMaps[levelCounter]);
+		buildMap(levelGameObjects[levelCounter]);
+		createOtherObjects();
+		gameState = PLAYING;
+		break;
     
     case PLAYING:
-      playGame();
-      break;
+		playGame();
+		break;
     
     case OVER:
-      endGame();
-	  break;
+		endGame();
+		break;
+		
+	case LEVEL_COMPLETE:
+		levelComplete();
+		break;
 	  
+	case RESET_LEVEL:
+		clearLevel();
+		break;
+		
 	case PAUSED:
 		break;
   }
-  
   //Render the game
   render();
 }
@@ -66,8 +73,61 @@ function loadHandler()
   }
 }
 
+
+function clearLevel() {
+	levelChangeTimer++;	
+	if ((gameState === RESET_LEVEL && levelChangeTimer === 30) || (gameState === LEVEL_COMPLETE))
+	{
+		//Clear the sprite arrays
+		sprites = [];
+		backdrop = [];
+		players = [];
+		
+		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+		if (gameState === RESET_LEVEL) { levelChangeTimer = 0; gameState = BUILD_MAP;}
+	}
+}
+
+function levelComplete() {
+	gameOverDisplay.visible = true;
+	gameOverMessage.visible = true;
+	
+	levelChangeTimer++;
+	
+	if (levelChangeTimer === 30)
+	{
+		levelChangeTimer = 0;
+		levelCounter++;
+		clearLevel(); //Another half-second will pass in here
+		
+		if (levelCounter < levelMaps.length)
+		{
+			//Make sure the gameWorld size matches the size of the next level
+			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
+			gameWorld.height = levelMaps[levelCounter].length * SIZE;
+
+			//Re-center the camera
+			camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+			camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+		
+			//Build the maps for the next level
+			gameState = BUILD_MAP;
+		}
+		else //Otherwise, levelCounter === levelMaps.length, so the player has beat all of the levels, so end the game
+		{
+			gameState = OVER;
+		}
+	}
+
+}
+
+
 function buildMap(levelMap)
 {
+	var ROWS = levelMap.length;
+	var COLUMNS = levelMap[0].length;
+
   for(var row = 0; row < ROWS; row++) 
   {	
     for(var column = 0; column < COLUMNS; column++) 
@@ -93,6 +153,8 @@ function buildMap(levelMap)
             var hedgehog = new Hedgehog(column, row);
             hedgehog.sourceX = tilesheetX;
             hedgehog.sourceY = tilesheetY;
+			hedgehogsRemaining++;
+			console.log("Hedgehogs: " + hedgehogsRemaining);
             sprites.push(hedgehog);
             break;
           
@@ -165,7 +227,7 @@ function endGame()
   gameOverDisplay.visible = true;
   gameOverMessage.visible = true;
     
-  if(hedgehogsSquashed === 3)
+  if(hedgehogsRemaining === 0)
   {
     gameOverMessage.text = "You Won!";
   }

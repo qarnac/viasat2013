@@ -87,9 +87,10 @@ Cat.prototype.update = function()
 		if (sprites[i] === door)
 		{
 			//Test collision with the right side of the door. That way, the player is standing all the way inside of it, not just barely touching the edge.
-			if (hitTestPoint(door.right(), door.centerY(), this) && hedgehogsSquashed === 3)
+			if (hitTestPoint(door.right(), door.centerY(), this) && hedgehogsRemaining === 0)
 			{
-			  gameState = OVER;
+			  //gameState = OVER;
+			  gameState = LEVEL_COMPLETE;
 			}  
 		}
 		
@@ -100,7 +101,7 @@ Cat.prototype.update = function()
 			if (this.vy > 0) //If the player comes at the hedgehog from above, squash the hedgehog
 			{
 				blockCircle(this, hedgehog, true);
-				hedgehogsSquashed++;
+				hedgehogsRemaining--;
 				hedgehog.state = hedgehog.SQUASHED;
 				hedgehog.update();  
 				hedgehog.deathcounter = 60;

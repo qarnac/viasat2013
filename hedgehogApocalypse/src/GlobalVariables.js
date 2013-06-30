@@ -14,13 +14,15 @@ var CAT = 1;
 var HEDGEHOG = 2;
 var BOX = 4;
 var DOOR = 5;
+var GRASS = 6;
 
 //The size of each tile cell
 var SIZE = 64;
 
 //The number of rows and columns
-var ROWS = map.length;
-var COLUMNS = map[0].length;
+var levelCounter = 0;
+var ROWS = levelMaps[levelCounter].length;
+var COLUMNS = levelMaps[levelCounter][0].length;
 
 //The number of columns on the tilesheet
 var tilesheetColumns = 3;
@@ -32,26 +34,32 @@ var boxes = [];
 var messages = [];
 var players = [];
 
+//Arrays for the maps
+
+var levelChangeTimer = 0;
+
 var assetsToLoad = [];
 var assetsLoaded = 0;
 
 //Game variables
-var hedgehogsSquashed = 0;
+var hedgehogsRemaining = 0;
 
 //Game states
 var LOADING = 0;
 var BUILD_MAP = 1;
 var PLAYING = 2;
 var OVER = 3;
-var PAUSED = 4;
+var LEVEL_COMPLETE = 4; //Transition to the next level
+var PAUSED = 5;
+var RESET_LEVEL = 6;
 var gameState = LOADING;
 
 var gameWorld = 
 {
 	x: 0,
 	y: 0,
-	width: map[0].length * SIZE,
-	height: map.length * SIZE,
+	width: levelMaps[levelCounter][0].length * SIZE,
+	height: levelMaps[levelCounter].length * SIZE,
 };
 
 //Key codes

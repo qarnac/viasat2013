@@ -8,7 +8,7 @@ function Hedgehog(column, row)
 	this.state = this.NORMAL;
 	this.speed = 1;
 	this.vx = this.speed;
-	this.deathcounter = -1;
+	this.deathcounter = -1; //Used for the transition stage between the hedgehog getting squashed, and it disappearing.
 	this.x = column * SIZE;
 	this.y = row * SIZE;
 }
@@ -24,7 +24,6 @@ Hedgehog.prototype.update = function()
       this.y += this.vy;
     }
     
-	//console.log(this.deathcounter);
 	if (this.deathcounter > 0)
 	{
 		this.deathcounter--;
@@ -42,11 +41,11 @@ Hedgehog.prototype.update = function()
       //Find the hedgehog's column and row in the array
 	  var hedgehogColumn = Math.floor(this.x / SIZE);
 	  var hedgehogRow = Math.floor(this.y / SIZE);
-		  
+	
 	  if(hedgehogRow < ROWS - 1)
 	  { 
-	    var thingBelowLeft = map[hedgehogRow + 1][hedgehogColumn - 1];
-	    var thingBelowRight = map[hedgehogRow + 1][hedgehogColumn + 1];
+	    var thingBelowLeft = levelMaps[levelCounter][hedgehogRow + 1][hedgehogColumn - 1];
+	    var thingBelowRight = levelMaps[levelCounter][hedgehogRow + 1][hedgehogColumn + 1];
 		    
         if(thingBelowLeft !== BOX || thingBelowRight !== BOX)
         {
@@ -56,8 +55,8 @@ Hedgehog.prototype.update = function()
 		  
       if(hedgehogColumn > 0)
       {
-        var thingToTheLeft = map[hedgehogRow][hedgehogColumn - 1];
-        if(thingToTheLeft === BOX)
+        var thingToTheLeft = levelMaps[levelCounter][hedgehogRow][hedgehogColumn - 1];
+        if(thingToTheLeft === BOX || thingToTheLeft === GRASS)
         {
           this.vx *= -1;
         }
@@ -65,8 +64,8 @@ Hedgehog.prototype.update = function()
 		  
       if(hedgehogColumn < COLUMNS - 1)
       {
-        var thingToTheRight = map[hedgehogRow][hedgehogColumn + 1];
-        if(thingToTheRight === BOX)
+        var thingToTheRight = levelMaps[levelCounter][hedgehogRow][hedgehogColumn + 1];
+        if(thingToTheRight === BOX || thingToTheRight === GRASS)
         {
           this.vx *= -1;
         }
