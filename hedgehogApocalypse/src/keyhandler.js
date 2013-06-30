@@ -25,18 +25,15 @@ function keydownhandler()
 		case SPACE:
 		  jump = true;
 		  break;
-		case ESC: //Toggle between paused and unpaused, update the message, and pause/resume the timer.
+		case ESC: //Toggle between paused and unpaused.
 			if (gameState === PAUSED) 
 				{ 
 					gameState = prevState; 
-					//pauseMessage.innerHTML = "Press \"ESC\" to pause"; 
-					
 				} 
 			else 
 				{ 
 					prevState = gameState; //Set a previous state, so it knows what to return to
 					gameState = PAUSED; 
-					//pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause"; 	
 				}
 			break;
 	}

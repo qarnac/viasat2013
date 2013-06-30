@@ -1,6 +1,7 @@
 //The canvas
 var canvas = document.querySelector("canvas"); 
 var drawingSurface = canvas.getContext("2d");
+var image;
 
 //Sprites we need to access by name
 var cat = null;
@@ -20,7 +21,7 @@ var GRASS = 6;
 var SIZE = 64;
 
 //The number of rows and columns
-var levelCounter = 0;
+var levelCounter = 0; //Increments every time the level changes
 var ROWS = levelMaps[levelCounter].length;
 var COLUMNS = levelMaps[levelCounter][0].length;
 
@@ -32,10 +33,9 @@ var backdrop = [];
 var sprites = [];
 var boxes = [];
 var messages = [];
+var players = [];
 
-//Arrays for the maps
-
-var levelChangeTimer = 0;
+var levelChangeTimer = 0; //Delay between reaching the goal, and the next level being drawn.
 
 var assetsToLoad = [];
 var assetsLoaded = 0;
@@ -53,13 +53,6 @@ var PAUSED = 5;
 var RESET_LEVEL = 6;
 var gameState = LOADING;
 
-var gameWorld = 
-{
-	x: 0,
-	y: 0,
-	width: levelMaps[levelCounter][0].length * SIZE,
-	height: levelMaps[levelCounter].length * SIZE,
-};
 
 //Key codes
 var RIGHT = 39;
@@ -70,6 +63,15 @@ var SPACE = 32;
 var moveRight = false;
 var moveLeft = false;
 var jump = false;
+
+var gameWorld =  //The entire level, as opposed to the camera section which only shows a certain area around the player.
+{
+	x: 0,
+	y: 0,
+	width: levelMaps[levelCounter][0].length * SIZE,
+	height: levelMaps[levelCounter].length * SIZE,
+};
+
 
 function removeObject(objectToRemove, array) 
 { 

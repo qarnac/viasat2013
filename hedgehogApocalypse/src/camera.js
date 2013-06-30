@@ -6,7 +6,7 @@ var camera =
 	width: canvas.width,
 	height: canvas.height,
 
-	//The camera's inner scroll boundaries
+	//The camera's inner scroll boundaries 
 	rightInnerBoundary: function()
 	{
 		return this.x + (this.width / 2) + (this.width / 4);

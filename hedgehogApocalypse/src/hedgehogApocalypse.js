@@ -11,7 +11,6 @@ astro.addEventListener("load", loadHandler, false);
 astro.src = "../images/astro.png";
 assetsToLoad.push(astro);
 
-
 //Add keyboard listeners
 window.addEventListener("keydown", keydownhandler, false); 
 window.addEventListener("keyup", keyuphandler, false);
@@ -44,15 +43,15 @@ function update()
     case OVER:
 		endGame();
 		break;
-		
+
 	case LEVEL_COMPLETE:
 		levelComplete();
 		break;
-	  
+
 	case RESET_LEVEL:
 		clearLevel();
 		break;
-		
+
 	case PAUSED:
 		break;
   }
@@ -76,31 +75,33 @@ function loadHandler()
 
 function clearLevel() {
 	levelChangeTimer++;	
-	if ((gameState === RESET_LEVEL && levelChangeTimer === 30) || (gameState === LEVEL_COMPLETE))
+	
+	//The 2 commented out sections for RESET_LEVEL are not used. Those were from Monster Mayhem where the level reset when the player died. Which is not yet implemented here.
+	if (/*(gameState === RESET_LEVEL && levelChangeTimer === 30) || */(gameState === LEVEL_COMPLETE))
 	{
 		//Clear the sprite arrays
 		sprites = [];
 		backdrop = [];
-		
+		players = [];
+
 		camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
 		camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
-		if (gameState === RESET_LEVEL) { levelChangeTimer = 0; gameState = BUILD_MAP;}
+		/*if (gameState === RESET_LEVEL) { levelChangeTimer = 0; gameState = BUILD_MAP;}*/
 	}
 }
 
 function levelComplete() {
 	gameOverDisplay.visible = true;
 	gameOverMessage.visible = true;
-	
+
 	levelChangeTimer++;
-	
-	if (levelChangeTimer === 30)
+	if (levelChangeTimer === 30) //Let a half-second pass here
 	{
 		levelChangeTimer = 0;
 		levelCounter++;
 		clearLevel(); //Another half-second will pass in here
-		
-		if (levelCounter < levelMaps.length)
+
+		if (levelCounter < levelMaps.length) //If there are more maps to be played
 		{
 			//Make sure the gameWorld size matches the size of the next level
 			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
@@ -109,7 +110,7 @@ function levelComplete() {
 			//Re-center the camera
 			camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
 			camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
-		
+
 			//Build the maps for the next level
 			gameState = BUILD_MAP;
 		}
@@ -126,94 +127,95 @@ function buildMap(levelMap)
 	var ROWS = levelMap.length;
 	var COLUMNS = levelMap[0].length;
 
-  for(var row = 0; row < ROWS; row++) 
-  {	
-    for(var column = 0; column < COLUMNS; column++) 
-    { 
-      var currentTile = levelMap[row][column];
-    
-      if(currentTile != EMPTY)
-      {
-        //Find the tile's x and y position on the tile sheet
-        var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
-        var tilesheetY = Math.floor((currentTile - 1) / tilesheetColumns) * SIZE;
-        
-        switch (currentTile)
-        {
-          case CAT:
-            cat = new Cat(column, row);//spriteObject;
-            cat.sourceX = tilesheetX;
-            cat.sourceY = tilesheetY;
-			cat.sheet = astro;
-			sprites.push(cat);
-            break;
-            
-          case HEDGEHOG:
-            var hedgehog = new Hedgehog(column, row);
-			hedgehog.sheet = image;
-            hedgehog.sourceX = tilesheetX;
-            hedgehog.sourceY = tilesheetY;
-			hedgehogsRemaining++;
-			console.log("Hedgehogs: " + hedgehogsRemaining);
-            sprites.push(hedgehog);
-            break;
-          
-          case BOX:
-            var box = new Box(column, row);
-			box.sheet = image;
-            box.sourceX = tilesheetX;
-            box.sourceY = tilesheetY;
-            sprites.push(box);
-            boxes.push(box);
-            break;         
-          
-          case DOOR:
-            door = new spriteObject(column, row);
-			door.sheet = image;
-            door.sourceX = tilesheetX;
-            door.sourceY = tilesheetY;
-            sprites.push(door);
-            break; 
-            
-          default:
-            var sprite = new spriteObject(column, row);
-			sprite.sheet = image;
-            sprite.sourceX = tilesheetX;
-            sprite.sourceY = tilesheetY;
-			backdrop.push(sprite);
-        }
-      }
-    }
-  }
+	for(var row = 0; row < ROWS; row++) 
+	{	
+		for(var column = 0; column < COLUMNS; column++) 
+		{ 
+		  var currentTile = levelMap[row][column];
+
+			if(currentTile != EMPTY)
+			{
+				//Find the tile's x and y position on the tile sheet
+				var tilesheetX = Math.floor((currentTile - 1) % tilesheetColumns) * SIZE; 
+				var tilesheetY = Math.floor((currentTile - 1) / tilesheetColumns) * SIZE;
+
+				switch (currentTile)
+				{
+				  case CAT:
+					cat = new Cat(column, row);
+					cat.sourceX = tilesheetX;
+					cat.sourceY = tilesheetY;
+					players.push(cat);
+					break;
+					
+				  case HEDGEHOG:
+					var hedgehog = new Hedgehog(column, row);
+					hedgehog.sourceX = tilesheetX;
+					hedgehog.sourceY = tilesheetY;
+					hedgehogsRemaining++; //A counter of how many hedgehogs are on a given map. Player can only transition to the next level when this is back to 0.
+					sprites.push(hedgehog);
+					break;
+				  
+				  case BOX:
+					var box = new Box(column, row);
+					box.sourceX = tilesheetX;
+					box.sourceY = tilesheetY;
+					sprites.push(box);
+					boxes.push(box);
+					break;         
+				  
+				  case DOOR:
+					door = new spriteObject(column, row);
+					door.sourceX = tilesheetX;
+					door.sourceY = tilesheetY;
+					sprites.push(door);
+					break; 
+					
+				  default:
+					var sprite = new spriteObject(column, row);
+					sprite.sourceX = tilesheetX;
+					sprite.sourceY = tilesheetY;
+					backdrop.push(sprite);
+				}
+			}
+		}
+	}
 }
 
 function createOtherObjects()
 {
-  gameOverDisplay = new spriteObject();
-  gameOverDisplay.sourceX = 0;
-  gameOverDisplay.sourceY = 192;
-  gameOverDisplay.sourceWidth = 192;
-  gameOverDisplay.sourceHeight = 128;
-  gameOverDisplay.width = 192;  
-  gameOverDisplay.height = 128;            
-  gameOverDisplay.x = canvas.width / 2 - gameOverDisplay.width / 2;
-  gameOverDisplay.y = canvas.height / 2 - gameOverDisplay.height / 2;
-  gameOverDisplay.visible = false;
-  sprites.push(gameOverDisplay);
-  
-  gameOverMessage = Object.create(messageObject);
-  gameOverMessage.x = gameOverDisplay.x + 20;
-  gameOverMessage.y = gameOverDisplay.y + 34;
-  gameOverMessage.font = "bold 30px Helvetica";
-  gameOverMessage.fillStyle = "black";
-  gameOverMessage.text = "";
-  gameOverMessage.visible = false;
-  messages.push(gameOverMessage);
+	//The box where the message will be displayed
+	gameOverDisplay = new spriteObject();
+	gameOverDisplay.sourceX = 0;
+	gameOverDisplay.sourceY = 192;
+	gameOverDisplay.sourceWidth = 192;
+	gameOverDisplay.sourceHeight = 128;
+	gameOverDisplay.width = 192;  
+	gameOverDisplay.height = 128;            
+	gameOverDisplay.x = canvas.width / 2 - gameOverDisplay.width / 2;
+	gameOverDisplay.y = canvas.height / 2 - gameOverDisplay.height / 2;
+	gameOverDisplay.visible = false;
+	sprites.push(gameOverDisplay);
+
+	//The actual "you won"/"you lost" message.
+	gameOverMessage = Object.create(messageObject);
+	gameOverMessage.x = gameOverDisplay.x + 20;
+	gameOverMessage.y = gameOverDisplay.y + 34;
+	gameOverMessage.font = "bold 30px Helvetica";
+	gameOverMessage.fillStyle = "black";
+	gameOverMessage.text = "";
+	gameOverMessage.visible = false;
+	messages.push(gameOverMessage);
 }
 
 function playGame()
 {
-	
+	//JT:update player
+	for (var i = 0; i < players.length; i++)
+	{
+	    players[i].update();
+	}
+
 	for (var i = 0; i < sprites.length; i++)
 	{
 		sprites[i].update();
@@ -252,7 +254,8 @@ function render()
 		  {
 			drawingSurface.drawImage
 			(
-			  sprite.sheet, 
+
+			  image, 
 			  sprite.sourceX, sprite.sourceY, 
 			  sprite.sourceWidth, sprite.sourceHeight,
 			  Math.floor(sprite.x), Math.floor(sprite.y), 
@@ -261,7 +264,7 @@ function render()
 		  }
 		}
 	}
-	
+
   //Display the sprites
   if(sprites.length !== 0)
   {
@@ -272,7 +275,8 @@ function render()
       {
         drawingSurface.drawImage
         (
-          sprite.sheet, 
+
+          image, 
           sprite.sourceX, sprite.sourceY, 
           sprite.sourceWidth, sprite.sourceHeight,
           Math.floor(sprite.x), Math.floor(sprite.y), 
@@ -282,7 +286,27 @@ function render()
     }
   }
   
-	drawingSurface.restore();
+  //JT: Display the player
+  if(players.length !== 0)
+  {    
+    for(var i = 0; i < players.length; i++)
+    {
+      var player = players[i];
+      if(player.visible)
+      {
+        drawingSurface.drawImage
+        (
+          astro, 
+          player.sourceX, player.sourceY, 
+          player.sourceWidth, player.sourceHeight,
+          Math.floor(player.x), Math.floor(player.y), 
+          player.width, player.height
+        ); 
+      }
+    }
+  }
+  
+  	drawingSurface.restore();
 
   
   //Display the game messages

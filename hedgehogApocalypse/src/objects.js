@@ -12,6 +12,7 @@ spriteObject = function(column, row) {
   this.vx = 0;
   this.vy = 0;
   this.visible = true;
+  this.sheet = image;
   
   //Physics properties
   this.accelerationX = 0; 

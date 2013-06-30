@@ -5,12 +5,11 @@ function Cat(column, row){
 	
 	this.x = column * SIZE;
 	this.y = row * SIZE;
-
 }
 
 Cat.prototype.update = function()
 {
-  ///JT: if just standing still
+  //JT: if just standing still
 	if (this.isOnGround)
 	{
 		this.sourceX = 0;
@@ -64,24 +63,24 @@ Cat.prototype.update = function()
 
   //Limit the speed
   //Don't limit the upward speed because it will choke the jump effect
-  if (this.vx > this.speedLimit)
-  {
-    this.vx = this.speedLimit;
-  }
-  if (this.vx < -this.speedLimit)
-  {
-    this.vx = -this.speedLimit;
-  } 
-  if (this.vy > this.speedLimit * 2)
-  {
-    this.vy = this.speedLimit * 2;
-  } 
+	if (this.vx > this.speedLimit)
+	{
+		this.vx = this.speedLimit;
+	}
+	if (this.vx < -this.speedLimit)
+	{
+		this.vx = -this.speedLimit;
+	} 
+	if (this.vy > this.speedLimit * 2)
+	{
+		this.vy = this.speedLimit * 2;
+	} 
   
   //Move the cat
-  this.x += this.vx;
-  this.y += this.vy;
+	this.x += this.vx;
+	this.y += this.vy;
   
-  //Collisions
+	//Collisions
 	for (var i = 0; i < sprites.length; i++)
 	{
 		//with Door
@@ -105,7 +104,7 @@ Cat.prototype.update = function()
 				hedgehogsRemaining--;
 				hedgehog.state = hedgehog.SQUASHED;
 				hedgehog.update();  
-				hedgehog.deathcounter = 60;
+				hedgehog.deathcounter = 60; //There will be a 60-frame delay where the hedgehog has a different sprite, before disappearing.
 			}
 			else //Otherwise, hedgehog eats cat
 			{
@@ -128,6 +127,8 @@ Cat.prototype.update = function()
 				//exact opposite force to the character's vy
 				this.vy = -this.gravity;
 			}
+			
+			//If colliding from the top, the left, or the right, neutralize the velocity.
 			else if(collisionSide === "top" && this.vy <= 0)
 			{
 				this.vy = 0;
@@ -140,7 +141,9 @@ Cat.prototype.update = function()
 			{
 				this.vx = 0;
 			}
-			if(collisionSide !== "bottom" && this.vy > 0)
+			
+			//If the player hasn't landed on something, then it is still in the air.
+			if(collisionSide !== "bottom" && this.vy > 0) 
 			{
 				this.isOnGround = false;
 			}
@@ -195,8 +198,9 @@ Cat.prototype.update = function()
 	}
 
 	//The camera's gameWorld boundaries
-	/* The and-not condition in these checks make it so that, for any map that can fit entirely within the canvas (ie, the camera goes out of bounds on both the left AND the right), the camera will be allowed to scroll past the gameworld for the sake of staying centered on the middle of the map.
-	Larger maps (like the default 16x16) will not allow that behavior, only ones that're 11x8 or smaller.
+	/* The and-not condition in these checks make it so that, for any map that can fit entirely within the canvas (ie, the camera goes out of bounds on both the left AND the right), 
+	the camera will be allowed to scroll past the gameworld for the sake of staying centered on the middle of the map.
+	Larger maps will not allow that behavior, only ones that're smaller.
 	*/
 	if((camera.x < gameWorld.x) && !(camera.x + camera.width > gameWorld.x + gameWorld.width))
 	{
