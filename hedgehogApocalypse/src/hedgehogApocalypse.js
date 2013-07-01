@@ -177,6 +177,14 @@ function buildMap(levelMap)
 					door.sourceY = tilesheetY;
 					door.scrollable = true;
 					sprites.push(door);
+					break;
+				      
+				  case PLAT:
+					var plat = new Platform(column, row);
+					plat.sourceX = tilesheetX;
+					plat.sourceY = tilesheetY;
+					sprites.push(plat);
+					moving_plat.push(plat);
 					break; 
 					
 				  default:

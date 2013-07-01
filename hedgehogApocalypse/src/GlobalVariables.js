@@ -16,6 +16,7 @@ var HEDGEHOG = 2;
 var BOX = 4;
 var DOOR = 5;
 var GRASS = 6;
+var PLAT = 10;
 
 //The size of each tile cell
 var SIZE = 64;
@@ -34,6 +35,7 @@ var sprites = [];
 var boxes = [];
 var messages = [];
 var players = [];
+var moving_plat = []; //stores moving platforms
 
 var levelChangeTimer = 0; //Delay between reaching the goal, and the next level being drawn.
 
