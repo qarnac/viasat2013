@@ -101,8 +101,11 @@ function levelComplete() {
 		levelCounter++;
 		clearLevel(); //Another half-second will pass in here
 
+	
 		if (levelCounter < levelMaps.length) //If there are more maps to be played
 		{
+			var ROWS = levelMaps[levelCounter].length;
+			var COLUMNS = levelMaps[levelCounter][0].length;
 			//Make sure the gameWorld size matches the size of the next level
 			gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
 			gameWorld.height = levelMaps[levelCounter].length * SIZE;
@@ -145,6 +148,7 @@ function buildMap(levelMap)
 					cat = new Cat(column, row);
 					cat.sourceX = tilesheetX;
 					cat.sourceY = tilesheetY;
+					cat.scrollable = true;
 					players.push(cat);
 					break;
 					
@@ -153,6 +157,7 @@ function buildMap(levelMap)
 					hedgehog.sourceX = tilesheetX;
 					hedgehog.sourceY = tilesheetY;
 					hedgehogsRemaining++; //A counter of how many hedgehogs are on a given map. Player can only transition to the next level when this is back to 0.
+					hedgehog.scrollable = true;
 					sprites.push(hedgehog);
 					break;
 				  
@@ -160,14 +165,17 @@ function buildMap(levelMap)
 					var box = new Box(column, row);
 					box.sourceX = tilesheetX;
 					box.sourceY = tilesheetY;
+					box.scrollable = true;
 					sprites.push(box);
 					boxes.push(box);
+					
 					break;         
 				  
 				  case DOOR:
 					door = new spriteObject(column, row);
 					door.sourceX = tilesheetX;
 					door.sourceY = tilesheetY;
+					door.scrollable = true;
 					sprites.push(door);
 					break; 
 					
@@ -175,6 +183,7 @@ function buildMap(levelMap)
 					var sprite = new spriteObject(column, row);
 					sprite.sourceX = tilesheetX;
 					sprite.sourceY = tilesheetY;
+					sprite.scrollable = true;
 					backdrop.push(sprite);
 				}
 			}
@@ -195,6 +204,7 @@ function createOtherObjects()
 	gameOverDisplay.x = canvas.width / 2 - gameOverDisplay.width / 2;
 	gameOverDisplay.y = canvas.height / 2 - gameOverDisplay.height / 2;
 	gameOverDisplay.visible = false;
+	gameOverDisplay.scrollable = false;
 	sprites.push(gameOverDisplay);
 
 	//The actual "you won"/"you lost" message.
@@ -205,6 +215,7 @@ function createOtherObjects()
 	gameOverMessage.fillStyle = "black";
 	gameOverMessage.text = "";
 	gameOverMessage.visible = false;
+	gameOverMessage.scrollable = false;
 	messages.push(gameOverMessage);
 }
 
@@ -271,7 +282,7 @@ function render()
     for(var i = 0; i < sprites.length; i++)
     {
       var sprite = sprites[i];
-      if(sprite.visible)
+      if(sprite.visible && sprite.scrollable)
       {
         drawingSurface.drawImage
         (
@@ -283,6 +294,17 @@ function render()
           sprite.width, sprite.height
         ); 
       }
+	  if(sprite.visible && !sprite.scrollable)
+			{
+				drawingSurface.drawImage
+				(
+					image, 
+					sprite.sourceX, sprite.sourceY, 
+					sprite.sourceWidth, sprite.sourceHeight,
+					Math.floor(camera.x + sprite.x), Math.floor(camera.y + sprite.y), 
+					sprite.width, sprite.height
+				); 
+			}
     }
   }
   
@@ -305,6 +327,7 @@ function render()
       }
     }
   }
+  
   
   	drawingSurface.restore();
 
