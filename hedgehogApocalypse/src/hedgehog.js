@@ -56,6 +56,8 @@ Hedgehog.prototype.update = function()
 	*/
 	if(Math.floor(this.x) % SIZE === 0 && Math.floor(this.y) % SIZE === 0)
 	{
+		var ROWS = levelMaps[levelCounter].length;
+		var COLUMNS = levelMaps[levelCounter][0].length;
 
 	//Find the hedgehog's column and row in the array
 		var hedgehogColumn = Math.floor(this.x / SIZE);
@@ -65,7 +67,6 @@ Hedgehog.prototype.update = function()
 	//First
 		if(hedgehogRow < ROWS - 1)
 		{ 
-			var test = levelMaps[levelCounter][hedgehogRow +1][hedgehogColumn];
 			var thingBelowLeft = levelMaps[levelCounter][hedgehogRow + 1][hedgehogColumn - 1];
 			var thingBelowRight = levelMaps[levelCounter][hedgehogRow + 1][hedgehogColumn + 1];
 

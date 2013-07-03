@@ -181,6 +181,7 @@ function buildMap(levelMap)
 				      
 				  case PLAT:
 					var plat = new Platform(column, row);
+					tilesheetY -= (SIZE*2);
 					plat.sourceX = tilesheetX;
 					plat.sourceY = tilesheetY;
 					sprites.push(plat);
