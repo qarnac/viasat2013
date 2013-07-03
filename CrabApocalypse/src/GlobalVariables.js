@@ -43,7 +43,7 @@ var assetsToLoad = [];
 var assetsLoaded = 0;
 
 //Game variables
-var hedgehogsRemaining = 0;
+var crabsRemaining = 0;
 
 //Game states
 var LOADING = 0;

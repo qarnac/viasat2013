@@ -87,7 +87,7 @@ Cat.prototype.update = function()
 		if (sprites[i] === door)
 		{
 			//Test collision with the right side of the door. That way, the player is standing all the way inside of it, not just barely touching the edge.
-			if (hitTestRectangle(door, this) && hedgehogsRemaining === 0)
+			if (hitTestRectangle(door, this) && crabsRemaining === 0)
 			{
 			  //gameState = OVER;
 			  gameState = LEVEL_COMPLETE;
@@ -97,16 +97,16 @@ Cat.prototype.update = function()
 		//with Hedgehog
 		if (sprites[i] instanceof Hedgehog && hitTestCircle(this, sprites[i]) && sprites[i].state === sprites[i].NORMAL)
 		{
-			var hedgehog = sprites[i];
-			if (this.vy > 0) //If the player comes at the hedgehog from above, squash the hedgehog
+			var crab = sprites[i];
+			if (this.vy > 0) //If the player comes at the crab from above, squash the crab
 			{
-				blockCircle(this, hedgehog, true);
-				hedgehogsRemaining--;
-				hedgehog.state = hedgehog.SQUASHED;
-				hedgehog.update();  
-				hedgehog.deathcounter = 60; //There will be a 60-frame delay where the hedgehog has a different sprite, before disappearing.
+				blockCircle(this, crab, true);
+				crabsRemaining--;
+				crab.state = crab.SQUASHED;
+				crab.update();  
+				crab.deathcounter = 60; //There will be a 60-frame delay where the crab has a different sprite, before disappearing.
 			}
-			else //Otherwise, hedgehog eats cat
+			else //Otherwise, crab eats cat
 			{
 				gameState = OVER;
 			}
