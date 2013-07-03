@@ -4,14 +4,14 @@ var drawingSurface = canvas.getContext("2d");
 var image;
 
 //Sprites we need to access by name
-var cat = null;
+var astronaut = null;
 var door = null;
 var gameOverDisplay = null;
 var gameOverMessage = null;
 
 //Map code
 var EMPTY = 0;
-var CAT = 1;
+var ASTRONAUT = 1;
 var HEDGEHOG = 2;
 var BOX = 4;
 var DOOR = 5;

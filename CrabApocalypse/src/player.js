@@ -1,13 +1,13 @@
-Cat.prototype = new spriteObject();
-Cat.prototype.constructor = Cat;
-function Cat(column, row){
+Astronaut.prototype = new spriteObject();
+Astronaut.prototype.constructor = Astronaut;
+function Astronaut(column, row){
 	spriteObject.call(this);
 	
 	this.x = column * SIZE;
 	this.y = row * SIZE;
 }
 
-Cat.prototype.update = function()
+Astronaut.prototype.update = function()
 {
   //JT: if just standing still
 	if (this.isOnGround)
@@ -39,7 +39,7 @@ Cat.prototype.update = function()
     this.friction = 1;
   }
 
-  //Set the cat's acceleration, friction and gravity 
+  //Set the astronaut's acceleration, friction and gravity 
   //to zero if none of the arrow keys are being pressed
   if(!moveLeft && !moveRight)
   {
@@ -76,7 +76,7 @@ Cat.prototype.update = function()
 		this.vy = this.speedLimit * 2;
 	} 
   
-  //Move the cat
+  //Move the astronaut
 	this.x += this.vx;
 	this.y += this.vy;
   
@@ -94,8 +94,8 @@ Cat.prototype.update = function()
 			}  
 		}
 		
-		//with Hedgehog
-		if (sprites[i] instanceof Hedgehog && hitTestCircle(this, sprites[i]) && sprites[i].state === sprites[i].NORMAL)
+		//with Crab
+		if (sprites[i] instanceof Crab && hitTestCircle(this, sprites[i]) && sprites[i].state === sprites[i].NORMAL)
 		{
 			var crab = sprites[i];
 			if (this.vy > 0) //If the player comes at the crab from above, squash the crab
@@ -106,7 +106,7 @@ Cat.prototype.update = function()
 				crab.update();  
 				crab.deathcounter = 60; //There will be a 60-frame delay where the crab has a different sprite, before disappearing.
 			}
-			else //Otherwise, crab eats cat
+			else //Otherwise, crab eats astronaut
 			{
 				gameState = OVER;
 			}
@@ -119,7 +119,7 @@ Cat.prototype.update = function()
     
 			if(collisionSide === "bottom" && this.vy >= 0)
 			{
-				//Tell the game that the cat is on the ground if 
+				//Tell the game that the astronaut is on the ground if 
 				//it's standing on top of a platform
 				this.isOnGround = true;
 

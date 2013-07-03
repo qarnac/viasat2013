@@ -5,7 +5,7 @@ image.addEventListener("load", loadHandler, false);
 image.src = "../images/hedgehogApocalypse.png";
 assetsToLoad.push(image);
 
-//JT:added a new sprite sheet for the cat astronaught
+//JT:added a new sprite sheet for the astronaut
 var astro = new Image();
 astro.addEventListener("load", loadHandler, false);
 astro.src = "../images/astro.png";
@@ -144,16 +144,16 @@ function buildMap(levelMap)
 
 				switch (currentTile)
 				{
-				  case CAT:
-					cat = new Cat(column, row);
-					cat.sourceX = tilesheetX;
-					cat.sourceY = tilesheetY;
-					cat.scrollable = true;
-					players.push(cat);
+				  case ASTRONAUT:
+					astronaut = new Astronaut(column, row);
+					astronaut.sourceX = tilesheetX;
+					astronaut.sourceY = tilesheetY;
+					astronaut.scrollable = true;
+					players.push(astronaut);
 					break;
 					
 				  case HEDGEHOG:
-					var hedgehog = new Hedgehog(column, row);
+					var hedgehog = new Crab(column, row);
 					hedgehog.sourceX = tilesheetX;
 					hedgehog.sourceY = tilesheetY;
 					hedgehogsRemaining++; //A counter of how many hedgehogs are on a given map. Player can only transition to the next level when this is back to 0.

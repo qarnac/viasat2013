@@ -1,6 +1,6 @@
-Hedgehog.prototype = new spriteObject();
-Hedgehog.prototype.constructor = Hedgehog;
-function Hedgehog(column, row)
+Crab.prototype = new spriteObject();
+Crab.prototype.constructor = Crab;
+function Crab(column, row)
 {
 	spriteObject.call(this);
 	
@@ -14,7 +14,7 @@ function Hedgehog(column, row)
 	this.y = row * SIZE;
 }
 
-Hedgehog.prototype.update = function()
+Crab.prototype.update = function()
 {
 	/*
 	Update sourceX and sourceY (if they get stomped, they turn into an explosion for a second)
