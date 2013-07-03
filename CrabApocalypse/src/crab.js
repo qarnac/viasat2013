@@ -12,6 +12,8 @@ function Crab(column, row)
 	this.deathcounter = -1; //Used for the transition stage between the crab getting squashed, and it disappearing. When they get squashed, this changes to a number greater than 0. The update function will decrement until it reaches 0, then remove it.
 	this.x = column * SIZE;
 	this.y = row * SIZE;
+	this.shoots = Math.round(Math.random()); //Randomly decide whether the monster shoots or not
+	this.counter = Math.round(Math.random()*15*60); //Keeps track of time for the monsters. When it is an interval of 15 seconds, shoot a fireball. This will initialize it to some random amount between 0 and 15 (so that they all have offset timings)
 }
 
 Crab.prototype.update = function()
@@ -22,6 +24,7 @@ Crab.prototype.update = function()
 	If they have been stomped, update the counter (counts down till disappearing).
 	Once the counter is at 0, remove.
 	*/
+	
 	this.sourceX = this.state[0] * this.sourceWidth;
 	this.sourceY = this.state[1] * this.sourceHeight;
 	
@@ -40,6 +43,24 @@ Crab.prototype.update = function()
 		removeObject(this, sprites);
 	}
 	
+	/*If they are a monster that shoots fireballs, then increment the timer. 
+	If the timer is an interval of 15 seconds, then shoot the fireball. Starts from the center of the crab and goes the same direction as the crab is moving.
+	Collision between player and fireball is done in player.js. 
+	The fireballs also disappear once they hit a block (done in fireball.js)
+	*/
+	if (this.shoots === true && this.deathcounter === -1)
+	{
+		this.counter++;
+		
+		if (this.counter%(6*60) === 0)
+		{
+			var fireball = new Fireball();
+			fireball.vx = this.vx * 3;
+			fireball.x = this.centerX();
+			fireball.y = this.centerY();
+			sprites.push(fireball);
+		}
+	}
 	
     /*Check whether the crab is at a cell corner
 	Figure out the crab's column and row on the map array.

@@ -5,10 +5,17 @@ function Astronaut(column, row){
 	
 	this.x = column * SIZE;
 	this.y = row * SIZE;
+	this.lives = 1; //When this reaches 0, game is over. Player loses a life when they hit a monster or the monster's fireball
 }
 
 Astronaut.prototype.update = function()
 {
+	//End the game if the player ran out of lives
+	if (this.lives === 0)
+	{
+		gameState = OVER;
+	}
+
   //JT: if just standing still
 	if (this.isOnGround)
 	{
@@ -83,6 +90,14 @@ Astronaut.prototype.update = function()
 	//Collisions
 	for (var i = 0; i < sprites.length; i++)
 	{
+		//With fireball (from some crabmonsters)
+		if (sprites[i] instanceof Fireball && hitTestRectangle(sprites[i], this))
+		{
+			this.lives--;
+			removeObject(sprites[i], sprites);
+			i--;
+		}
+		
 		//with Door
 		if (sprites[i] === door)
 		{
@@ -108,7 +123,7 @@ Astronaut.prototype.update = function()
 			}
 			else //Otherwise, crab eats astronaut
 			{
-				gameState = OVER;
+				this.lives--;
 			}
 		}
 		
@@ -148,6 +163,7 @@ Astronaut.prototype.update = function()
 				this.isOnGround = false;
 			}
 		}
+		
 	}
   
     //Screen boundaries

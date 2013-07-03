@@ -152,12 +152,13 @@ function buildMap(levelMap)
 					players.push(astronaut);
 					break;
 					
-				  case HEDGEHOG:
+				  case CRAB:
 					var crab = new Crab(column, row);
 					crab.sourceX = tilesheetX;
 					crab.sourceY = tilesheetY;
 					crabsRemaining++; //A counter of how many crabs are on a given map. Player can only transition to the next level when this is back to 0.
 					crab.scrollable = true;
+					crab.shoots = true;
 					sprites.push(crab);
 					break;
 				  

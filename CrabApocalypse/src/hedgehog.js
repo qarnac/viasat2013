@@ -9,7 +9,7 @@ function Crab(column, row)
 	this.state = this.NORMAL;
 	this.speed = 1;
 	this.vx = this.speed;
-	this.deathcounter = -1; //Used for the transition stage between the hedgehog getting squashed, and it disappearing. When they get squashed, this changes to a number greater than 0. The update function will decrement until it reaches 0, then remove it.
+	this.deathcounter = -1; //Used for the transition stage between the crab getting squashed, and it disappearing. When they get squashed, this changes to a number greater than 0. The update function will decrement until it reaches 0, then remove it.
 	this.x = column * SIZE;
 	this.y = row * SIZE;
 }
@@ -41,8 +41,8 @@ Crab.prototype.update = function()
 	}
 	
 	
-    /*Check whether the hedgehog is at a cell corner
-	Figure out the hedgehog's column and row on the map array.
+    /*Check whether the crab is at a cell corner
+	Figure out the crab's column and row on the map array.
 	First, check the objects on the floor beneath it. If there are no boxes in its current direction (ie, just open air), then go the other way.
 	
 	Second, if there is something to walk on (box or grass) to the left, then go that way.
@@ -59,7 +59,7 @@ Crab.prototype.update = function()
 		var ROWS = levelMaps[levelCounter].length;
 		var COLUMNS = levelMaps[levelCounter][0].length;
 
-	//Find the hedgehog's column and row in the array
+	//Find the crab's column and row in the array
 		var hedgehogColumn = Math.floor(this.x / SIZE);
 		var hedgehogRow = Math.floor(this.y / SIZE);
 		var currentLevel = levelMaps[levelCounter];

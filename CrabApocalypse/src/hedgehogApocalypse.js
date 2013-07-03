@@ -152,13 +152,13 @@ function buildMap(levelMap)
 					players.push(astronaut);
 					break;
 					
-				  case HEDGEHOG:
-					var hedgehog = new Crab(column, row);
-					hedgehog.sourceX = tilesheetX;
-					hedgehog.sourceY = tilesheetY;
+				  case CRAB:
+					var crab = new Crab(column, row);
+					crab.sourceX = tilesheetX;
+					crab.sourceY = tilesheetY;
 					hedgehogsRemaining++; //A counter of how many hedgehogs are on a given map. Player can only transition to the next level when this is back to 0.
-					hedgehog.scrollable = true;
-					sprites.push(hedgehog);
+					crab.scrollable = true;
+					sprites.push(crab);
 					break;
 				  
 				  case BOX:

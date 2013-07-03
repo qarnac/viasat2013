@@ -12,7 +12,7 @@ var gameOverMessage = null;
 //Map code
 var EMPTY = 0;
 var ASTRONAUT = 1;
-var HEDGEHOG = 2;
+var CRAB = 2;
 var BOX = 4;
 var DOOR = 5;
 var GRASS = 6;
