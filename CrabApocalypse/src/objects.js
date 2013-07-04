@@ -19,13 +19,15 @@ spriteObject = function(column, row) {
   this.accelerationX = 0; 
   this.accelerationY = 0; 
   this.speedLimit = 5; 
-  this.friction = 0.96;
+  this.friction = 5000;
   this.bounce = -0.7;
   this.gravity = 0.3;
     
   //Platform game properties   
   this.isOnGround = undefined;
   this.jumpForce = -10;
+  
+  this.alpha = 1;
 };
 
 spriteObject.prototype.centerX = function() {

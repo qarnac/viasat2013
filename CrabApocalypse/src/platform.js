@@ -12,7 +12,6 @@ function Platform(column, row)
         //these variables check to see how much the platforms will move
         this.topMax =  this.y + SIZE;
         this.botMax =  this.y - SIZE;
-        
 }
 
 //JT: still have to change the blocks to the appropirate kind in order to jump over them
@@ -22,7 +21,6 @@ Platform.prototype.update = function()
     //this will have the platform move;    
     //this.x += this.vx;
     
-    this.y += this.vy;
     
     //using a switch because for some reason I was having trouble with if statements
     switch (this.y)
@@ -34,5 +32,6 @@ Platform.prototype.update = function()
         default:
             break;
     }
-   
+       this.y += this.vy;
+
 }

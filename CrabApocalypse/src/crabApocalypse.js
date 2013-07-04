@@ -158,7 +158,6 @@ function buildMap(levelMap)
 					crab.sourceY = tilesheetY;
 					crabsRemaining++; //A counter of how many crabs are on a given map. Player can only transition to the next level when this is back to 0.
 					crab.scrollable = true;
-					crab.shoots = true;
 					sprites.push(crab);
 					break;
 				  
@@ -261,7 +260,6 @@ function endGame()
 function render()
 { 
   drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
-  
   drawingSurface.save();
   drawingSurface.translate(-camera.x, -camera.y);
   
@@ -287,36 +285,39 @@ function render()
 	}
 
   //Display the sprites
-  if(sprites.length !== 0)
-  {
-    for(var i = 0; i < sprites.length; i++)
-    {
-      var sprite = sprites[i];
-      if(sprite.visible && sprite.scrollable)
-      {
-        drawingSurface.drawImage
-        (
+	if(sprites.length !== 0)
+	{
+		for(var i = 0; i < sprites.length; i++)
+		{
+			var sprite = sprites[i];			
 
-          image, 
-          sprite.sourceX, sprite.sourceY, 
-          sprite.sourceWidth, sprite.sourceHeight,
-          Math.floor(sprite.x), Math.floor(sprite.y), 
-          sprite.width, sprite.height
-        ); 
-      }
-	  if(sprite.visible && !sprite.scrollable)
+			if (sprite.visible && sprite.scrollable)
+			{
+				drawingSurface.globalAlpha = sprite.alpha; //Alpha used for the monsters which fade in and out.
+				drawingSurface.drawImage
+				(
+				image, 
+				sprite.sourceX, sprite.sourceY, 
+				sprite.sourceWidth, sprite.sourceHeight,
+				Math.floor(sprite.x), Math.floor(sprite.y), 
+				sprite.width, sprite.height
+				); 
+			}
+			
+			if(sprite.visible && !sprite.scrollable)
 			{
 				drawingSurface.drawImage
 				(
-					image, 
-					sprite.sourceX, sprite.sourceY, 
-					sprite.sourceWidth, sprite.sourceHeight,
-					Math.floor(camera.x + sprite.x), Math.floor(camera.y + sprite.y), 
-					sprite.width, sprite.height
+				image, 
+				sprite.sourceX, sprite.sourceY, 
+				sprite.sourceWidth, sprite.sourceHeight,
+				Math.floor(camera.x + sprite.x), Math.floor(camera.y + sprite.y), 
+				sprite.width, sprite.height
 				); 
 			}
-    }
-  }
+			drawingSurface.globalAlpha = 1;
+		}
+	}
   
   //JT: Display the player
   if(players.length !== 0)

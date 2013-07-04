@@ -12,8 +12,16 @@ function Crab(column, row)
 	this.deathcounter = -1; //Used for the transition stage between the crab getting squashed, and it disappearing. When they get squashed, this changes to a number greater than 0. The update function will decrement until it reaches 0, then remove it.
 	this.x = column * SIZE;
 	this.y = row * SIZE;
-	this.shoots = Math.round(Math.random()); //Randomly decide whether the monster shoots or not
-	this.counter = Math.round(Math.random()*15*60); //Keeps track of time for the monsters. When it is an interval of 15 seconds, shoot a fireball. This will initialize it to some random amount between 0 and 15 (so that they all have offset timings)
+	
+	//Some of the monsters shoot out projectiles
+	this.shoots = Math.round(Math.random()); //Random value either 0 or 1. Choses whether the monsters shoot fireballs
+	
+	//Some of the monsters fade in and out
+	this.fades = !(this.shoots); //Monters will all exclusively either shoot or fade. 
+	this.alpha = 1;
+	this.modifier = .01;
+
+	this.counter = Math.round(Math.random()*6*60); //Keeps track of time for the monsters, used for both fade and shoot. Start with a random offset between 0 and 6 seconds, so they shoot/fade at different times.
 }
 
 Crab.prototype.update = function()
@@ -36,6 +44,7 @@ Crab.prototype.update = function()
     
 	if (this.deathcounter > 0)
 	{
+		this.alpha = 1; 
 		this.deathcounter--;
 	}
 	if (this.deathcounter === 0)
@@ -43,15 +52,14 @@ Crab.prototype.update = function()
 		removeObject(this, sprites);
 	}
 	
+	this.counter++;
 	/*If they are a monster that shoots fireballs, then increment the timer. 
 	If the timer is an interval of 15 seconds, then shoot the fireball. Starts from the center of the crab and goes the same direction as the crab is moving.
 	Collision between player and fireball is done in player.js. 
 	The fireballs also disappear once they hit a block (done in fireball.js)
 	*/
-	if (this.shoots === true && this.deathcounter === -1)
-	{
-		this.counter++;
-		
+	if (this.shoots)
+	{		
 		if (this.counter%(6*60) === 0)
 		{
 			var fireball = new Fireball();
@@ -60,6 +68,45 @@ Crab.prototype.update = function()
 			fireball.y = this.centerY();
 			sprites.push(fireball);
 		}
+	}
+	
+	/*If they are a monster that fades in and out, control the alpha here
+	They have 8-second cycles, 2 seconds for each: Filly visible, fully hidden, fading in, and fading out.
+	
+	It is in the render function where alpha actually effects the visibility. 
+	I set drawingSurface.globalAlpha to the sprite.alpha for each individual sprite in the loop.
+	
+	*/
+	if (this.fades)
+	{	
+		//100% visibility. Directly set alpha to 1.
+		if ((this.counter/60)%8 === 0)
+		{
+			this.modifier = 0;
+			this.alpha = 1;
+		}
+		
+		//Fading out, set a modifier to negative 1/120 (2 seconds, 60 frames per second)
+		if ((this.counter/60)%8 === 2) 
+		{
+			this.modifier += -(1/120);
+		}
+		
+		//0% visibility. Directly set alpha to 0.
+		if ((this.counter/60)%8 === 4)
+		{
+			this.modifier = 0;
+			this.alpha = 0;
+		}
+		
+		//Fading in, set a modifier to positive 1/120 (2 seconds, 60 frames per second)
+		if ((this.counter/60)%8 === 6)
+		{
+			this.modifier += (1/120);
+		}
+		
+		//In the case of fading in/out, here is where modifier affects the visibility.
+		this.alpha += this.modifier;
 	}
 	
     /*Check whether the crab is at a cell corner
