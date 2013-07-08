@@ -78,7 +78,7 @@ Missile.prototype.update = function () {
 			
 			if (this.hit(sprite)) 
 				{
-				console.log(sprite.id);
+				//console.log(sprite.id); //Log which powerup was hit
 				for (var j = 0; j < sprites.length; j++) //Find the cannon
 				{
 					if (sprites[j] instanceof Cannon) { cannon = sprites[j]; }
@@ -111,6 +111,7 @@ Missile.prototype.update = function () {
 						break;
 					case "Repair": //Grants extra lives.
 						lives++;
+						$('#lives').val(lives);
 						break;
 						
 					//End powerups

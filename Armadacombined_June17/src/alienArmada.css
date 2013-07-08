@@ -32,7 +32,6 @@ input {
 
 }
 
-
 #currVol {
 	display: inline;
 }
@@ -42,6 +41,6 @@ input {
 	width: 60px;
 	}
 
-	span {
+span {
 	color: #D00000;
 }

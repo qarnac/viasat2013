@@ -185,38 +185,38 @@ function playGame()
   }
   
   //Powerups, some spawn at random scores, some at random times. After they spawn, they will pick a new random time/score to spawn at. Original spawn rates defined in GlobalVariables
-  if (score >= redSpawn)
+  if (score >= redSpawn && $('#redspawns').is(':checked'))
   {
 	var redShip = new Powerup("Red");
 	sprites.push(redShip);
 	redSpawn += Math.round(Math.random()*40+6); //Subsequent spawns will be within 40-score ranges
   }  
-  if (score >= bombSpawn)
+  if (score >= bombSpawn && $('#bombspawns').is(':checked'))
   {
 	var bomb = new Powerup("Bomb");
 	sprites.push(bomb);
 	bombSpawn += Math.round(Math.random()*40+6); //Same as the original spawn rate
   }
-  if (score >= scoreUpSpawn)
+  if (score >= scoreUpSpawn && $('#scoreupspawns').is(':checked'))
   {
 	var scoreup = new Powerup("Scoreup");
 	sprites.push(scoreup);
 	scoreUpSpawn += Math.round(Math.random()*60+6); //Same as the original spawn rate
   }
  
-  if (timer === tealTimer)
+  if (timer === tealTimer && $('#tealspawns').is(':checked'))
   {
 	var tealShip = new Powerup("Teal");
 	sprites.push(tealShip);  
 	tealTimer += Math.round(Math.random()*60*50+20); //Same as the original spawn rate
   }
-  if (timer === slowTimer)
+  if (timer === slowTimer && $('#slowspawns').is(':checked'))
   {
 	var slow = new Powerup("Slow");
 	sprites.push(slow);
 	slowTimer += Math.round (Math.random()*60*30+10); //Spawn a slow between 10 and 40 seconds
   }
-  if (timer === repairTimer)
+  if (timer === repairTimer && $('#repairspawns').is(':checked'))
   {
 	var repair = new Powerup("Repair");
 	sprites.push(repair);
@@ -249,7 +249,8 @@ function playGame()
     
     scenes[i].bgScroll();
   }
-}
+	
+}//end playGame
 
 function endGame()
 {
@@ -267,7 +268,7 @@ function endGame()
 
 function pauseGame()
 {
-	console.log("Paused." /*Sprite count: " + sprites.length*/);	
+	//console.log("Paused." /*Sprite count: " + sprites.length*/);	
 }
 function makeAlien()
 {
