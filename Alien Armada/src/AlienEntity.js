@@ -11,10 +11,10 @@ function Alien() {
 	this.vy = 1;
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
-	this.health = this.MAXHEALTH = 1;
-	this.bounty = 1; //Score value for killing
+	this.health = $('#alienHP').val();
+	this.MAXHEALTH = $('#alienHP').val();
+	this.bounty = parseInt($('#alienbounty').val(), 10); //Score value for killing
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
-	
 }
 
 Alien.prototype.update = function () {
@@ -24,6 +24,7 @@ Alien.prototype.update = function () {
 	{
 		//gameState = OVER;
 		lives--;
+		$('#lives').val(lives);
 		this.deathcounter=0;
 		if (lives <= 0)
 		{
@@ -33,8 +34,8 @@ Alien.prototype.update = function () {
 	
 	if (this.exploded) {
 		//Temporary solution for death animations. Need to rearrange tilesheet.
-		if (this.MAXHEALTH === 15) {this.sourceX = 192; }
-		else {this.sourceX = 64; } //YO: the purpose of this line is to switch to a new sprite but need to plan and rearrange the tilesheet
+		if (this.sourceX === 128) {this.sourceX = 192; }
+		else if (this.sourceX === 32) {this.sourceX = 64; } 
 		this.deathcounter--;
 	} else if (this.health <= 0)
 	{ 	//YO: Instead of calling a new function, use a comment to explain what it is

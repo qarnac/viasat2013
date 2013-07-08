@@ -380,8 +380,8 @@ function makeMother()
 	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
-	mothership.health = mothership.MAXHEALTH = 15;
-	mothership.bounty = 20;
+	mothership.health = mothership.MAXHEALTH = $('#motherHP').val();
+	mothership.bounty = parseInt($('#motherbounty').val(), 10)
 	
 	sprites.push(mothership);
   
@@ -397,12 +397,12 @@ function fireMissile()
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}
-	else if (cannon.model === 1) //red ship
-	{	//YO: How is this different from model 0?
+	else if (cannon.model === 1) //fire mothership seekers
+	{	
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}
-	else if (cannon.model === 2) //teal ship
+	else if (cannon.model === 2) //fire 2 angled missiles
 	{
 		var missile = new Missile(cannon);	
 		missile.vx = 2;

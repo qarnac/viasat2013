@@ -4,7 +4,7 @@ function Cannon(x, y) {
 	EntityClass.call(this);
 	this.x = x; 
 	this.y = y;	
-	this.model = 0; //Model affects the looks and behavior of the ship.
+	this.model = 0; //Model affects the behavior of the ship.
 	this.health = this.MAXHEALTH = 2;
 }
 
@@ -26,23 +26,5 @@ Cannon.prototype.update = function () {
 	if(!moveLeft && !moveRight)
 	{
 		this.vx = 0;
-	}
-}
-
-Cannon.prototype.changeModel = function(type) {
-	this.model = type;
-	
-	switch (type)
-	{
-		case 0: //Default ship
-			break;
-		case 1: //Red ship
-			Missile.prototype.damage = 1;
-			this.sourceX = 512;
-			break;
-		case 2: //Teal ship
-			Missile.prototype.damage = 1;
-			this.sourceX = 544;
-			break;
 	}
 }

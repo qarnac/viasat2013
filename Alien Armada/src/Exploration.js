@@ -133,6 +133,36 @@ $(document).ready(function(){
 				break;
 		}
 	});
+//Ship firing types
+	$('#missilechoices input').on("click", function(){
+	switch($(this).attr('id'))
+	{
+		case "straight":
+			cannon.model = 0;
+			break;
+		case "seeker":
+			cannon.model = 1;
+			break;
+		case "spread":
+			cannon.model = 2;
+			break;
+	}});
 	
+//Grant lives as requested
+	$('#lives').val(lives); //Set default lives
+	$('#setlives').on("click", function(){
+		lives = $('#lives').val(lives);
+	});
+
+
+//Alter alien health
+	$('#alienHealth').on("input", function(){
+		$('#alienHP').val(this.value);
+	});
+//Alter mothership health
+	$('#motherHealth').on("input", function(){
+		$('#motherHP').val(this.value);
+	});
+
 	
 });

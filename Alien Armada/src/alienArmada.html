@@ -9,25 +9,20 @@
 <link rel="stylesheet" href="alienArmada.css">
 
 <!-- The canvas -->
-<table border="2px solid green">
+<table>
 	<tr>
 		<td><canvas width="480" height="320"></canvas></td>
-		<td valign="top">
-			<table id="options" style="width: 200px; border: 1px solid black">
-				<tr> <th id="Optionshead" style="background-color: black">Options: </center></th>
-
-				<tr><th>Volume:</th></tr>
-				<tr><td align="right">
-					Master <input id="volAll" type="range" min="1" max="100" value="30" style="width: 90px"> <p id="currVol" style="display: inline">30%</p><br>
-					Hotkey: <b>S</b> <button id="muteMusic"><span>Un</span>mute music</button><br>
-					Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button></tr>
-				<tr><th id="pauseMessage">Press "ESC" to <span></span>pause </th></tr>
-			</table>
-	</td>
 	
 	<!-- The section for learning about JavaScript -->
 	<td id="exploration" width="480">
 		<div id="menu" style="font-size: 10px">
+			<h3>Volume control</h3>
+			<div>
+				Master <input id="volAll" type="range" min="1" max="100" value="30" style="width: 90px"> <p id="currVol" style="display: inline">30%</p><br>
+				Hotkey: <b>S</b> <button id="muteMusic"><span>Un</span>mute music</button><br>
+				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
+		
+			</div>
             <h3>Control the powerups</h3>
             <div>
 				<p>Select all of the powerups you would like to see:</p>
@@ -58,9 +53,11 @@
 				<input type='radio' name='shipchoice' id='red'>Red</br>
 				</div>
 				<p>How would you like your ship to shoot?</p>
+				<div id="missilechoices">
 				<input type='radio' name='firetype' id='straight'>Fire one missile straight ahead<br>
-				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side<br>
-				<input type='radio' name='firetype' id='seeker'>Seek out motherships
+				<input type='radio' name='firetype' id='seeker'>Seek out motherships<br>
+				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side
+				</div>
 			</div>
 						
 			<h3>Give yourself more lives</h3>
@@ -69,8 +66,21 @@
 				<input type="text" id="lives" value=0>
 				<p>	<input type="submit" value="Apply" id="setlives" style="width: auto">
 			</div>
+			
+			<h3>Change the aliens</h3>
+			<div>
+				<dl>
+				<dt><b>Aliens</b></dt>
+				<dd>How much health should the aliens have? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="alienHP" value=1 disabled></dd>
+				<dd>How much score are the aliens worth?<input type="text" id="alienbounty" value=1></dd>
+				
+				<dt><b>Motherships</b></dt>
+				<dd>How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHP" value=15 disabled></dd>
+				<dd>How much score are motherships worth?<input type="text" id="motherbounty" value=20></dd>
+			</div>
 	</td>
 	</tr>
+	<tr><td id="pauseMessage"align="center">Press "ESC" to <span></span>pause</td></tr>
 </table>
 
 

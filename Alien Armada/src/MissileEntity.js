@@ -85,16 +85,6 @@ Missile.prototype.update = function () {
 				}
 				switch(sprite.id)
 				{					
-					//Powerup choices
-					case "Red": //Red ship powerup -- Mothership-seeking missiles
-						cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
-						cannon.changeModel(1); //Change the cannon's type (which controls its missile behavior)
-						break;
-			
-					case "Teal": //Fire missiles in a V pattern
-						cannon.sourceX = sprite.sourceX; //Change the cannon's sprite to the appropriate ship icon
-						cannon.changeModel(2);	//Change the cannon's type (which controls its missile behavior)
-						break;
 					case "Bomb": //Damage enemies on screen
 						for (var k = 0; k < sprites.length; k++) { sprites[k].health -= this.damage; }
 						break;
@@ -124,12 +114,12 @@ Missile.prototype.update = function () {
 	}//End collisions
 	
 	
-	/* YO: commented out to avoid using mothership. Don't have time to understand this code yet
+	// YO: commented out to avoid using mothership. Don't have time to understand this code yet
 	var mothership;
 	var cannon;
 	for (var i = 0; i < sprites.length; i++)
 	{
-		if (sprites[i] instanceof Mothership) { mothership = sprites[i]; }
+		if (sprites[i].sourceX === 128) { mothership = sprites[i]; }
 		else if (sprites[i] instanceof Cannon && sprites[i].model === 1) {cannon = sprites[i].model;}
 	}
 	
@@ -174,5 +164,4 @@ Missile.prototype.update = function () {
       //Remove the missile from the sprites array
 	this.deathcounter--;
     }
-	*/
 }
