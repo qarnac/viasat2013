@@ -4,7 +4,7 @@ function Cannon(x, y) {
 	EntityClass.call(this);
 	this.x = x; 
 	this.y = y;	
-	this.model = 0; //Model affects the behavior of the ship.
+	this.model = 0; //Model affects how the ship fires
 	this.health = this.MAXHEALTH = 2;
 }
 

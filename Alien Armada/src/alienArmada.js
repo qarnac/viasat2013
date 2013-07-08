@@ -189,10 +189,19 @@ function playGame()
   //--- The score 
   //Display the score
   scoreDisplay.text = "Score: " + score;
-  if(score === scoreNeededToWin)
+  
+  //Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
+  if(score >= scoreNeededToWin && $('#scorenum').prop('disabled') === false)
   {
+	winConditions++;
     gameState = OVER;
   }
+  if (timer >= timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply timeTowin by 60 because there are 60 frames in a second
+  {
+	winConditions++;
+	gameState = OVER;
+  }
+  
   
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
    if (score >= 30 && loadLevel === false) //Go to the next level
@@ -216,23 +225,30 @@ function playGame()
 function controlPowerups()
 {
 	timer++;
+/*
+	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
+*/
 	
 //Repair
-	if ($('#repairspawns').is(':checked'))
+	if ($('#repairspawns').is(':checked')) //If the button to spawn repairs has been checked
 	{
-		if (repairtype === "scorebased")
+		//If repair kits drop on a score basis
+		if (repairtype === "scorebased") 
 		{
-			if (score >= repairSpawn)
+			if (score >= repairSpawn) //Then check if the current score is high enough to merit a  kit
 			{
+				//Make a new repair kit
 				var repair = new Powerup("Repair");
 				sprites.push(repair);
-				repairSpawn = score + Math.round(Math.random()*30+10); //Set a new score at which to spawn another repair
+				repairSpawn = score + Math.round(Math.random()*30+10); //Set a timer for the next kit to spawn at.
 			}
 		}
+		//Otherwise, if they drop on a time basis
 		else if (repairtype === "timebased")
 		{
-			if (timer >= repairSpawn)
+			if (timer >= repairSpawn) //Check if enough time has passed
 			{
+				//Make a new repair kit
 				var repair = new Powerup("Repair");
 				sprites.push(repair);  
 				repairSpawn = timer + Math.round(Math.random()*60*30+10); //Set a new time at which to spawn another repair
@@ -314,7 +330,7 @@ function controlPowerups()
 function endGame()
 {
   gameOverMessage.visible = true;
-  if(score < scoreNeededToWin)
+  if(winConditions === 0)	//If none of the win conditions (score, time, motherships killed) were met, but the game still ended, then it means the player has lost.
   {
     gameOverMessage.text = "EARTH DESTROYED!";
   }
@@ -380,8 +396,8 @@ function makeMother()
 	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
-	mothership.health = mothership.MAXHEALTH = $('#motherHP').val();
-	mothership.bounty = parseInt($('#motherbounty').val(), 10)
+	mothership.health = mothership.MAXHEALTH = $('#motherHP').val(); //Set the ship's health based on the option setting, under the Aliens section
+	mothership.bounty = parseInt($('#motherbounty').val(), 10) //Set the ship's bounty (score earned from destruction) based on the option setting, under the Aliens section
 	
 	sprites.push(mothership);
   

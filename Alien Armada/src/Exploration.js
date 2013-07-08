@@ -1,15 +1,49 @@
 $(document).ready(function(){
-    $('#menu').accordion();
-	//$('#lives').val(lives);
+    $('#menu').accordion({heightStyle: "fill"}); //Do the accordion feature -- collapsing categories. "fill" means they fill the table size, no bigger and no smaller
 
+//Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
+	$('#winoptions input').on("click", function() {
+		
+		switch ($(this).attr('id')) //Switch based on which option was selected
+		{
+			case ("score"):
+				$('#scorenum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning score will be)
+				break;
+				
+			case("time"):
+				$('#timenum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning time will be)
+				break;
+				
+			case("ship"):
+				$('#shipnum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning quantity of motherships will be)
+				break;
+				
+			case ("set"):
+				//When they click on the Apply button, set the win condition values to what are in the text fields. Need to parse to int, they are strings by default
+				scoreNeededToWin = parseInt($('#scorenum').val(), 10);
+				timeToWin = parseInt($('#timenum').val(), 10);
+				shipsToWin = parseInt($('#shipnum').val(), 10);
+				break;
+				
+			default:
+				break;
+				
+		}
+	});
+	
+/*
+As of now, the powerup options are all clones of each other.
+Toggling any of the checkboxes will decide whether or not they spawn. And inner radio menus appear to let the player choose how they will spawn.
+*/
+	
 //Repair
 	//Inner options
-	$('#repairoptions').append("<dd>How would you like the repairs to spawn?</dd> <form id='repairs'> <dd><input type='radio' name='repairtype' id='scorebased' value='scorebased'>Based on score<br>	<dd><input type='radio' name='repairtype' id='timebased' >Based on time<br> </form>");
-	$('#repairoptions').hide();
-	//When the player clicks on the "repair" option, either show or hide the inner options.
+	$('#repairoptions').append("<dd><input type='radio' name='repairtype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='repairtype' id='timebased' >Spawn based on time<br>"); //Add in a sub-menu, to offer different ways for the repair kit to spawn
+	$('#repairoptions').hide(); //Hide that sub-menu by default
 	$('#repairspawns').on("click", function(){
-		$('#repairoptions').toggle();
+		$('#repairoptions').toggle(); 	//When the player clicks on the "repair" option, either show or hide the inner options.
 	});
+	
 	//When one of the repair options has been selected
 	$('#repairoptions input').on("click", function()
 	{
@@ -31,7 +65,7 @@ $(document).ready(function(){
 
 // Bomb
 	//Inner options
-	$('#bomboptions').append("<dd>How would you like the bombs to spawn?</dd> <form id='bombs'> <dd><input type='radio' name='bombtype' id='scorebased' value='scorebased' >Based on score<br>	<dd><input type='radio' name='bombtype' id='timebased' >Based on time<br> </form>");
+	$('#bomboptions').append("<dd><input type='radio' name='bombtype' id='scorebased' value='scorebased' >Spawn based on score<br>	<dd><input type='radio' name='bombtype' id='timebased' >Spawn based on time<br>");
 	$('#bomboptions').hide();
 	//When the player clicks on the "Bomb" option, either show or hide the inner options.
 	$('#bombspawns').on("click", function(){
@@ -58,7 +92,7 @@ $(document).ready(function(){
 
 //Scoreup
 	//Inner options
-	$('#scoreupoptions').append("<dd>How would you like the scoreups to spawn?</dd> <form id='scoreups'> <dd><input type='radio' name='scoreuptype' id='scorebased' value='scorebased'>Based on score<br>	<dd><input type='radio' name='scoreuptype' id='timebased' >Based on time<br> </form>");
+	$('#scoreupoptions').append("<dd><input type='radio' name='scoreuptype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='scoreuptype' id='timebased' >Spawn based on time<br>");
 	$('#scoreupoptions').hide();
 	//When the player clicks on the "scoreup" option, either show or hide the inner options.
 	$('#scoreupspawns').on("click", function(){
@@ -85,7 +119,7 @@ $(document).ready(function(){
 	
 //Slow
 	//Inner options
-	$('#slowoptions').append("<dd>How would you like the slows to spawn?</dd> <form id='slows'> <dd><input type='radio' name='slowtype' id='scorebased' value='scorebased'>Based on score<br>	<dd><input type='radio' name='slowtype' id='timebased' >Based on time<br> </form>");
+	$('#slowoptions').append("<dd><input type='radio' name='slowtype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='slowtype' id='timebased' >Spawn based on time<br>");
 	$('#slowoptions').hide();
 	//When the player clicks on the "slow" option, either show or hide the inner options.
 	$('#slowspawns').on("click", function(){
@@ -111,29 +145,25 @@ $(document).ready(function(){
 	});	
 	
 	
-//Ship appearance
+//Ship appearance -- When a player clicks on a radio button (within #shipchoices), change the sourceX depending on what the button ID was.
 	$('#shipchoices input').on("click", function(){
-		//console.log($(this).attr('id'));
 		switch ($(this).attr('id'))
 		{
 			case "grey":
 				cannon.sourceX = 0;
-				console.log("Grey!!");
 				break;
 			case "teal":
 				cannon.sourceX = 544;
-				console.log("Teal!!");
 				break;
 			case "red":
 				cannon.sourceX = 512;
-				console.log("Red!!");
 				break;
 			default:
 				console.log("Error?");
 				break;
 		}
 	});
-//Ship firing types
+//Ship firing types -- When the player has clicked on one of the choices for how the ship fires, change "model" depending on which it was -- Actual behavior decided by model is done in MissileEntity.js
 	$('#missilechoices input').on("click", function(){
 	switch($(this).attr('id'))
 	{
@@ -148,18 +178,23 @@ $(document).ready(function(){
 			break;
 	}});
 	
-//Grant lives as requested
-	$('#lives').val(lives); //Set default lives
-	$('#setlives').on("click", function(){
+//Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
+	$('#missileDamage').on("input", function(){
+		$('#missileDam').val(this.value);
+	});
+	
+//Grant lives as requested -
+	$('#lives').val(lives); //Set the text value to the amount of lives by default
+	$('#setlives').on("click", function(){ //When the "Apply" button is clicked, then set lives equal to the amount in the text field.
 		lives = $('#lives').val(lives);
 	});
 
 
-//Alter alien health
+//Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
 		$('#alienHP').val(this.value);
 	});
-//Alter mothership health
+//Alter mothership health - Change the text box on the slider change. Actual health value set in makeMother function.
 	$('#motherHealth').on("input", function(){
 		$('#motherHP').val(this.value);
 	});

@@ -10,15 +10,18 @@ var scenes = [];
 
 
 var score = 0;
-var scoreToMotherShip = 0;
 var scoreNeededToWin = 160;
+var timeToWin = 300;
+var scoreToMotherShip = 0;
+var shipsToWin = 2;
+var winConditions = 0;
 var alienFrequency = 100;
 var alienTimer = 0;
 var timer = 0; //Currently just used for spawning of powerups
 var lives = 3;
 
 
-//Powerups
+//Powerups - xSpawn will become either the time or the score value at which x spawns. xtype will decide whether time or score is used to spawn x.
 var repairSpawn;
 var repairtype = "timebased";
 var bombSpawn;

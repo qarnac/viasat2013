@@ -15,15 +15,24 @@
 	
 	<!-- The section for learning about JavaScript -->
 	<td id="exploration" width="480">
-		<div id="menu" style="font-size: 10px">
+		<div id="menu" style="font-size: 10px"  height="200">
 			<h3>Volume control</h3>
 			<div>
 				Master <input id="volAll" type="range" min="1" max="100" value="30" style="width: 90px"> <p id="currVol" style="display: inline">30%</p><br>
 				Hotkey: <b>S</b> <button id="muteMusic"><span>Un</span>mute music</button><br>
 				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
-		
 			</div>
-            <h3>Control the powerups</h3>
+			<h3>The overall game</h3>
+			<div>
+				<div id="winoptions">How can the player win?<br>
+					<input type='checkbox' id='score' checked>Reaching a high score of <input type="text" id="scorenum" value="160"></br>
+					<input type='checkbox' id='time'>Survive for <input type="text" id="timenum" value="300" disabled> seconds<br>
+					<input type='checkbox' id='ship' disabled>Defeating <input type="text" id="shipnum" value="2" disabled> motherships <span>(Not yet implemented)</span><br>
+					<input type='submit' id='set' style="width: auto" value="Apply">
+				</div>
+			</div>
+			
+            <h3>Powerups</h3>
             <div>
 				<p>Select all of the powerups you would like to see:</p>
 				<dl>
@@ -40,11 +49,9 @@
 					<div id="slowoptions">
 					</div>
 				</dl>
-				
-				
             </div>
 			
-			<h3>Change your ship's form and function</h3>
+			<h3>Player's ship</h3>
 			<div>
 				<p>Which ship model would you prefer?</p>
 				<div id="shipchoices">
@@ -52,27 +59,28 @@
 				<input type='radio' name='shipchoice' id='teal'>Teal</br>
 				<input type='radio' name='shipchoice' id='red'>Red</br>
 				</div>
+				
 				<p>How would you like your ship to shoot?</p>
 				<div id="missilechoices">
 				<input type='radio' name='firetype' id='straight'>Fire one missile straight ahead<br>
 				<input type='radio' name='firetype' id='seeker'>Seek out motherships<br>
 				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side
-				</div>
-			</div>
-						
-			<h3>Give yourself more lives</h3>
-			<div>
-				<p>How many would you like?</p>
+				
+				<p>How much damage do the missiles do? <input id="missileDamage" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="missileDam" value=1 disabled></p>
+				
+				<p>How many spare ships do you want?</p>
 				<input type="text" id="lives" value=0>
 				<p>	<input type="submit" value="Apply" id="setlives" style="width: auto">
+				</div>
 			</div>
 			
-			<h3>Change the aliens</h3>
+			<h3>Aliens</h3>
 			<div>
 				<dl>
 				<dt><b>Aliens</b></dt>
 				<dd>How much health should the aliens have? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="alienHP" value=1 disabled></dd>
 				<dd>How much score are the aliens worth?<input type="text" id="alienbounty" value=1></dd>
+				<br>
 				
 				<dt><b>Motherships</b></dt>
 				<dd>How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHP" value=15 disabled></dd>

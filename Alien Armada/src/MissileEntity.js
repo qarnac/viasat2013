@@ -10,9 +10,9 @@ function Missile(cannon) {
 	this.vy = -8;
 	this.vx = 0;
 	this.deathcounter = 1;
-	this.damage = 1;
+	this.damage = $('#missileDamage').val(); //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
 	
-	//Center it over the cannon
+	// Center it over the cannon
 	this.x = cannon.centerX() - this.halfWidth();
 	this.y = cannon.y - this.height;
 }

@@ -11,9 +11,8 @@ function Alien() {
 	this.vy = 1;
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
-	this.health = $('#alienHP').val();
-	this.MAXHEALTH = $('#alienHP').val();
-	this.bounty = parseInt($('#alienbounty').val(), 10); //Score value for killing
+	this.health = this.MAXHEALTH = $('#alienHP').val(); //Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
+	this.bounty = parseInt($('#alienbounty').val(), 10); //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
 }
 
