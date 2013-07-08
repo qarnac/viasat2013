@@ -184,47 +184,8 @@ function playGame()
     }
   }
   
-  //Powerups, some spawn at random scores, some at random times. After they spawn, they will pick a new random time/score to spawn at. Original spawn rates defined in GlobalVariables
-  if (score >= redSpawn && $('#redspawns').is(':checked'))
-  {
-	var redShip = new Powerup("Red");
-	sprites.push(redShip);
-	redSpawn += Math.round(Math.random()*40+6); //Subsequent spawns will be within 40-score ranges
-  }  
-  if (score >= bombSpawn && $('#bombspawns').is(':checked'))
-  {
-	var bomb = new Powerup("Bomb");
-	sprites.push(bomb);
-	bombSpawn += Math.round(Math.random()*40+6); //Same as the original spawn rate
-  }
-  if (score >= scoreUpSpawn && $('#scoreupspawns').is(':checked'))
-  {
-	var scoreup = new Powerup("Scoreup");
-	sprites.push(scoreup);
-	scoreUpSpawn += Math.round(Math.random()*60+6); //Same as the original spawn rate
-  }
- 
-  if (timer === tealTimer && $('#tealspawns').is(':checked'))
-  {
-	var tealShip = new Powerup("Teal");
-	sprites.push(tealShip);  
-	tealTimer += Math.round(Math.random()*60*50+20); //Same as the original spawn rate
-  }
-  if (timer === slowTimer && $('#slowspawns').is(':checked'))
-  {
-	var slow = new Powerup("Slow");
-	sprites.push(slow);
-	slowTimer += Math.round (Math.random()*60*30+10); //Spawn a slow between 10 and 40 seconds
-  }
-  if (timer === repairTimer && $('#repairspawns').is(':checked'))
-  {
-	var repair = new Powerup("Repair");
-	sprites.push(repair);
-	repairTimer += Math.round(Math.random()*60*30+10); //Same as original spawn rate
-  }
-  timer++;
-  
-  
+  controlPowerups(); //All of the functions related to spawning powerups in here, to de-clutter the playGame function.
+   
   //--- The score 
   //Display the score
   scoreDisplay.text = "Score: " + score;
@@ -251,6 +212,104 @@ function playGame()
   }
 	
 }//end playGame
+
+function controlPowerups()
+{
+	timer++;
+	
+//Repair
+	if ($('#repairspawns').is(':checked'))
+	{
+		if (repairtype === "scorebased")
+		{
+			if (score >= repairSpawn)
+			{
+				var repair = new Powerup("Repair");
+				sprites.push(repair);
+				repairSpawn = score + Math.round(Math.random()*30+10); //Set a new score at which to spawn another repair
+			}
+		}
+		else if (repairtype === "timebased")
+		{
+			if (timer >= repairSpawn)
+			{
+				var repair = new Powerup("Repair");
+				sprites.push(repair);  
+				repairSpawn = timer + Math.round(Math.random()*60*30+10); //Set a new time at which to spawn another repair
+			}
+		}
+	}
+	
+//Bomb
+	if ($('#bombspawns').is(':checked'))
+	{
+		if (bombtype === "scorebased")
+		{
+			if (score >= bombSpawn)
+			{
+				var bomb = new Powerup("Bomb");
+				sprites.push(bomb);
+				bombSpawn = score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another bomb
+			}
+		}
+		else if (bombtype === "timebased")
+		{
+			if (timer >= bombSpawn)
+			{
+				var bomb = new Powerup("Bomb");
+				sprites.push(bomb);  
+				bombSpawn = timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another bomb
+			}
+		}
+	}
+	
+//Scoreup
+	if ($('#scoreupspawns').is(':checked'))
+	{
+		if (scoreuptype === "scorebased")
+		{
+			if (score >= scoreupSpawn)
+			{
+				var scoreup = new Powerup("Scoreup");
+				sprites.push(scoreup);
+				scoreupSpawn = score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another scoreup
+			}
+		}
+		else if (scoreuptype === "timebased")
+		{
+			if (timer >= scoreupSpawn)
+			{
+				var scoreup = new Powerup("Scoreup");
+				sprites.push(scoreup);  
+				scoreupSpawn = timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another scoreup
+			}
+		}
+	}
+
+//Slow
+	if ($('#slowspawns').is(':checked'))
+	{
+		if (slowtype === "scorebased")
+		{
+			if (score >= slowSpawn)
+			{
+				var slow = new Powerup("Slow");
+				sprites.push(slow);
+				slowSpawn = score + Math.round(Math.random()*30+20); //Set a new score at which to spawn another slow
+			}
+		}
+		else if (slowtype === "timebased")
+		{
+			if (timer >= slowSpawn)
+			{
+				var slow = new Powerup("Slow");
+				sprites.push(slow);  
+				slowSpawn = timer + Math.round(Math.random()*60*30+20); //Set a new time at which to spawn another slow
+			}
+		}
+	}
+	
+}
 
 function endGame()
 {

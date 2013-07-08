@@ -28,40 +28,47 @@
 	<!-- The section for learning about JavaScript -->
 	<td id="exploration" width="480">
 		<div id="menu" style="font-size: 10px">
-            <h3>Easy: Change which powerups spawn</h3>
+            <h3>Control the powerups</h3>
             <div>
 				<p>Select all of the powerups you would like to see:</p>
 				<dl>
-				<dt><input type='checkbox' id="repairspawns" checked>Repair - Repair the player's ship<br>
-				<dt><input type='checkbox' id="bombspawns">Bomb - Drop a bomb to damage enemies on screen <span>(Check me!)</span><br>
-					<div id="bomboptions">
-						<!--<dd>How would you like the bombs to spawn?</dd>
-						<form> 
-							<input type='radio' name='bombtype' value='score'>Based on score<br>
-							<input type='radio' name='bombtype' value='time'>Based on time<br>
-							<input type='radio' name='bombtype' value='random'>Randomly
-						</form>
-						-->
+				<dt><input type='checkbox' id="repairspawns" >Repair - Repair the player's ship<br>
+					<div id="repairoptions">
 					</div>
-				<dt><input type='checkbox' id="scoreupspawns" checked>Score-up - Give a boost to the player's score<br>
-				<dt><input type='checkbox' id="slowspawns" checked>Slow - Slow down all of the enemies on the screen<br>
+				<dt><input type='checkbox' id="bombspawns" >Bomb - Drop a bomb to damage enemies on screen <span>(Check me!)</span><br>
+					<div id="bomboptions">
+					</div>
+				<dt><input type='checkbox' id="scoreupspawns" >Score-up - Give a boost to the player's score<br>
+					<div id="scoreupoptions">
+					</div>
+				<dt><input type='checkbox' id="slowspawns" >Slow - Slow down all of the enemies on the screen<br>
+					<div id="slowoptions">
+					</div>
 				</dl>
-				<p>Which different ship skins would you like to see:</p>
-				<input type='checkbox' id="tealspawns" checked>Teal ship<br>
-				<input type='checkbox' id="redspawns">Red ship<br>
 				
+				
+            </div>
+			
+			<h3>Change your ship's form and function</h3>
+			<div>
+				<p>Which ship model would you prefer?</p>
+				<div id="shipchoices">
+				<input type='radio' name='shipchoice' id='grey'>Grey</br>
+				<input type='radio' name='shipchoice' id='teal'>Teal</br>
+				<input type='radio' name='shipchoice' id='red'>Red</br>
+				</div>
 				<p>How would you like your ship to shoot?</p>
 				<input type='radio' name='firetype' id='straight'>Fire one missile straight ahead<br>
 				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side<br>
 				<input type='radio' name='firetype' id='seeker'>Seek out motherships
-            </div>
-			
-			<h3>Easy: Give yourself more lives</h3>
+			</div>
+						
+			<h3>Give yourself more lives</h3>
 			<div>
 				<p>How many would you like?</p>
 				<input type="text" id="lives" value=0>
 				<p>	<input type="submit" value="Apply" id="setlives" style="width: auto">
-        </div>
+			</div>
 	</td>
 	</tr>
 </table>
