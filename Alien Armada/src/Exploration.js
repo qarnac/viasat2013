@@ -4,6 +4,8 @@ $(document).ready(function(){
 //Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
 	$('#winoptions input').on("click", function() {
 		
+		
+		
 		switch ($(this).attr('id')) //Switch based on which option was selected
 		{
 			case ("score"):
@@ -30,6 +32,10 @@ $(document).ready(function(){
 			default:
 				break;
 		}
+		//Depending on how many win conditions are checked, adjust how big the maximum requirement can be -- ie, if only "Reach a high score" is checked, player shouldn't be allowed to require all 3 win conditions"
+		$('#winconds').attr('max', $('#winoptions input:checkbox:checked').length);//Change the max always
+		$('#winconds').attr('value', Math.min($('#winconds').attr('value'), $('#winconds').attr('max')));//Change current if it's greater than max
+		$('#wincondsNum').val($('#winconds').val());		
 	});
 	//Separate from the others because "input" is more responsive than "click" for range sliders, but doesn't work for checkboxes
 	$('#winconds').on("input", function() {
