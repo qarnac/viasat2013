@@ -22,12 +22,16 @@
 				Hotkey: <b>S</b> <button id="muteMusic"><span>Un</span>mute music</button><br>
 				Hotkey: <b>E</b> <button id="muteEffects">Mute effects</button>
 			</div>
-			<h3>The overall game</h3>
+			<h3>Winning conditions</h3>
 			<div>
-				<div id="winoptions">How can the player win?<br>
+				<div id="winoptions">
+					How can the player win?<br>
 					<input type='checkbox' id='score' checked>Reaching a high score of <input type="text" id="scorenum" value="160"></br>
-					<input type='checkbox' id='time'>Survive for <input type="text" id="timenum" value="300" disabled> seconds<br>
-					<input type='checkbox' id='ship' disabled>Defeating <input type="text" id="shipnum" value="2" disabled> motherships <span>(Not yet implemented)</span><br>
+					<input type='checkbox' id='time'>Survive for <input type="text" id="timenum" value="100" disabled> seconds<br>
+					<input type='checkbox' id='ship'>Defeating <input type="text" id="shipnum" value="2" disabled> motherships<br>
+					
+					How many conditions must be met in order to win?<input type='range' id='winconds' min=1 max=3 value=1 style="width: 90px"><input type="text" id="wincondsNum" value=1 disabled><br><br>
+					<br><br>
 					<input type='submit' id='set' style="width: auto" value="Apply">
 				</div>
 			</div>
@@ -35,20 +39,22 @@
             <h3>Powerups</h3>
             <div>
 				<p>Select all of the powerups you would like to see:</p>
-				<dl>
-				<dt><input type='checkbox' id="repairspawns" >Repair - Repair the player's ship<br>
+				
+				<input type='checkbox' id="repairspawns" >Repair - Repair the player's ship<br>
 					<div id="repairoptions">
+						<input type='radio' name='repairtype' id='scorebased' value='scorebased'>Spawn based on score<br>	
+						<input type='radio' name='repairtype' id='bosskill'>Spawn after a mothership kill<br>
 					</div>
-				<dt><input type='checkbox' id="bombspawns" >Bomb - Drop a bomb to damage enemies on screen <span>(Check me!)</span><br>
+				<input type='checkbox' id="bombspawns" >Bomb - Drop a bomb to damage enemies on screen <span>(Check me!)</span><br>
 					<div id="bomboptions">
 					</div>
-				<dt><input type='checkbox' id="scoreupspawns" >Score-up - Give a boost to the player's score<br>
+				<input type='checkbox' id="scoreupspawns" >Score-up - Give a boost to the player's score<br>
 					<div id="scoreupoptions">
 					</div>
-				<dt><input type='checkbox' id="slowspawns" >Slow - Slow down all of the enemies on the screen<br>
+				<input type='checkbox' id="slowspawns" >Slow - Slow down all of the enemies on the screen<br>
 					<div id="slowoptions">
 					</div>
-				</dl>
+				
             </div>
 			
 			<h3>Player's ship</h3>
@@ -69,22 +75,33 @@
 				<p>How much damage do the missiles do? <input id="missileDamage" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="missileDam" value=1 disabled></p>
 				
 				<p>How many spare ships do you want?</p>
-				<input type="text" id="lives" value=0>
+				<input type="text" id="extraLives" value=0>
 				<p>	<input type="submit" value="Apply" id="setlives" style="width: auto">
 				</div>
 			</div>
 			
 			<h3>Aliens</h3>
 			<div>
-				<dl>
-				<dt><b>Aliens</b></dt>
-				<dd>How much health should the aliens have? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="alienHP" value=1 disabled></dd>
-				<dd>How much score are the aliens worth?<input type="text" id="alienbounty" value=1></dd>
-				<br>
 				
-				<dt><b>Motherships</b></dt>
-				<dd>How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHP" value=15 disabled></dd>
-				<dd>How much score are motherships worth?<input type="text" id="motherbounty" value=20></dd>
+				<b>Aliens</b><br>
+				How much score are the aliens worth? <input type="text" id="alienbounty" value=1><br>
+				How much health should the aliens have at the start? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 80px"><input type="text" id="alienHP" value=1 disabled><br>
+				When should aliens get stronger? <input id="alienGrowth" type="range" min="0" max="100" value="0" step="10" style="width: 90px"> <input type="text" id="alienGrowthNum" value="Never" disabled style="width: 100px"> <br>
+				<br><br>
+				
+				<b>Motherships</b><br>
+				How many motherships should spawn?<br>
+				<input type="radio" name="mothers" id="no" value="no">None<br>
+				<input type="radio" name="mothers" id="one" value="one" checked>Just one<br>
+				<input type="radio" name="mothers" id="many" value="many">Multiple<br>
+				<div id="mothersection">
+					How much score are motherships worth?<input type="text" id="motherbounty" value=20><br>
+					How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHP" value=15 disabled><br>
+					<div id="multiplemothers">
+						How often should motherships spawn? <input id="motherRate" type="range" min="5" max="100" value="40" step="10" style="width: 90px">
+						Every <input type="text" id="motherRateNum" value=40 disabled> alien kills<br>
+					</div>
+				</div>
 			</div>
 	</td>
 	</tr>

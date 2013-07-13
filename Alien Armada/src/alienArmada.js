@@ -6,9 +6,6 @@ var canvas = document.querySelector("canvas");
 //Create the drawing surface 
 var drawingSurface = canvas.getContext("2d");
 
-//check to see if the mothershipp is out
-var motherShipCalled = false;
-
 //Create the background
 var background = new levelEntityClass();	//Object.create(spriteObject);
 //sprites.push(background);  
@@ -83,6 +80,7 @@ update();
 
 function update()
 { 	
+	
   //The animation loop
   requestAnimationFrame(update, canvas);
   //Change what the game is doing based on the game state
@@ -157,6 +155,7 @@ function playGame()
 		if (sprite.deathcounter === 0)
 		{
 			removeObject(sprites[i], sprites);
+			i--;
 		}
 	}
 
@@ -175,12 +174,16 @@ function playGame()
     {  
       alienFrequency--;
     }
+
 	
-	if ((scoreToMotherShip >= 2) && motherShipCalled === false)
+	//If the score is right, and a mothership is not yet called, and the player hasn't selected to have no motherships
+	if ((scoreToMotherShip <= 0) && motherShipCalled === false && !($("input:radio[name='mothers']:checked").val() === "no"))
 	{
       //make the mothership
 		makeMother();
   		motherShipCalled = true;
+		scoreToMotherShip = parseInt($('#motherRateNum').val(), 10); //After the first one has been spawned, then take the rate the player has set (default = 40) for future spawns
+
     }
   }
   
@@ -192,16 +195,15 @@ function playGame()
   
   //Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
   if(score >= scoreNeededToWin && $('#scorenum').prop('disabled') === false)
-  {
-	winConditions++;
-    gameState = OVER;
-  }
-  if (timer >= timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply timeTowin by 60 because there are 60 frames in a second
-  {
-	winConditions++;
-	gameState = OVER;
-  }
+  {	winConditions++;  }
+  if (timer >= timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply by 60 for the 60 frames-per-second
+  {	winConditions++;  }
+  if (mothershipsKilled >= shipsToWin && $('#shipnum').prop('disabled') === false)
+  {	winConditions++;  }
   
+  //If enough win conditions (also customizable by the player) are met, then end the game
+  if (winConditions >= conditionsNeeded)
+  {	gameState = OVER;  }
   
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
    if (score >= 30 && loadLevel === false) //Go to the next level
@@ -241,17 +243,6 @@ function controlPowerups()
 				var repair = new Powerup("Repair");
 				sprites.push(repair);
 				repairSpawn = score + Math.round(Math.random()*30+10); //Set a timer for the next kit to spawn at.
-			}
-		}
-		//Otherwise, if they drop on a time basis
-		else if (repairtype === "timebased")
-		{
-			if (timer >= repairSpawn) //Check if enough time has passed
-			{
-				//Make a new repair kit
-				var repair = new Powerup("Repair");
-				sprites.push(repair);  
-				repairSpawn = timer + Math.round(Math.random()*60*30+10); //Set a new time at which to spawn another repair
 			}
 		}
 	}
@@ -330,14 +321,14 @@ function controlPowerups()
 function endGame()
 {
   gameOverMessage.visible = true;
-  if(winConditions === 0)	//If none of the win conditions (score, time, motherships killed) were met, but the game still ended, then it means the player has lost.
-  {
-    gameOverMessage.text = "EARTH DESTROYED!";
-  }
-  else
+  if (winConditions >= conditionsNeeded)	
   {
     gameOverMessage.x = 120;
     gameOverMessage.text = "EARTH SAVED!";
+  }
+  else
+  {
+    gameOverMessage.text = "EARTH DESTROYED!";
   }
 }
 

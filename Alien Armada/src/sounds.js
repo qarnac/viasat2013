@@ -48,7 +48,7 @@ function controlSound(event) //Overarching volume control function
 	if (target === "volAll") //If they changed the "Master" slider
 	{
 		var newvol = volAll.value/100; //Save the new volume on a 0-1 scale
-		console.log ("Newvol: " + newvol);
+		//console.log ("Newvol: " + newvol);
 		if (newvol === 0) //If it's 0, then they want everything muted
 		{
 			music.muted = shootSound.muted = explosionSound.muted = true; //Mute everything
@@ -58,7 +58,7 @@ function controlSound(event) //Overarching volume control function
 		{
 			music.volume = newvol;
 			shootSound.volume =	explosionSound.volume = newvol *.75; //Shootsound and explosionSound multiplied by a constant to be a bit lower
-			console.log("Music vol: " + music.volume.toFixed(2) + "       Sound vol: " + shootSound.volume.toFixed(2));
+			//console.log("Music vol: " + music.volume.toFixed(2) + "       Sound vol: " + shootSound.volume.toFixed(2));
 			if (!shootSound.muted) {muteEffects.innerHTML = "Mute effects"; } //Update button
 			if (!music.muted) {muteMusic.innerHTML = "Mute music"; } //Update button
 			currVol.innerHTML = Math.round(newvol*100) + "%"; //Update text saying what the volume is presently at

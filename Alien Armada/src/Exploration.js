@@ -23,12 +23,17 @@ $(document).ready(function(){
 				scoreNeededToWin = parseInt($('#scorenum').val(), 10);
 				timeToWin = parseInt($('#timenum').val(), 10);
 				shipsToWin = parseInt($('#shipnum').val(), 10);
-				break;
 				
+				conditionsNeeded = $('#winconds').val();
+				break;	
+
 			default:
 				break;
-				
 		}
+	});
+	//Separate from the others because "input" is more responsive than "click" for range sliders, but doesn't work for checkboxes
+	$('#winconds').on("input", function() {
+		$('#wincondsNum').val(this.value);	
 	});
 	
 /*
@@ -38,7 +43,6 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Repair
 	//Inner options
-	$('#repairoptions').append("<dd><input type='radio' name='repairtype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='repairtype' id='timebased' >Spawn based on time<br>"); //Add in a sub-menu, to offer different ways for the repair kit to spawn
 	$('#repairoptions').hide(); //Hide that sub-menu by default
 	$('#repairspawns').on("click", function(){
 		$('#repairoptions').toggle(); 	//When the player clicks on the "repair" option, either show or hide the inner options.
@@ -184,9 +188,9 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	});
 	
 //Grant lives as requested -
-	$('#lives').val(lives); //Set the text value to the amount of lives by default
+	$('#extraLives').val(lives); //Set the text value to the amount of lives by default
 	$('#setlives').on("click", function(){ //When the "Apply" button is clicked, then set lives equal to the amount in the text field.
-		lives = $('#lives').val(lives);
+		lives = $('#extraLives').val();
 	});
 
 
@@ -194,10 +198,53 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#alienHealth').on("input", function(){
 		$('#alienHP').val(this.value);
 	});
+
+//Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
+	$('#alienGrowth').on("input", function(){
+		if (this.value === "0")
+		{
+			$('#alienGrowthNum').val("Never");
+			
+		}
+		else 
+		{
+			$('#alienGrowthNum').val("Every " + this.value + " points");
+			alienGrowthRate = this.value;
+		}
+	});
+
+//Mothership existence (None, one, multiple)
+	$('#multiplemothers').hide(); //By default, hide the section relevant to multiple spawns
+	$("input[name='mothers']").on("click", function(){
+		switch($(this).attr('id'))
+		{
+			case "no":
+				$('#mothersection').hide();
+				break;
+			case "one":
+				$('#mothersection').show();
+				$('#multiplemothers').hide();
+				break;
+			case "many":
+				$('#mothersection').show();
+				$('#multiplemothers').show();
+				break;
+		}			
+	});
+	
 //Alter mothership health - Change the text box on the slider change. Actual health value set in makeMother function.
 	$('#motherHealth').on("input", function(){
 		$('#motherHP').val(this.value);
 	});
-
+/*//Mothership score value
+	$('#motherbounty').on("input", function(){
 	
+	});
+*/
+
+//Change mothership spawn rates
+	$('#motherRate').on("input", function(){
+		$('#motherRateNum').val(this.value);
+		
+	});
 });
