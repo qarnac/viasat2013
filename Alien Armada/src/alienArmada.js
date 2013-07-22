@@ -30,7 +30,7 @@ messages.push(scoreDisplay);
 
 
 //The game over message
-var gameOverMessage = new Message();
+gameOverMessage = new Message();
 gameOverMessage.font = "normal bold 20px emulogic";
 gameOverMessage.fillStyle = "#00FF00";
 gameOverMessage.x = 70;

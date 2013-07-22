@@ -37,22 +37,28 @@
 			</div>
 			
             <h3>Powerups</h3>
-            <div>
+            <div id='powerups'>
 				<p>Select all of the powerups you would like to see:</p>
 				
 				<input type='checkbox' id="repairspawns" >Repair - Repair the player's ship<br>
 					<div id="repairoptions">
-						<input type='radio' name='repairtype' id='scorebased' value='scorebased'>Spawn based on score<br>	
-						<input type='radio' name='repairtype' id='bosskill'>Spawn after a mothership kill<br>
+						<dd><input type='radio' name='repairtype' id='scorebased' value='scorebased'>Spawn based on score<br>	
+						<dd><input type='radio' name='repairtype' id='bosskill'>Spawn after a mothership kill<br>
 					</div>
-				<input type='checkbox' id="bombspawns" >Bomb - Drop a bomb to damage enemies on screen <span>(Check me!)</span><br>
+				<input type='checkbox' id="bombspawns" >Bomb - Drop a bomb to damage enemies on screen<br>
 					<div id="bomboptions">
+						<dd><input type='radio' name='bombtype' id='scorebased' value='scorebased' >Spawn based on score<br>	
+						<dd><input type='radio' name='bombtype' id='timebased' >Spawn based on time<br>
 					</div>
 				<input type='checkbox' id="scoreupspawns" >Score-up - Give a boost to the player's score<br>
 					<div id="scoreupoptions">
+						<dd><input type='radio' name='scoreuptype' id='scorebased' value='scorebased'>Spawn based on score<br>	
+						<dd><input type='radio' name='scoreuptype' id='timebased' >Spawn based on time<br>
 					</div>
 				<input type='checkbox' id="slowspawns" >Slow - Slow down all of the enemies on the screen<br>
 					<div id="slowoptions">
+						<dd><input type='radio' name='slowtype' id='scorebased' value='scorebased'>Spawn based on score<br>	
+						<dd><input type='radio' name='slowtype' id='timebased' >Spawn based on time<br>
 					</div>
 				
             </div>
@@ -61,14 +67,14 @@
 			<div>
 				<p>Which ship model would you prefer?</p>
 				<div id="shipchoices">
-				<input type='radio' name='shipchoice' id='grey'>Grey</br>
+				<input type='radio' name='shipchoice' id='grey' checked>Grey</br>
 				<input type='radio' name='shipchoice' id='teal'>Teal</br>
 				<input type='radio' name='shipchoice' id='red'>Red</br>
 				</div>
 				
 				<p>How would you like your ship to shoot?</p>
 				<div id="missilechoices">
-				<input type='radio' name='firetype' id='straight'>Fire one missile straight ahead<br>
+				<input type='radio' name='firetype' id='straight' checked>Fire one missile straight ahead<br>
 				<input type='radio' name='firetype' id='seeker'>Seek out motherships<br>
 				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side
 				
@@ -106,6 +112,13 @@
 	</td>
 	</tr>
 	<tr><td id="pauseMessage"align="center">Press "ESC" to <span></span>pause</td></tr>
+	
+
+	<tr><td align="center"> 
+		<button type="button" class="resetbuttons" style="width: 200px" id="restart">Restart with current settings</button><br>
+		<button type="button" class="resetbuttons" style="width: 200px" id="reset">Reset <span>everything</span></button> 
+	</td></tr>
+
 </table>
 
 

@@ -30,6 +30,7 @@ var shipsToWin = 2; //$('#shipnum').val() //How many motherships need to be dest
 var winConditions = 0;
 var conditionsNeeded = 1; //$('#wincondsNum').val() //How many win conditions need to be met to consider it a victory
 
+var gameOverMessage;
 
 //Powerups - xSpawn will become either the time or the score value at which x spawns. xtype will decide whether time or score is used to spawn x.
 var repairSpawn;

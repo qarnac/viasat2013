@@ -29,9 +29,6 @@ function Alien() {
 	1 + 0
 	1 health*/
 	
-	console.log(this.health); //diagnostic, just to show exactly what the result of that previous line is
-	
-	
 	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
 	this.bounty = parseInt($('#alienbounty').val(), 10); //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second

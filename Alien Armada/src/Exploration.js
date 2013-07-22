@@ -4,8 +4,6 @@ $(document).ready(function(){
 //Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
 	$('#winoptions input').on("click", function() {
 		
-		
-		
 		switch ($(this).attr('id')) //Switch based on which option was selected
 		{
 			case ("score"):
@@ -26,7 +24,7 @@ $(document).ready(function(){
 				timeToWin = parseInt($('#timenum').val(), 10);
 				shipsToWin = parseInt($('#shipnum').val(), 10);
 				
-				conditionsNeeded = $('#winconds').val();
+				conditionsNeeded = parseInt($('#winconds').val(), 10);
 				break;	
 
 			default:
@@ -75,7 +73,6 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 
 // Bomb
 	//Inner options
-	$('#bomboptions').append("<dd><input type='radio' name='bombtype' id='scorebased' value='scorebased' >Spawn based on score<br>	<dd><input type='radio' name='bombtype' id='timebased' >Spawn based on time<br>");
 	$('#bomboptions').hide();
 	//When the player clicks on the "Bomb" option, either show or hide the inner options.
 	$('#bombspawns').on("click", function(){
@@ -102,7 +99,6 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 
 //Scoreup
 	//Inner options
-	$('#scoreupoptions').append("<dd><input type='radio' name='scoreuptype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='scoreuptype' id='timebased' >Spawn based on time<br>");
 	$('#scoreupoptions').hide();
 	//When the player clicks on the "scoreup" option, either show or hide the inner options.
 	$('#scoreupspawns').on("click", function(){
@@ -129,7 +125,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Slow
 	//Inner options
-	$('#slowoptions').append("<dd><input type='radio' name='slowtype' id='scorebased' value='scorebased'>Spawn based on score<br>	<dd><input type='radio' name='slowtype' id='timebased' >Spawn based on time<br>");
+
 	$('#slowoptions').hide();
 	//When the player clicks on the "slow" option, either show or hide the inner options.
 	$('#slowspawns').on("click", function(){
@@ -253,4 +249,93 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		$('#motherRateNum').val(this.value);
 		
 	});
+});
+
+
+
+
+
+
+//Buttons to restart the game
+$('.resetbuttons').on("click", function() {
+
+	//If player chose to reset everything, then reset the jquery options...
+	if ($(this).attr('id') === "reset")
+	{
+		$('input:checkbox').removeAttr('checked'); //Uncheck every checkbox
+		$('#score').prop('checked', true); //Recheck the "high score" win condition
+		//Make sure the other win conditions' text boxes are disabled 
+		$('#timenum').prop("disabled", true); 
+		$('#shipnum').prop("disabled", true);
+		
+		//Reset the win conditions needed
+		$('#winconds').val(1);
+		$('#wincondsNum').val(1);
+		conditionsNeeded = parseInt($('#winconds').val(), 10);
+		
+		//Hide all of the powerup inner options
+		$('#repairoptions').hide();
+		$('#bomboptions').hide();
+		$('#scoreupoptions').hide();
+		$('#slowoptions').hide();
+		
+		//Reset the powerup timers
+		repairSpawn = bombSpawn = scoreupSpawn = slowSpawn = 0;
+		
+		//Default ship model and firing type
+		$('#grey').click();
+		$('#straight').click();
+		
+		//Default player damage
+		$('#missileDamage').val(1);
+		$('#missileDam').val(1);
+		
+		//Alien values
+		$('#alienbounty').val(1);
+		$('#alienHealth').val(1);
+		$('#alienHP').val(1);
+		$('#alienGrowth').val(0);
+		$('#alienGrowthNum').val("Never");
+		
+		//Mothership values
+		$('#one').click();
+		$('#motherHealth').val(20);
+		$('#motherHP').val(20);
+		$('#motherbounty').val(20);
+		$('#motherRate').val(40);
+		$('#motherRateNum').val(40);
+	}
+
+	//and in either case, reset the game state
+	for (var i = 0; i < sprites.length; i++)
+	{
+		if (sprites[i] instanceof Alien || sprites[i] instanceof Powerup)
+		{
+			removeObject(sprites[i], sprites);
+			i--;
+		}	
+	}
+	alienFrequency = 100;
+	lives = $('#extraLives').val();
+	score = 0;
+	timer = 0;
+	alienTimer = 0;
+	motherShipCalled = false;
+	mothershipsKilled = 0;
+	scoreToMotherShip = 5;
+	winConditions = 0;
+	gameState = PLAYING;
+	gameOverMessage.visible = false;
+	gameOverMessage.text = "";
+	
+	/*Update powerup spawn values.
+	Rather than checking wether or not the spawn is checked, or which type is selected, use multiplication and boolean values to have it sort that out for you.
+	*/
+	repairSpawn = (score + Math.round(Math.random()*30+10)*$('#repairoptions #scorebased').prop('checked')) * $('#repairspawns').prop('checked');
+	bombSpawn = ((score + Math.round(Math.random()*40+6)*$('#bomboptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#bomboptions #timebased').prop('checked')) * $('#bombspawns').prop('checked');
+	scoreupSpawn = ((score + Math.round(Math.random()*40+6)*$('#scoreupoptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#scoreupoptions #timebased').prop('checked')) * $('#scoreupspawns').prop('checked');
+	slowSpawn = ((score + Math.round(Math.random()*30+20)*$('#slowoptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#slowoptions #timebased').prop('checked')) * $('#slowspawns').prop('checked');
+	
+
+
 });
