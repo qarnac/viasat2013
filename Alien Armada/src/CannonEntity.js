@@ -8,9 +8,7 @@ function Cannon(x, y) {
 	this.health = this.MAXHEALTH = 2;
 }
 
-Cannon.prototype.update = function () {
-	this.x = Math.max(0, Math.min(this.x + this.vx, 480 - this.width)); //Ensure the cannon stays within the map.
-	
+Cannon.prototype.update = function () {	
 	//Left
 	if(moveLeft && !moveRight)
 	{
@@ -27,4 +25,6 @@ Cannon.prototype.update = function () {
 	{
 		this.vx = 0;
 	}
+
+	this.x = Math.max(0, Math.min(this.x + this.vx, 480 - this.width)); //Ensure the cannon stays within the map.
 }

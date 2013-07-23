@@ -231,8 +231,8 @@ function controlPowerups()
 	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
 */
 	
-//Repair
 	if ($('#repairspawns').is(':checked')) //If the button to spawn repairs has been checked
+//Repair
 	{
 		//If repair kits drop on a score basis
 		if (repairtype === "scorebased") 
@@ -378,7 +378,7 @@ function loadGameLevel(lv)
 //crates the mothership
 function makeMother()
 {  
-  var mothership = new Alien();	//Mothership();
+    mothership = new Alien();
 	mothership.sourceX = 128;
 	mothership.sourceWidth = 64;
 	mothership.sourceHeight = 32;

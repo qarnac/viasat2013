@@ -15,17 +15,6 @@ function Bar() {
 
 //YO: A bar object is tightly coupled with its associated mothership/alien and should not be an independent object.
 Bar.prototype.update = function() {
-	
-	var mothership = null;
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i].sourceX === 128)
-		{
-			mothership = sprites[i]; //Find the mothership
-			break;
-		}
-	}
-	
 	if (mothership !== null) //If it is alive, update the bar to reflect its health
 	{
 		//44px constant is the icon that doesn't get reduced. The rest of the bar is 136px.

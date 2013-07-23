@@ -12,7 +12,7 @@ function Alien() {
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	
-	this.health = this.MAXHEALTH = parseInt($('#alienHealthnum').val(),10) + (parseInt((score / parseInt($('#alienGrowth').val(),10)), 10) || 0);
+	this.health = this.MAXHEALTH = alienbasehealth + (parseInt((score / alienGrowthRate), 10) || 0);
 	/*To break it down: X + (A/B || 0)
 	And I call parseint on X and B because by default they are strings. And parseInt on A/B because it can be undefined if B is 0.
 	
@@ -28,10 +28,12 @@ function Alien() {
 	1 + (Infinity || 0)
 	1 + 0
 	1 health*/
+	console.log(this.health);
 	
 	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
-	this.bounty = parseInt($('#alienbounty').val(), 10); //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
+	this.bounty = alienbounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
+	
 }
 
 Alien.prototype.update = function () {
@@ -39,7 +41,6 @@ Alien.prototype.update = function () {
 	
 	if (this.y > 320 + this.height)
 	{
-		//gameState = OVER;
 		lives--;
 		$('#lives').val(lives);
 		this.deathcounter=0;
@@ -50,7 +51,7 @@ Alien.prototype.update = function () {
 	}
 	
 	if (this.exploded) {
-		if (this.sourceX === 128) //If the alien was a mothership
+		if (this === mothership) //If the alien was a mothership
 		{
 			this.sourceX = 192; //Go to explosion sprite
 			mothershipsKilled++; //Increment the amount of motherships destroyed (potential win condition)
@@ -66,7 +67,7 @@ Alien.prototype.update = function () {
 				sprites.push(repair);
 			}
 		} 
-		else if (this.sourceX === 32) {this.sourceX = 64; } //Go to explosion sprite
+		else {this.sourceX = 64; } //Go to explosion sprite
 		this.deathcounter--;
 		
 	} 

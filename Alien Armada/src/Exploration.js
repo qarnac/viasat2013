@@ -227,7 +227,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
 	$('#missileDamage').on("input", function(){
 		$('#missileDamagenum').val(this.value);
-		newSettings.damage = $(this).val();
+		newSettings.damage = missileDam = parseInt(this.value, 10);
 	});
 	
 //Grant lives as requested -
@@ -238,27 +238,21 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Alien bounty
 	$('#alienbounty').on("change", function() 
 	{
-		newSettings.alienbounty = this.value;	
+		newSettings.alienbounty = alienbounty = parseInt(this.value, 10);	
 	});
 
 //Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
 		$('#alienHealthnum').val(this.value);
+		alienbasehealth = parseInt(this.value, 10);
 		newSettings.alienhealth = this.value;
 	});
 
 //Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
 	$('#alienGrowth').on("input", function(){
 		newSettings.aliengrowth = this.value;
-		if (this.value === "0")
-		{
-			$('#alienGrowthNum').val("Never");
-		}
-		else 
-		{
-			$('#alienGrowthNum').val("Every " + this.value + " points");
-			alienGrowthRate = this.value;
-		}
+		alienGrowthRate = parseInt($(this).val(), 10);
+		$('#alienGrowthNum').val(alienGrowthRate? "Every " + alienGrowthRate + " points" : "Never");
 	});
 
 //Mothership existence (None, one, multiple)

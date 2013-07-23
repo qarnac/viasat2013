@@ -10,7 +10,7 @@ function Missile(cannon) {
 	this.vy = -8;
 	this.vx = 0;
 	this.deathcounter = 1;
-	this.damage = $('#missileDamage').val(); //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
+	this.damage = missileDam; //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
 	
 	// Center it over the cannon
 	this.x = cannon.centerX() - this.halfWidth();
@@ -62,6 +62,12 @@ Missile.prototype.update = function () {
 	for (var i = 0; i < sprites.length; i++)
 	{
 		var sprite = sprites[i];
+		
+		//If there's no hit, then go to the next sprite
+		if (!this.hit(sprite))
+		{
+			continue;
+		}
 		//Hit an alien or mothership
 		if (sprite instanceof Alien) 
 		{
@@ -79,10 +85,6 @@ Missile.prototype.update = function () {
 			if (this.hit(sprite)) 
 				{
 				//console.log(sprite.id); //Log which powerup was hit
-				for (var j = 0; j < sprites.length; j++) //Find the cannon
-				{
-					if (sprites[j] instanceof Cannon) { cannon = sprites[j]; }
-				}
 				switch(sprite.id)
 				{					
 					case "Bomb": //Damage enemies on screen
@@ -113,55 +115,55 @@ Missile.prototype.update = function () {
 		}
 	}//End collisions
 	
-	
-	// YO: commented out to avoid using mothership. Don't have time to understand this code yet
-	var mothership;
-	var cannon;
-	for (var i = 0; i < sprites.length; i++)
-	{
-		if (sprites[i].sourceX === 128) { mothership = sprites[i]; }
-		else if (sprites[i] instanceof Cannon && sprites[i].model === 1) {cannon = sprites[i].model;}
-	}
-	
-	var distX;
-	var distY;
-	if (typeof mothership !== 'undefined' && cannon === 1)
-	{
-		distX = (this.x + this.width/2) - (mothership.x + mothership.width/2);
-		distY = (this.y + this.height/2) - (mothership.y + mothership.height/2);
-		
-		if (distX < -50 || distX > 50)
+	//Mothership seeking missile
+	if (cannon.model === 1)
+	{	
+		var distX;
+		var distY;
+		if (typeof mothership !== 'undefined' && mothership.health > 0)
 		{
-			this.vx = 0;
+			distX = (this.x + this.width/2) - (mothership.x + mothership.width/2);
+			distY = (this.y + this.height/2) - (mothership.y + mothership.height/2);
+			
+			if (distX < -50 || distX > 50)
+			{
+				this.vx = 0;
+			}
+			else if (distX < 50) //Missile is on the left
+			{
+				this.vx = 2; //Go right
+			}
+			else if (distX > -50) //Missile is on the right
+			{
+				this.vx = -2; //Go left
+			}
+			
+			if (distY > -50 || distY < 50)
+			{
+				if (distX > 0) { this.vx = -2;}
+				else { this.vx = 2; }
+			}
+			if (distY < -50) //The missile has shot above the mothership
+			{
+				this.vy = 4;
+			}
+			else if (distY > 50)
+			{
+				this.vy = -8;
+			}
+			
 		}
-		else if (distX < 50) //Missile is on the left
-		{
-			this.vx = 2; //Go right
-		}
-		else if (distX > -50) //Missile is on the right
-		{
-			this.vx = -2; //Go left
-		}
-		
-		if (distY > -50 || distY < 50)
-		{
-			if (distX > 0) { this.vx = -2;}
-			else { this.vx = 2; }
-		}
-		if (distY < -50) //The missile has shot above the mothership
-		{
-			this.vy = 4;
-		}
-		else if (distY > 50)
+		else
 		{
 			this.vy = -8;
 		}
-		
-	}
-
-	if(this.y < 0 - this.height)
+	}//End mothership seeking section
+	
+	
+	//If missile is above, or below, or to the left, or to the right, of the screen
+	if((this.y < 0 - this.height) || (this.y > 320 + this.height) || (this.x < 0 - this.width) || (this.x > 480 + this.height))
     { 
-      //Remove the missile from the sprites array
-	this.deathcounter--;
+		//Remove the missile from the sprites array
+		this.deathcounter--;
     }
 }
