@@ -78,7 +78,7 @@
 				<input type='radio' name='firetype' id='seeker'>Seek out motherships<br>
 				<input type='radio' name='firetype' id='spread'>Fire two missiles that go off to the side
 				
-				<p>How much damage do the missiles do? <input id="missileDamage" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="missileDam" value=1 disabled></p>
+				<p>How much damage do the missiles do? <input id="missileDamage" type="range" min="1" max="5" value="1" style="width: 90px"><input type="text" id="missileDamagenum" value=1 disabled></p>
 				
 				<p>How many spare ships do you want?</p>
 				<input type="text" id="extraLives" value=0>
@@ -91,7 +91,7 @@
 				
 				<b>Aliens</b><br>
 				How much score are the aliens worth? <input type="text" id="alienbounty" value=1><br>
-				How much health should the aliens have at the start? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 80px"><input type="text" id="alienHP" value=1 disabled><br>
+				How much health should the aliens have at the start? <input id="alienHealth" type="range" min="1" max="5" value="1" style="width: 80px"><input type="text" id="alienHealthnum" value=1 disabled><br>
 				When should aliens get stronger? <input id="alienGrowth" type="range" min="0" max="100" value="0" step="10" style="width: 90px"> <input type="text" id="alienGrowthNum" value="Never" disabled style="width: 100px"> <br>
 				<br><br>
 				
@@ -102,7 +102,7 @@
 				<input type="radio" name="mothers" id="many" value="many">Multiple<br>
 				<div id="mothersection">
 					How much score are motherships worth?<input type="text" id="motherbounty" value=20><br>
-					How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHP" value=15 disabled><br>
+					How much health should the mothership have?<input id="motherHealth" type="range" min="5" max="30" value="15" step="5" style="width: 90px"><input type="text" id="motherHealthnum" value=15 disabled><br>
 					<div id="multiplemothers">
 						How often should motherships spawn? <input id="motherRate" type="range" min="5" max="100" value="40" step="10" style="width: 90px">
 						Every <input type="text" id="motherRateNum" value=40 disabled> alien kills<br>
@@ -112,8 +112,6 @@
 	</td>
 	</tr>
 	<tr><td id="pauseMessage"align="center">Press "ESC" to <span></span>pause</td></tr>
-	
-
 	<tr><td align="center"> 
 		<button type="button" class="resetbuttons" style="width: 200px" id="restart">Restart with current settings</button><br>
 		<button type="button" class="resetbuttons" style="width: 200px" id="reset">Reset <span>everything</span></button> 
@@ -126,6 +124,7 @@
 
 <!-- The game code -->
 <script src="Exploration.js"></script>
+<script src="Settings.js"></script>
 <script src="levelEntityClass.js"></script>
 <script src="marsLevelEntity.js"></script>
 <script src="GlobalVariables.js"></script>

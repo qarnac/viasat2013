@@ -12,7 +12,7 @@ function Alien() {
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	
-	this.health = this.MAXHEALTH = parseInt($('#alienHP').val(),10) + (parseInt((score / parseInt($('#alienGrowth').val(),10)), 10) || 0);
+	this.health = this.MAXHEALTH = parseInt($('#alienHealthnum').val(),10) + (parseInt((score / parseInt($('#alienGrowth').val(),10)), 10) || 0);
 	/*To break it down: X + (A/B || 0)
 	And I call parseint on X and B because by default they are strings. And parseInt on A/B because it can be undefined if B is 0.
 	

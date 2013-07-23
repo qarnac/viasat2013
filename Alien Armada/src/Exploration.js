@@ -186,7 +186,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
 	$('#missileDamage').on("input", function(){
-		$('#missileDam').val(this.value);
+		$('#missileDamagenum').val(this.value);
 	});
 	
 //Grant lives as requested -
@@ -198,7 +198,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 
 //Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
-		$('#alienHP').val(this.value);
+		$('#alienHealthnum').val(this.value);
 	});
 
 //Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
@@ -236,7 +236,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Alter mothership health - Change the text box on the slider change. Actual health value set in makeMother function.
 	$('#motherHealth').on("input", function(){
-		$('#motherHP').val(this.value);
+		$('#motherHealthnum').val(this.value);
 	});
 /*//Mothership score value
 	$('#motherbounty').on("input", function(){
@@ -258,55 +258,81 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 
 //Buttons to restart the game
 $('.resetbuttons').on("click", function() {
-
-	//If player chose to reset everything, then reset the jquery options...
 	if ($(this).attr('id') === "reset")
 	{
-		$('input:checkbox').removeAttr('checked'); //Uncheck every checkbox
-		$('#score').prop('checked', true); //Recheck the "high score" win condition
-		//Make sure the other win conditions' text boxes are disabled 
-		$('#timenum').prop("disabled", true); 
-		$('#shipnum').prop("disabled", true);
-		
-		//Reset the win conditions needed
-		$('#winconds').val(1);
-		$('#wincondsNum').val(1);
-		conditionsNeeded = parseInt($('#winconds').val(), 10);
-		
-		//Hide all of the powerup inner options
-		$('#repairoptions').hide();
-		$('#bomboptions').hide();
-		$('#scoreupoptions').hide();
-		$('#slowoptions').hide();
-		
-		//Reset the powerup timers
-		repairSpawn = bombSpawn = scoreupSpawn = slowSpawn = 0;
-		
-		//Default ship model and firing type
-		$('#grey').click();
-		$('#straight').click();
-		
-		//Default player damage
-		$('#missileDamage').val(1);
-		$('#missileDam').val(1);
-		
-		//Alien values
-		$('#alienbounty').val(1);
-		$('#alienHealth').val(1);
-		$('#alienHP').val(1);
-		$('#alienGrowth').val(0);
-		$('#alienGrowthNum').val("Never");
-		
-		//Mothership values
-		$('#one').click();
-		$('#motherHealth').val(20);
-		$('#motherHP').val(20);
-		$('#motherbounty').val(20);
-		$('#motherRate').val(40);
-		$('#motherRateNum').val(40);
+		settingFile = newSettings;
 	}
 
-	//and in either case, reset the game state
+//Set all of the options.
+//Winning conditions category	
+	$('#score').prop('checked', settingFile.winscore);
+	$('#scorenum').prop('disabled', !(settingFile.winscore));
+	$('#scorenum').val(settingFile.winscoreNum);
+	
+	$('#time').prop('checked', settingFile.wintime);
+	$('#timenum').prop('disabled', !(settingFile.wintime));
+	$('#timenum').val(settingFile.wintimeNum);
+
+	$('#ship').prop('checked', settingFile.winship);
+	$('#shipnum').prop('disabled', !(settingFile.winship));
+	$('#shipnum').val(settingFile.winshipNum);
+	
+//Powerups category
+	//Repair
+	$('#repairspawns').prop('checked', settingFile.repairspawns);
+	$('#repairoptions #scorebased').prop('checked', settingFile.repairscore);
+	$('#repairoptions #bosskill').prop('checked', settingFile.repairmother);
+	
+	//Bomb
+	$('#bombspawns').prop('checked', settingFile.bombspawns);
+	$('#bomboptions #scorebased').prop('checked', settingFile.bombscore);
+	$('#bomboptions #timebased').prop('checked', settingFile.bombtime);
+	
+	//Scoreup
+	$('#scoreupspawns').prop('checked', settingFile.scoreupspawns);
+	$('#scoreupoptions #scorebased').prop('checked', settingFile.scoreupscore);
+	$('#scoreupoptions #timebased').prop('checked', settingFile.scoreuptime);
+	
+	//Slow
+	$('#slowspawns').prop('checked', settingFile.slowspawns);
+	$('#slowoptions #scorebased').prop('checked', settingFile.slowscore);
+	$('#slowoptions #timebased').prop('checked', settingFile.slowtime);
+	
+	/*Update powerup spawn values.
+	Calculate a score at which to spawn the powerup, and a time. Multiply each one respectively by the boolean value for whether or not it will spawn that way (ie, the result will be 0 for the non-active one). 
+	Otherwise, they will spawn at whatever score/time was last set -- which could've been quite a ways into the game already.
+	*/
+	repairSpawn = 	 (score + Math.round(Math.random()*30+10)*settingFile.repairscore);
+	bombSpawn = 	((score + Math.round(Math.random()*40+6))*settingFile.bombscore)		+ (timer + Math.round(Math.random()*60*10+20))*settingFile.bombtime;
+	scoreupSpawn = 	((score + Math.round(Math.random()*40+6))*settingFile.scoreupscore) 	+ (timer + Math.round(Math.random()*60*10+20))*settingFile.scoreuptime;
+	slowSpawn = 	((score + Math.round(Math.random()*30+20))*settingFile.slowscore) 		+ (timer + Math.round(Math.random()*60*10+20))*settingFile.slowtime;
+
+//Player's ship category
+	$('#' + settingFile.model).click() //.model is a string. grey, teal, red. The aesthetic model for the player's ship.
+	$('#' + settingFile.missiles).click() //.missiles is a string. straight, seeker, spread. The type of missiles that're fired.
+	$('#missileDamage').val(settingFile.damage);
+	$('#missileDamagenum').val(settingFile.damage);
+	$('#extraLives').val(settingFile.lives);
+	
+//Alien category
+	//Alien 
+	$('#alienbounty').val(settingFile.alienbounty);
+	$('#alienHealth').val(settingFile.alienhealth);
+	$('#alienHealthnum').val(settingFile.alienhealth);
+	$('#alienGrowth').val(settingFile.aliengrowth);
+	$('#alienGrowthNum').val("Never");
+	$('#alienGrowthNum').val(settingFile.aliengrowth ? "Every " + settingFile.aliengrowth + " points" : "Never"); //if aliengrowth is non-zero, then put "Every X score" in the box, else put "Never" in the box instead
+	
+	//Mothership 
+	$('#' + settingFile.motherspawns).click(); //string. no, one, many. The checkbox for whether motherships spawn or not
+	$('#motherbounty').val(20);
+	$('#motherHealth').val(20);
+	$('#motherHealthnum').val(20);
+	$('#motherRate').val(40);
+	$('#motherRateNum').val(40);
+	
+	
+//Get rid of any aliens or powerups on screen
 	for (var i = 0; i < sprites.length; i++)
 	{
 		if (sprites[i] instanceof Alien || sprites[i] instanceof Powerup)
@@ -315,27 +341,17 @@ $('.resetbuttons').on("click", function() {
 			i--;
 		}	
 	}
-	alienFrequency = 100;
-	lives = $('#extraLives').val();
-	score = 0;
-	timer = 0;
-	alienTimer = 0;
-	motherShipCalled = false;
-	mothershipsKilled = 0;
-	scoreToMotherShip = 5;
-	winConditions = 0;
-	gameState = PLAYING;
-	gameOverMessage.visible = false;
-	gameOverMessage.text = "";
 	
-	/*Update powerup spawn values.
-	Rather than checking wether or not the spawn is checked, or which type is selected, use multiplication and boolean values to have it sort that out for you.
-	*/
-	repairSpawn = (score + Math.round(Math.random()*30+10)*$('#repairoptions #scorebased').prop('checked')) * $('#repairspawns').prop('checked');
-	bombSpawn = ((score + Math.round(Math.random()*40+6)*$('#bomboptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#bomboptions #timebased').prop('checked')) * $('#bombspawns').prop('checked');
-	scoreupSpawn = ((score + Math.round(Math.random()*40+6)*$('#scoreupoptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#scoreupoptions #timebased').prop('checked')) * $('#scoreupspawns').prop('checked');
-	slowSpawn = ((score + Math.round(Math.random()*30+20)*$('#slowoptions #scorebased').prop('checked')) + (timer + Math.round(Math.random()*60*10+20))*$('#slowoptions #timebased').prop('checked')) * $('#slowspawns').prop('checked');
-	
-
-
+//Reset all the other variables
+	alienTimer = 0; //The timer keeping track of when to spawn aliens
+	alienFrequency = 100; //How often aliens spawn
+	lives = $('#extraLives').val(); //Player's lives
+	score = 0;	//Score
+	timer = 0;	//Time
+	motherShipCalled = false; //If a mothership has spawned yet
+	mothershipsKilled = 0;	//How many motherships have spawned already
+	scoreToMotherShip = 5;	//How long until the next mothership
+	winConditions = 0;	//How many win conditions the player has met.
+	gameState = PLAYING;	//Gamestate
+	gameOverMessage.visible = false;	//Hide "Earth saved!"/"Earth destroyed!" message
 });

@@ -46,6 +46,9 @@ var redtype = "scorebased";
 var tealspawn;
 var tealtype = "scorebased";
 
+var defaultSettings = new Settings();
+var newSettings = new Settings();
+var settingFile = defaultSettings;
 
 function removeObject(objectToRemove, array) 
 { 

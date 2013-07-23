@@ -387,7 +387,7 @@ function makeMother()
 	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
-	mothership.health = mothership.MAXHEALTH = $('#motherHP').val(); //Set the ship's health based on the option setting, under the Aliens section
+	mothership.health = mothership.MAXHEALTH = $('#motherHealthnum').val(); //Set the ship's health based on the option setting, under the Aliens section
 	mothership.bounty = parseInt($('#motherbounty').val(), 10) //Set the ship's bounty (score earned from destruction) based on the option setting, under the Aliens section
 	
 	sprites.push(mothership);
