@@ -2,42 +2,60 @@ $(document).ready(function(){
     $('#menu').accordion({heightStyle: "fill"}); //Do the accordion feature -- collapsing categories. "fill" means they fill the table size, no bigger and no smaller
 
 //Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
-	$('#winoptions input').on("click", function() {
+	$('#winoptions input').on("change", function() {
 		
 		switch ($(this).attr('id')) //Switch based on which option was selected
 		{
 			case ("score"):
 				$('#scorenum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning score will be)
+				newSettings.winscore = $('#score').prop('checked'); //Toggle the Settings object value
+				break;
+
+			case ("scorenum"):
+				scoreNeededToWin = newSettings.winscoreNum = this.value;
+				console.log(this.value);
 				break;
 				
 			case("time"):
 				$('#timenum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning time will be)
+				newSettings.wintime = $('#time').prop('checked');
+				break;
+				
+			case ("timenum"):
+				timeToWin = newSettings.wintimeNum = this.value;
+				console.log(this.value);
 				break;
 				
 			case("ship"):
 				$('#shipnum').prop("disabled", !$(this).is(':checked')); //Toggle the text field (to input what a winning quantity of motherships will be)
+				newSettings.winship = $('#ship').prop('checked');
+				break;
+			
+			case ("shipnum"):
+				shipsToWin = newSettings.winshipNum = this.value;
+				console.log(this.value);
 				break;
 				
-			case ("set"):
-				//When they click on the Apply button, set the win condition values to what are in the text fields. Need to parse to int, they are strings by default
-				scoreNeededToWin = parseInt($('#scorenum').val(), 10);
-				timeToWin = parseInt($('#timenum').val(), 10);
-				shipsToWin = parseInt($('#shipnum').val(), 10);
-				
-				conditionsNeeded = parseInt($('#winconds').val(), 10);
-				break;	
-
+			case ("winconds"):
+				conditionsNeeded = newSettings.winconds = this.value;
+				console.log(this.value);
+				break;
+		
 			default:
 				break;
 		}
 		//Depending on how many win conditions are checked, adjust how big the maximum requirement can be -- ie, if only "Reach a high score" is checked, player shouldn't be allowed to require all 3 win conditions"
 		$('#winconds').attr('max', $('#winoptions input:checkbox:checked').length);//Change the max always
+		
 		$('#winconds').attr('value', Math.min($('#winconds').attr('value'), $('#winconds').attr('max')));//Change current if it's greater than max
 		$('#wincondsNum').val($('#winconds').val());		
+		newSettings.winconds = $('#wincondsNum').val(); //Change the Settings value
 	});
+	
 	//Separate from the others because "input" is more responsive than "click" for range sliders, but doesn't work for checkboxes
 	$('#winconds').on("input", function() {
 		$('#wincondsNum').val(this.value);	
+		newSettings.winconds = $('#wincondsNum').val(); //Change the Settings value
 	});
 	
 /*
@@ -50,6 +68,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#repairoptions').hide(); //Hide that sub-menu by default
 	$('#repairspawns').on("click", function(){
 		$('#repairoptions').toggle(); 	//When the player clicks on the "repair" option, either show or hide the inner options.
+		newSettings.repairspawns = $('#repairspawns').prop('checked');
 	});
 	
 	//When one of the repair options has been selected
@@ -63,11 +82,15 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			repairSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + repairSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			newSettings.repairscore = true;
+			newSettings.repairmother = false;
 		}
 		else if (repairtype === "timebased")
 		{
 			repairSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (repairSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			newSettings.repairscore = false;
+			newSettings.repairmother = true;
 		}
 	});
 
@@ -77,6 +100,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "Bomb" option, either show or hide the inner options.
 	$('#bombspawns').on("click", function(){
 		$('#bomboptions').toggle();
+		newSettings.bombspawns = $('#bombspawns').prop('checked');
 	});
 	//When one of the bomb options has been selected
 	$('#bomboptions input').on("click", function()
@@ -89,11 +113,15 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			bombSpawn = score + Math.round(Math.random()*40); //Spawn anywhere between 0 and 40 score
 			console.log("Set to " + bombSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			newSettings.bombscore = true;
+			newSettings.bombtime= false;
 		}
 		else if (bombtype === "timebased")
 		{
 			bombSpawn = timer + Math.round(Math.random()*60*40); //Spawn anywhere between 0 and 40 seconds
 			console.log("Set to " + (bombSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			newSettings.bombscore = false;
+			newSettings.bombtime= true;
 		}
 	});
 
@@ -103,6 +131,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "scoreup" option, either show or hide the inner options.
 	$('#scoreupspawns').on("click", function(){
 		$('#scoreupoptions').toggle();
+		newSettings.scoreupspawns = $('#scoreupspawns').prop('checked');
 	});
 	//When one of the scoreup options has been selected
 	$('#scoreupoptions input').on("click", function()
@@ -115,11 +144,15 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			scoreupSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + scoreupSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			newSettings.scoreupscore = true;
+			newSettings.scoreuptime= false;
 		}
 		else if (scoreuptype === "timebased")
 		{
 			scoreupSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (scoreupSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			newSettings.scoreupscore = false;
+			newSettings.scoreuptime= true;
 		}
 	});	
 	
@@ -130,6 +163,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "slow" option, either show or hide the inner options.
 	$('#slowspawns').on("click", function(){
 		$('#slowoptions').toggle();
+		newSettings.bombspawns = $('#bombspawns').prop('checked');
 	});
 	//When one of the slow options has been selected
 	$('#slowoptions input').on("click", function()
@@ -142,17 +176,22 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			slowSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + slowSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			newSettings.slowscore = true;
+			newSettings.slowtime= false;
 		}
 		else if (slowtype === "timebased")
 		{
 			slowSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (slowSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			newSettings.slowscore = false;
+			newSettings.slowtime= true;
 		}
 	});	
 	
 	
 //Ship appearance -- When a player clicks on a radio button (within #shipchoices), change the sourceX depending on what the button ID was.
 	$('#shipchoices input').on("click", function(){
+		newSettings.model = $(this).attr('id');
 		switch ($(this).attr('id'))
 		{
 			case "grey":
@@ -171,6 +210,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	});
 //Ship firing types -- When the player has clicked on one of the choices for how the ship fires, change "model" depending on which it was -- Actual behavior decided by model is done in MissileEntity.js
 	$('#missilechoices input').on("click", function(){
+	newSettings.missiles = $(this).attr('id');
 	switch($(this).attr('id'))
 	{
 		case "straight":
@@ -187,26 +227,32 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
 	$('#missileDamage').on("input", function(){
 		$('#missileDamagenum').val(this.value);
+		newSettings.damage = $(this).val();
 	});
 	
 //Grant lives as requested -
-	$('#extraLives').val(lives); //Set the text value to the amount of lives by default
-	$('#setlives').on("click", function(){ //When the "Apply" button is clicked, then set lives equal to the amount in the text field.
-		lives = $('#extraLives').val();
+	$('#extraLives').on("change", function() {
+		lives = newSettings.lives = $('#extraLives').val();	
 	});
 
+//Alien bounty
+	$('#alienbounty').on("change", function() 
+	{
+		newSettings.alienbounty = this.value;	
+	});
 
 //Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
 		$('#alienHealthnum').val(this.value);
+		newSettings.alienhealth = this.value;
 	});
 
 //Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
 	$('#alienGrowth').on("input", function(){
+		newSettings.aliengrowth = this.value;
 		if (this.value === "0")
 		{
 			$('#alienGrowthNum').val("Never");
-			
 		}
 		else 
 		{
@@ -218,6 +264,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Mothership existence (None, one, multiple)
 	$('#multiplemothers').hide(); //By default, hide the section relevant to multiple spawns
 	$("input[name='mothers']").on("click", function(){
+		newSettings.motherspawns = $(this).attr('id');
 		switch($(this).attr('id'))
 		{
 			case "no":
@@ -234,20 +281,22 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		}			
 	});
 	
+//Mothership bounty
+$('#motherbounty').on("change", function() 
+{
+	newSettings.motherbounty = this.value;	
+});
+	
 //Alter mothership health - Change the text box on the slider change. Actual health value set in makeMother function.
 	$('#motherHealth').on("input", function(){
 		$('#motherHealthnum').val(this.value);
+		newSettings.motherhealth = this.value;
 	});
-/*//Mothership score value
-	$('#motherbounty').on("input", function(){
-	
-	});
-*/
 
 //Change mothership spawn rates
 	$('#motherRate').on("input", function(){
 		$('#motherRateNum').val(this.value);
-		
+		newSettings.spawn = this.value;
 	});
 });
 
@@ -258,8 +307,10 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 
 //Buttons to restart the game
 $('.resetbuttons').on("click", function() {
-	if ($(this).attr('id') === "reset")
+	settingFile = defaultSettings;
+	if ($(this).attr('id') === "restart")
 	{
+		console.log("hi");
 		settingFile = newSettings;
 	}
 
@@ -325,11 +376,11 @@ $('.resetbuttons').on("click", function() {
 	
 	//Mothership 
 	$('#' + settingFile.motherspawns).click(); //string. no, one, many. The checkbox for whether motherships spawn or not
-	$('#motherbounty').val(20);
-	$('#motherHealth').val(20);
-	$('#motherHealthnum').val(20);
-	$('#motherRate').val(40);
-	$('#motherRateNum').val(40);
+	$('#motherbounty').val(settingFile.motherbounty);
+	$('#motherHealth').val(settingFile.motherhealth);
+	$('#motherHealthnum').val(settingFile.motherhealth);
+	$('#motherRate').val(settingFile.spawn);
+	$('#motherRateNum').val(settingFile.spawn);
 	
 	
 //Get rid of any aliens or powerups on screen
