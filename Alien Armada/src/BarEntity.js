@@ -15,7 +15,7 @@ function Bar() {
 
 //YO: A bar object is tightly coupled with its associated mothership/alien and should not be an independent object.
 Bar.prototype.update = function() {
-	if (mothership !== null) //If it is alive, update the bar to reflect its health
+	if (mothership.health) //If it is alive, update the bar to reflect its health
 	{
 		//44px constant is the icon that doesn't get reduced. The rest of the bar is 136px.
 		//Reduce that 136px to reflect the mothership's current/max health.

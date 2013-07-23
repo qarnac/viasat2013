@@ -12,7 +12,7 @@ $(document).ready(function(){
 				break;
 
 			case ("scorenum"):
-				scoreNeededToWin = newSettings.winscoreNum = this.value;
+				gameConditions.scoreToWin = newSettings.winscoreNum = this.value;
 				console.log(this.value);
 				break;
 				
@@ -22,7 +22,7 @@ $(document).ready(function(){
 				break;
 				
 			case ("timenum"):
-				timeToWin = newSettings.wintimeNum = this.value;
+				gameConditions.timeToWin = newSettings.wintimeNum = this.value;
 				console.log(this.value);
 				break;
 				
@@ -32,12 +32,12 @@ $(document).ready(function(){
 				break;
 			
 			case ("shipnum"):
-				shipsToWin = newSettings.winshipNum = this.value;
+				gameConditions.shipstoWin = newSettings.winshipNum = this.value;
 				console.log(this.value);
 				break;
 				
 			case ("winconds"):
-				conditionsNeeded = newSettings.winconds = this.value;
+				gameConditions.conditionsNeeded = newSettings.winconds = this.value;
 				console.log(this.value);
 				break;
 		
@@ -75,20 +75,20 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#repairoptions input').on("click", function()
 	{
 		//Set a variable (used in controlPowerups function in main js file)
-		repairtype = $(this).attr('id');
+		powerupOption.repairtype = $(this).attr('id');
 		
 		//Whenever they select a spawn type, give a new score/time at which to spawn.
-		if (repairtype === "scorebased")
+		if (powerupOption.repairtype === "scorebased")
 		{
-			repairSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
-			console.log("Set to " + repairSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			powerupOption.repairSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
+			console.log("Set to " + powerupOption.repairSpawn + " score") //Diagnostic, just making sure that it works as intended.
 			newSettings.repairscore = true;
 			newSettings.repairmother = false;
 		}
-		else if (repairtype === "timebased")
+		else if (powerupOption.repairtype === "timebased")
 		{
-			repairSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
-			console.log("Set to " + (repairSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			powerupOption.repairSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
+			console.log("Set to " + (powerupOption.repairSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
 			newSettings.repairscore = false;
 			newSettings.repairmother = true;
 		}
@@ -106,20 +106,20 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#bomboptions input').on("click", function()
 	{
 		//Set a variable (used in controlPowerups function in main js file)
-		bombtype = $(this).attr('id');
+		powerupOption.bombtype = $(this).attr('id'); 
 		
 		//Whenever they select a spawn type, give a new score/time at which to spawn.
-		if (bombtype === "scorebased")
+		if (powerupOption.bombtype === "scorebased")
 		{
-			bombSpawn = score + Math.round(Math.random()*40); //Spawn anywhere between 0 and 40 score
-			console.log("Set to " + bombSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			powerupOption.bombSpawn = gameConditions.score + Math.round(Math.random()*40); //Spawn anywhere between 0 and 40 score
+			console.log("Set to " + powerupOption.bombSpawn + " score") //Diagnostic, just making sure that it works as intended.
 			newSettings.bombscore = true;
 			newSettings.bombtime= false;
 		}
-		else if (bombtype === "timebased")
+		else if (powerupOption.bombtype === "timebased")
 		{
-			bombSpawn = timer + Math.round(Math.random()*60*40); //Spawn anywhere between 0 and 40 seconds
-			console.log("Set to " + (bombSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			powerupOption.bombSpawn = gameConditions.timer + Math.round(Math.random()*60*40); //Spawn anywhere between 0 and 40 seconds
+			console.log("Set to " + (powerupOption.bombSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
 			newSettings.bombscore = false;
 			newSettings.bombtime= true;
 		}
@@ -137,22 +137,22 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#scoreupoptions input').on("click", function()
 	{
 		//Set a variable (used in controlPowerups function in main js file)
-		scoreuptype = $(this).attr('id');
+		powerupOption.scoreuptype = $(this).attr('id');
 		
 		//Whenever they select a spawn type, give a new score/time at which to spawn.
-		if (scoreuptype === "scorebased")
+		if (powerupOption.scoreuptype === "scorebased")
 		{
-			scoreupSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
-			console.log("Set to " + scoreupSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			powerupOption.scoreupSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
+			console.log("Set to " + powerupOption.scoreupSpawn + " score") //Diagnostic, just making sure that it works as intended.
 			newSettings.scoreupscore = true;
-			newSettings.scoreuptime= false;
+			newSettings.scoreuptime = false;
 		}
-		else if (scoreuptype === "timebased")
+		else if (powerupOption.scoreuptype === "timebased")
 		{
-			scoreupSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
-			console.log("Set to " + (scoreupSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			powerupOption.scoreupSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
+			console.log("Set to " + (powerupOption.scoreupSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
 			newSettings.scoreupscore = false;
-			newSettings.scoreuptime= true;
+			newSettings.scoreuptime = true;
 		}
 	});	
 	
@@ -169,20 +169,20 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#slowoptions input').on("click", function()
 	{
 		//Set a variable (used in controlPowerups function in main js file)
-		slowtype = $(this).attr('id');
+		powerupOption.slowtype = $(this).attr('id');
 		
 		//Whenever they select a spawn type, give a new score/time at which to spawn.
-		if (slowtype === "scorebased")
+		if (powerupOption.slowtype === "scorebased")
 		{
-			slowSpawn = score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
-			console.log("Set to " + slowSpawn + " score") //Diagnostic, just making sure that it works as intended.
+			powerupOption.slowSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
+			console.log("Set to " + powerupOption.slowSpawn + " score") //Diagnostic, just making sure that it works as intended.
 			newSettings.slowscore = true;
 			newSettings.slowtime= false;
 		}
-		else if (slowtype === "timebased")
+		else if (powerupOption.slowtype === "timebased")
 		{
-			slowSpawn = timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
-			console.log("Set to " + (slowSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
+			powerupOption.slowSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
+			console.log("Set to " + (powerupOption.slowSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
 			newSettings.slowscore = false;
 			newSettings.slowtime= true;
 		}
@@ -232,27 +232,27 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Grant lives as requested -
 	$('#extraLives').on("change", function() {
-		lives = newSettings.lives = $('#extraLives').val();	
+		gameConditions.lives = newSettings.lives = $('#extraLives').val();	
 	});
 
 //Alien bounty
 	$('#alienbounty').on("change", function() 
 	{
-		newSettings.alienbounty = alienbounty = parseInt(this.value, 10);	
+		newSettings.alienbounty = alienOption.bounty = parseInt(this.value, 10);	
 	});
 
 //Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
 		$('#alienHealthnum').val(this.value);
-		alienbasehealth = parseInt(this.value, 10);
+		alienOption.baseHealth = parseInt(this.value, 10);
 		newSettings.alienhealth = this.value;
 	});
 
 //Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
 	$('#alienGrowth').on("input", function(){
 		newSettings.aliengrowth = this.value;
-		alienGrowthRate = parseInt($(this).val(), 10);
-		$('#alienGrowthNum').val(alienGrowthRate? "Every " + alienGrowthRate + " points" : "Never");
+		alienOption.growthRate = parseInt($(this).val(), 10);
+		$('#alienGrowthNum').val(alienOption.growthRate? "Every " + alienOption.growthRate + " points" : "Never");
 	});
 
 //Mothership existence (None, one, multiple)
@@ -347,10 +347,10 @@ $('.resetbuttons').on("click", function() {
 	Calculate a score at which to spawn the powerup, and a time. Multiply each one respectively by the boolean value for whether or not it will spawn that way (ie, the result will be 0 for the non-active one). 
 	Otherwise, they will spawn at whatever score/time was last set -- which could've been quite a ways into the game already.
 	*/
-	repairSpawn = 	 (score + Math.round(Math.random()*30+10)*settingFile.repairscore);
-	bombSpawn = 	((score + Math.round(Math.random()*40+6))*settingFile.bombscore)		+ (timer + Math.round(Math.random()*60*10+20))*settingFile.bombtime;
-	scoreupSpawn = 	((score + Math.round(Math.random()*40+6))*settingFile.scoreupscore) 	+ (timer + Math.round(Math.random()*60*10+20))*settingFile.scoreuptime;
-	slowSpawn = 	((score + Math.round(Math.random()*30+20))*settingFile.slowscore) 		+ (timer + Math.round(Math.random()*60*10+20))*settingFile.slowtime;
+	powerupOption.repairSpawn = 	 (gameConditions.score + Math.round(Math.random()*30+10)*settingFile.repairscore);
+	powerupOption.bombSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))*settingFile.bombscore)		+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.bombtime;
+	powerupOption.scoreupSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))*settingFile.scoreupscore) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.scoreuptime;
+	powerupOption.slowSpawn = 	((gameConditions.score + Math.round(Math.random()*30+20))*settingFile.slowscore) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.slowtime;
 
 //Player's ship category
 	$('#' + settingFile.model).click() //.model is a string. grey, teal, red. The aesthetic model for the player's ship.
@@ -361,7 +361,7 @@ $('.resetbuttons').on("click", function() {
 	
 //Alien category
 	//Alien 
-	$('#alienbounty').val(settingFile.alienbounty);
+	$('#alienOption.bounty').val(settingFile.alienbounty);
 	$('#alienHealth').val(settingFile.alienhealth);
 	$('#alienHealthnum').val(settingFile.alienhealth);
 	$('#alienGrowth').val(settingFile.aliengrowth);
@@ -388,15 +388,15 @@ $('.resetbuttons').on("click", function() {
 	}
 	
 //Reset all the other variables
-	alienTimer = 0; //The timer keeping track of when to spawn aliens
-	alienFrequency = 100; //How often aliens spawn
-	lives = $('#extraLives').val(); //Player's lives
-	score = 0;	//Score
-	timer = 0;	//Time
-	motherShipCalled = false; //If a mothership has spawned yet
-	mothershipsKilled = 0;	//How many motherships have spawned already
-	scoreToMotherShip = 5;	//How long until the next mothership
-	winConditions = 0;	//How many win conditions the player has met.
+	alienOption.timer = 0; //The timer keeping track of when to spawn aliens
+	alienOption.frequency = 100; //How often aliens spawn
+	gameConditions.lives = $('#extraLives').val(); //Player's lives
+	gameConditions.score = 0;	//Score
+	gameConditions.timer = 0;	//Time
+	mothershipOption.called = false; //If a mothership has spawned yet
+	gameConditions.ships = 0;	//How many motherships have spawned already
+	mothershipOption.scoreToMother = 5;	//How long until the next mothership
+	gameConditions.winConditions = 0;	//How many win conditions the player has met.
 	gameState = PLAYING;	//Gamestate
 	gameOverMessage.visible = false;	//Hide "Earth saved!"/"Earth destroyed!" message
 });

@@ -88,7 +88,13 @@ Missile.prototype.update = function () {
 				switch(sprite.id)
 				{					
 					case "Bomb": //Damage enemies on screen
-						for (var k = 0; k < sprites.length; k++) { sprites[k].health -= this.damage; }
+						for (var k = 0; k < sprites.length; k++) 
+						{ 
+							if (sprites[k] instanceof Alien)
+							{
+								sprites[k].health -= this.damage; 
+							}
+						}
 						break;
 						
 					case "Slow": //Slow down enemies on screen
@@ -99,11 +105,10 @@ Missile.prototype.update = function () {
 						break;
 						
 					case "Scoreup": //Minor boost in score
-						score += 5;
+						gameConditions.score += 5;
 						break;
 					case "Repair": //Grants extra lives.
-						lives++;
-						$('#lives').val(lives);
+						gameConditions.lives++;
 						break;
 						
 					//End powerups

@@ -159,30 +159,30 @@ function playGame()
 		}
 	}
 
-  //Add one to the alienTimer
-  alienTimer++;
+  //Add one to the alienOption.timer
+  alienOption.timer++;
 
-  //Make a new alien if alienTimer equals the alienFrequency
-  if(alienTimer === alienFrequency)
+  //Make a new alien if timer equals the frequency
+  if(alienOption.timer === alienOption.frequency)
   {
     makeAlien();
-    alienTimer = 0;
+    alienOption.timer = 0;
 
-    //Reduce alienFrequency by one to gradually increase
+    //Reduce frequency by one to gradually increase
     //the frequency that aliens are created
-    if(alienFrequency > 2)
+    if(alienOption.frequency > 2)
     {  
-      alienFrequency--;
+      alienOption.frequency--;
     }
 
 	
 	//If the score is right, and a mothership is not yet called, and the player hasn't selected to have no motherships
-	if ((scoreToMotherShip <= 0) && motherShipCalled === false && !($("input:radio[name='mothers']:checked").val() === "no"))
+	if ((mothershipOption.scoreToMother <= 0) && mothershipOption.called === false && !($("input:radio[name='mothers']:checked").val() === "no"))
 	{
       //make the mothership
 		makeMother();
-  		motherShipCalled = true;
-		scoreToMotherShip = parseInt($('#motherRateNum').val(), 10); //After the first one has been spawned, then take the rate the player has set (default = 40) for future spawns
+  		mothershipOption.called = true;
+		mothershipOption.scoreToMother = parseInt($('#motherRateNum').val(), 10); //After the first one has been spawned, then take the rate the player has set (default = 40) for future spawns
 
     }
   }
@@ -191,25 +191,25 @@ function playGame()
    
   //--- The score 
   //Display the score
-  scoreDisplay.text = "Score: " + score;
+  scoreDisplay.text = "Score: " + gameConditions.score;
   
   //Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
-  if(score >= scoreNeededToWin && $('#scorenum').prop('disabled') === false)
-  {	winConditions++;  }
-  if (timer >= timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply by 60 for the 60 frames-per-second
-  {	winConditions++;  }
-  if (mothershipsKilled >= shipsToWin && $('#shipnum').prop('disabled') === false)
-  {	winConditions++;  }
+  if(gameConditions.score >= gameConditions.scoreToWin && $('#scorenum').prop('disabled') === false)
+  {	gameConditions.winConditions++;  }
+  if (gameConditions.timer >= gameConditions.timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply by 60 for the 60 frames-per-second
+  {	gameConditions.winConditions++;  }
+  if (gameConditions.ships >= gameConditions.shipstoWin && $('#shipnum').prop('disabled') === false)
+  {	gameConditions.winConditions++;  }
   
   //If enough win conditions (also customizable by the player) are met, then end the game
-  if (winConditions >= conditionsNeeded)
+  if (gameConditions.winConditions >= gameConditions.conditionsNeeded)
   {	gameState = OVER;  }
   
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
-   if (score >= 30 && loadLevel === false) //Go to the next level
+   if (gameConditions.score >= 30 && loadLevel === false) //Go to the next level
   {
     //temp so we dont repeat
-    score ++;
+    gameConditions.score ++;
     levelNumber++;
     loadLevel = true;
     gameState = CHANGE_LEVEL;
@@ -226,7 +226,7 @@ function playGame()
 
 function controlPowerups()
 {
-	timer++;
+	gameConditions.timer++;
 /*
 	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
 */
@@ -235,14 +235,14 @@ function controlPowerups()
 //Repair
 	{
 		//If repair kits drop on a score basis
-		if (repairtype === "scorebased") 
+		if (powerupOption.repairtype === "scorebased") 
 		{
-			if (score >= repairSpawn) //Then check if the current score is high enough to merit a  kit
+			if (gameConditions.score >= repairSpawn) //Then check if the current score is high enough to merit a  kit
 			{
 				//Make a new repair kit
 				var repair = new Powerup("Repair");
 				sprites.push(repair);
-				repairSpawn = score + Math.round(Math.random()*30+10); //Set a timer for the next kit to spawn at.
+				powerupOption.repairSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Set a timer for the next kit to spawn at.
 			}
 		}
 	}
@@ -250,22 +250,22 @@ function controlPowerups()
 //Bomb
 	if ($('#bombspawns').is(':checked'))
 	{
-		if (bombtype === "scorebased")
+		if (powerupOption.bombtype === "scorebased")
 		{
-			if (score >= bombSpawn)
+			if (gameConditions.score >= powerupOption.bombSpawn)
 			{
 				var bomb = new Powerup("Bomb");
 				sprites.push(bomb);
-				bombSpawn = score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another bomb
+				powerupOption.bombSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another bomb
 			}
 		}
-		else if (bombtype === "timebased")
+		else if (powerupOption.bombtype === "timebased")
 		{
-			if (timer >= bombSpawn)
+			if (gameConditions.timer >= powerupOption.bombSpawn)
 			{
 				var bomb = new Powerup("Bomb");
 				sprites.push(bomb);  
-				bombSpawn = timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another bomb
+				powerupOption.bombSpawn = gameConditions.timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another bomb
 			}
 		}
 	}
@@ -273,22 +273,22 @@ function controlPowerups()
 //Scoreup
 	if ($('#scoreupspawns').is(':checked'))
 	{
-		if (scoreuptype === "scorebased")
+		if (powerupOption.scoreuptype === "scorebased")
 		{
-			if (score >= scoreupSpawn)
+			if (gameConditions.score >= powerupOption.scoreupSpawn)
 			{
 				var scoreup = new Powerup("Scoreup");
 				sprites.push(scoreup);
-				scoreupSpawn = score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another scoreup
+				powerupOption.scoreupSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another scoreup
 			}
 		}
-		else if (scoreuptype === "timebased")
+		else if (powerupOption.scoreuptype === "timebased")
 		{
-			if (timer >= scoreupSpawn)
+			if (gameConditions.timer >= powerupOption.scoreupSpawn)
 			{
 				var scoreup = new Powerup("Scoreup");
 				sprites.push(scoreup);  
-				scoreupSpawn = timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another scoreup
+				powerupOption.scoreupSpawn = gameConditions.timer + Math.round(Math.random()*60*10+20); //Set a new time at which to spawn another scoreup
 			}
 		}
 	}
@@ -296,24 +296,24 @@ function controlPowerups()
 //Slow
 	if ($('#slowspawns').is(':checked'))
 	{
-		if (slowtype === "scorebased")
+		if (powerupOption.slowtype === "scorebased")
 		{
-			if (score >= slowSpawn)
+			if (gameConditions.score >= powerupOption.slowSpawn)
 			{
 				var slow = new Powerup("Slow");
 				sprites.push(slow);
-				slowSpawn = score + Math.round(Math.random()*30+20); //Set a new score at which to spawn another slow
+				powerupOption.slowSpawn = gameConditions.score + Math.round(Math.random()*30+20); //Set a new score at which to spawn another slow
 			}
 		}
-		else if (slowtype === "timebased")
+		else if (powerupOption.slowtype === "timebased")
 		{
-			if (timer >= slowSpawn)
+			if (gameConditions.timer >= powerupOption.slowSpawn)
 			{
 				var slow = new Powerup("Slow");
 				sprites.push(slow);  
-				slowSpawn = timer + Math.round(Math.random()*60*30+20); //Set a new time at which to spawn another slow
+				powerupOption.slowSpawn = gameConditions.timer + Math.round(Math.random()*60*30+20); //Set a new time at which to spawn another slow
 			}
-		}
+		} 
 	}
 	
 }
@@ -321,7 +321,7 @@ function controlPowerups()
 function endGame()
 {
   gameOverMessage.visible = true;
-  if (winConditions >= conditionsNeeded)	
+  if (gameConditions.winConditions >= gameConditions.conditionsNeeded)	
   {
     gameOverMessage.x = 120;
     gameOverMessage.text = "EARTH SAVED!";
@@ -494,7 +494,7 @@ function render()
   }
   
     //Display a lives counter
-	for (var i = 0; i < lives; i++)
+	for (var i = 0; i < gameConditions.lives; i++)
 	{
 		
 		drawingSurface.drawImage 

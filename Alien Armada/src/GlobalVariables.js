@@ -11,49 +11,67 @@ var scenes = [];
 
 var cannon;
 var mothership;
-var lives = 3; //How many spare ships the player has
+
 var missileDam = 1;
 
-var alienTimer = 0;
-var alienFrequency = 100; //When timer===frequency, spawn an alien, and reduce frequency (so they spawn more often)
-var alienGrowthRate = 0; //0 === disabled. Else, give aliens an extra health every time the score is evenly divisible by this.
-var alienbasehealth = 1;
-var alienbounty = 1;
-
-var score = 0;
-var scoreNeededToWin = 160; 
-
-var timer = 0; 
-var timeToWin = 300;	
-
-var scoreToMotherShip = 5; //How many more points needed for mothership to spawn. Decrement every kill.
-var motherShipCalled = false;
-var mothershipspawnrate = 0; //If it's 0, then only one will spawn. Any pos number is valid
-var mothershipsKilled = 0;
-var shipsToWin = 2; //How many motherships need to be destroyed in order for the win condition to be met 
-
-var winConditions = 0;
-var conditionsNeeded = 1; //How many win conditions need to be met to consider it a victory
-
 var gameOverMessage;
-
-//Powerups - xSpawn will become either the time or the score value at which x spawns. xtype will decide whether time or score is used to spawn x.
-var repairSpawn;
-var repairtype = "timebased";
-var bombSpawn;
-var bombtype = "scorebased";
-var scoreupSpawn;
-var scoreuptype = "scorebased";
-var slowSpawn;
-var slowtype = "timebased";
-var redSpawn;
-var redtype = "scorebased";
-var tealspawn;
-var tealtype = "scorebased";
 
 var defaultSettings = new Settings();
 var newSettings = new Settings();
 var settingFile = defaultSettings;
+
+
+//Variables related to aliens being spawned
+var alienOption = 
+{
+	timer: 0,
+	frequency: 100, //When timer===frequency, spawn an alien, and reduce frequency (so they spawn more often)
+	growthRate: 0, //0 === disabled. Else, give aliens an extra health every time the score is evenly divisible by this.
+	baseHealth: 1, //Base amount of health an alien has
+	bounty: 1 //How much score each alien is worth
+};
+
+//Variables related to motherships being spawned
+var mothershipOption = 
+{
+	scoreToMother: 5, 	//How many more points needed for mothership to spawn. Decrement every kill.
+	called: false,		//Whether or not one is spawned already
+	spawnRate: 0, 		//If it's 0, then only one will spawn. Any pos number is valid
+};
+
+//Variables related to the game being won or lost.
+var gameConditions =
+{
+	score: 0,
+	scoreToWin: 160,
+	timer: 0,
+	timeToWin: 300,
+	
+	ships: 0, 			//Quantity of motherships killed
+	shipsToWin: 2, 		//How many motherships need to be killed to win (if that condition is enabled
+	
+	winConditions: 0,
+	conditionsNeeded: 1,
+	
+	lives: 3
+};
+
+//Powerups - xSpawn will become either the time or the score value at which x spawns. xtype will decide whether time or score is used to spawn x.
+var powerupOption =
+{
+	repairSpawn: 0,
+	repairtype: "timebased",
+
+	bombSpawn: 0,
+	bombtype: "scorebased",
+
+	scoreupSpawn: 0,
+	scoreuptype: "scorebased",
+
+	slowSpawn: 0,
+	slowtype: "timebased"
+};
+
 
 function removeObject(objectToRemove, array) 
 { 

@@ -12,7 +12,7 @@ function Alien() {
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	
-	this.health = this.MAXHEALTH = alienbasehealth + (parseInt((score / alienGrowthRate), 10) || 0);
+	this.health = this.MAXHEALTH = alienOption.baseHealth + (parseInt((gameConditions.score / alienOption.growthRate), 10) || 0);
 	/*To break it down: X + (A/B || 0)
 	And I call parseint on X and B because by default they are strings. And parseInt on A/B because it can be undefined if B is 0.
 	
@@ -31,7 +31,7 @@ function Alien() {
 	console.log(this.health);
 	
 	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
-	this.bounty = alienbounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
+	this.bounty = alienOption.bounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
 	
 }
@@ -41,10 +41,9 @@ Alien.prototype.update = function () {
 	
 	if (this.y > 320 + this.height)
 	{
-		lives--;
-		$('#lives').val(lives);
+		gameConditions.lives--;
 		this.deathcounter=0;
-		if (lives <= 0)
+		if (gameConditions.lives <= 0)
 		{
 			gameState = OVER;
 		}
@@ -54,18 +53,22 @@ Alien.prototype.update = function () {
 		if (this === mothership) //If the alien was a mothership
 		{
 			this.sourceX = 192; //Go to explosion sprite
-			mothershipsKilled++; //Increment the amount of motherships destroyed (potential win condition)
+			if (this.deathcounter === 60)
+			{
+				gameConditions.ships++; //Increment the amount of motherships destroyed (potential win condition)
+				if($('#bosskill').is(':checked'))
+				{
+					var repair = new Powerup("Repair");
+					sprites.push(repair);
+				}
+			}
+			
 			if ($("input:radio[name='mothers']:checked").val() === "many") //If the player wants to see multiple ships
 			{
-				motherShipCalled = false; //Reset the boolean value so another can be spawned in the future
+				mothershipOption.called = false; //Reset the boolean value so another can be spawned in the future
 			}
 			
 			//If the player wants repairs to spawn after mothership kills, then spawn a repair kit.
-			if($('#bosskill').is(':checked'))
-			{
-				var repair = new Powerup("Repair");
-				sprites.push(repair);
-			}
 		} 
 		else {this.sourceX = 64; } //Go to explosion sprite
 		this.deathcounter--;
@@ -79,7 +82,7 @@ Alien.prototype.update = function () {
 		//Play the explosion sound
 		explosionSound.currentTime = 0;
 		explosionSound.play();
-  		score += this.bounty; //Increase player's score by the monster's worth
-		scoreToMotherShip--;
+  		gameConditions.score += this.bounty; //Increase player's score by the monster's worth
+		mothershipOption.scoreToMother--;
 	}
 }
