@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $('#menu').accordion({heightStyle: "fill"}); //Do the accordion feature -- collapsing categories. "fill" means they fill the table size, no bigger and no smaller
+	$('#unlock').hide();
 
 //Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
 	$('#winoptions input').on("change", function() {
@@ -301,6 +302,7 @@ $('#motherbounty').on("change", function()
 
 //Buttons to restart the game
 $('.resetbuttons').on("click", function() {
+	//Figure out which setting file to pick from. By default, use the defaultsettings. Unless the player chose to restart with their custom settings
 	settingFile = defaultSettings;
 	if ($(this).attr('id') === "restart")
 	{
@@ -399,4 +401,34 @@ $('.resetbuttons').on("click", function() {
 	gameConditions.winConditions = 0;	//How many win conditions the player has met.
 	gameState = PLAYING;	//Gamestate
 	gameOverMessage.visible = false;	//Hide "Earth saved!"/"Earth destroyed!" message
+	
+	if ($(this).attr('id') === "restart") //If they clicked the "Restart with current settings" button
+	{
+		$("input").attr("disabled", true);		//Lock all of the options
+		$('#volAll').attr("disabled", false);	//Manually unlock the volume slider (because that should always be accessible)
+		$(this).hide();				//Hide this button
+		$('#unlock').show();			//Show the Unlock button instead
+	}
+	else //If the player chose the "Reset everything" button OR the "Unlock options" button
+	{
+		$("input").attr("disabled", false); //Unlock all of the options (that got locked because of the Restart button)
+		$('#scorenum').prop('disabled', !(settingFile.winscore));	//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+		$('#timenum').prop('disabled', !(settingFile.wintime));		//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+		$('#shipnum').prop('disabled', !(settingFile.winship));		//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+
+		$('#restart').show(); //Make sure the "Restart with current settings" button is shown
+		$('#unlock').hide(); //and that the Unlock button is hidden (resetting will unlock everything anyway)
+	}
+	
+});
+
+$('#unlock').on("click", function() //If they click on the "Unlock the settings" button`
+{
+	$(this).hide(); //Hide this button
+	$('#restart').show(); //Show the "Restrt with current settings" button
+	$("input").attr("disabled", false); //Unlock all of the options (that got locked because of the Restart button)
+	$('#scorenum').prop('disabled', !($('#score').prop('checked')));	//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+	$('#timenum').prop('disabled', !($('#time').prop('checked')));		//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+	$('#shipnum').prop('disabled', !($('#ship').prop('checked')));		//Manually lock the 3 inputs that should probably be locked (input values for win conditions)
+
 });

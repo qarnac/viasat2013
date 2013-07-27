@@ -8,7 +8,6 @@ var sprites = [];
 //and manipulate the background
 var scenes = [];
 
-
 var cannon;
 var mothership;
 
