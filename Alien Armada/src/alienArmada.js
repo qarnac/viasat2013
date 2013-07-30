@@ -80,35 +80,27 @@ update();
 
 function update()
 { 	
-	
-  //The animation loop
-  requestAnimationFrame(update, canvas);
-  //Change what the game is doing based on the game state
-  switch(gameState)
-  {
-    case LOADING:
-		break;
-    
-    case PLAYING:
+	//The animation loop
+	requestAnimationFrame(update, canvas);
+	//Change what the game is doing based on the game state
+	switch(gameState)
+	{
+		case PLAYING:
 		playGame();
 		break;
-    
-    case OVER:
+
+		case OVER:
 		endGame();
 		break;
-		
-    case PAUSED:
-		pauseGame();
-		break;
-		
-    case CHANGE_LEVEL:
-      //console.log("we are about to change levels");
+
+		case CHANGE_LEVEL:
+		//console.log("we are about to change levels");
 		changingLevels();
 		gameState = PLAYING;
 		break;
-  }
-  //Render the game
-  render();
+	}
+	//Render the game
+	render();
 }
 
 function loadHandler()
@@ -135,93 +127,90 @@ function loadHandler()
 
 function playGame()
 {
-  
-  //Fire a missile if shoot is true
-  if(shoot)
-  {
-    fireMissile();
-    shoot = false;	
-  }
-  
-  //YO: add a loop to update all sprite objects
-  for(var i = 0; i < sprites.length; i++) {
-	sprites[i].update();
-  }
-  
-  //Add a loop to delete all dead objects after their delay
-	for (var i = 0; i < sprites.length; i++) 
+
+	//Fire a missile if shoot is true
+	if(shoot)
 	{
-		var sprite = sprites[i];
-		if (sprite.deathcounter === 0)
+		fireMissile();
+		shoot = false;	
+	}
+  
+	//YO: add a loop to update all sprite objects
+	for(var i = 0; i < sprites.length; i++) 
+	{
+		if (sprites[i].deathcounter === 0)
 		{
 			removeObject(sprites[i], sprites);
 			i--;
 		}
+		
+		else
+		{
+			sprites[i].update();
+		}
 	}
 
-  //Add one to the alienOption.timer
-  alienOption.timer++;
+	//Add one to the alienOption.timer
+	alienOption.timer++;
 
-  //Make a new alien if timer equals the frequency
-  if(alienOption.timer === alienOption.frequency)
-  {
-    makeAlien();
-    alienOption.timer = 0;
-
-    //Reduce frequency by one to gradually increase
-    //the frequency that aliens are created
-    if(alienOption.frequency > 2)
-    {  
-      alienOption.frequency--;
-    }
-
-	
-	//If the score is right, and a mothership is not yet called, and the player hasn't selected to have no motherships
-	if ((mothershipOption.scoreToMother <= 0) && mothershipOption.called === false && !($("input:radio[name='mothers']:checked").val() === "no"))
+	//Make a new alien if timer equals the frequency
+	if(alienOption.timer === alienOption.frequency)
 	{
-      //make the mothership
-		makeMother();
-  		mothershipOption.called = true;
-		mothershipOption.scoreToMother = parseInt($('#motherRateNum').val(), 10); //After the first one has been spawned, then take the rate the player has set (default = 40) for future spawns
+		makeAlien();
+		alienOption.timer = 0;
 
-    }
-  }
-  
-  controlPowerups(); //All of the functions related to spawning powerups in here, to de-clutter the playGame function.
-   
-  //--- The score 
-  //Display the score
-  scoreDisplay.text = "Score: " + gameConditions.score;
-  
-  //Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
-  if(gameConditions.score >= gameConditions.scoreToWin && $('#scorenum').prop('disabled') === false)
-  {	gameConditions.winConditions++;  }
-  if (gameConditions.timer >= gameConditions.timeToWin*60 && $('#timenum').prop('disabled') === false) //Multiply by 60 for the 60 frames-per-second
-  {	gameConditions.winConditions++;  }
-  if (gameConditions.ships >= gameConditions.shipstoWin && $('#shipnum').prop('disabled') === false)
-  {	gameConditions.winConditions++;  }
-  
-  //If enough win conditions (also customizable by the player) are met, then end the game
-  if (gameConditions.winConditions >= gameConditions.conditionsNeeded)
-  {	gameState = OVER;  }
-  
+		//Reduce frequency by one to gradually increase
+		//the frequency that aliens are created
+		if(alienOption.frequency > 2)
+		{  
+			alienOption.frequency--;
+		}
+
+
+		//If the score is right, and a mothership is not yet called, and the player hasn't selected to have no motherships
+		if ((mothershipOption.scoreToMother <= 0) && mothershipOption.called === false && newSettings.motherspawns !== "no")
+		{
+			//make the mothership
+			makeMother();
+			mothershipOption.called = true;
+			mothershipOption.scoreToMother = newSettings.spawn; //After the first one has been spawned, then take the rate the player has set (default = 40) for future spawns
+		}
+	}
+
+	controlPowerups(); //All of the functions related to spawning powerups in here, to de-clutter the playGame function.
+
+	//--- The score 
+	//Display the score
+	scoreDisplay.text = "Score: " + gameConditions.score;
+
+	//Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
+	if(gameConditions.score >= newSettings.winscoreNum && newSettings.winscore)
+	{	gameConditions.winConditions++;  }
+	if (gameConditions.timer >= newSettings.wintimeNum*60 && newSettings.wintime) //Multiply by 60 for the 60 frames-per-second
+	{	gameConditions.winConditions++;  }
+	if (gameConditions.ships >= newSettings.winshipNum && newSettings.winship)
+	{	gameConditions.winConditions++;  }
+
+	//If enough win conditions (also customizable by the player) are met, then end the game
+	if (gameConditions.winConditions >= newSettings.winconds)
+	{	gameState = OVER;  }
+
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
-   if (gameConditions.score >= 30 && loadLevel === false) //Go to the next level
-  {
-    //temp so we dont repeat
-    gameConditions.score ++;
-    levelNumber++;
-    loadLevel = true;
-    gameState = CHANGE_LEVEL;
-    
-  }
-  
-  //JT:this will scroll the background, which is stored inside a new array
-  for (var i = 0; i < scenes.length;i++) {
-    
-    scenes[i].bgScroll();
-  }
-	
+	if (gameConditions.score >= 30 && loadLevel === false) //Go to the next level
+	{
+		//temp so we dont repeat
+		gameConditions.score++;
+		levelNumber++;
+		loadLevel = true;
+		gameState = CHANGE_LEVEL;
+	}
+
+	//JT:this will scroll the background, which is stored inside a new array
+	for (var i = 0; i < scenes.length;i++) 
+	{
+		scenes[i].bgScroll();
+	}
+
 }//end playGame
 
 function controlPowerups()
@@ -231,13 +220,13 @@ function controlPowerups()
 	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
 */
 	
-	if ($('#repairspawns').is(':checked')) //If the button to spawn repairs has been checked
+	if (newSettings.repairspawns) //If the button to spawn repairs has been checked
 //Repair
 	{
 		//If repair kits drop on a score basis
-		if (powerupOption.repairtype === "scorebased") 
+		if (newSettings.repairscore)
 		{
-			if (gameConditions.score >= repairSpawn) //Then check if the current score is high enough to merit a  kit
+			if (gameConditions.score >= powerupOption.repairSpawn) //Then check if the current score is high enough to merit a  kit
 			{
 				//Make a new repair kit
 				var repair = new Powerup("Repair");
@@ -248,9 +237,9 @@ function controlPowerups()
 	}
 	
 //Bomb
-	if ($('#bombspawns').is(':checked'))
+	if (newSettings.bombspawns)
 	{
-		if (powerupOption.bombtype === "scorebased")
+		if (newSettings.bombscore)
 		{
 			if (gameConditions.score >= powerupOption.bombSpawn)
 			{
@@ -259,7 +248,7 @@ function controlPowerups()
 				powerupOption.bombSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another bomb
 			}
 		}
-		else if (powerupOption.bombtype === "timebased")
+		else if (newSettings.bombtime)
 		{
 			if (gameConditions.timer >= powerupOption.bombSpawn)
 			{
@@ -271,9 +260,9 @@ function controlPowerups()
 	}
 	
 //Scoreup
-	if ($('#scoreupspawns').is(':checked'))
+	if (newSettings.scoreupspawns)
 	{
-		if (powerupOption.scoreuptype === "scorebased")
+		if (newSettings.scoreupscore)
 		{
 			if (gameConditions.score >= powerupOption.scoreupSpawn)
 			{
@@ -282,7 +271,7 @@ function controlPowerups()
 				powerupOption.scoreupSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another scoreup
 			}
 		}
-		else if (powerupOption.scoreuptype === "timebased")
+		else if (newSettings.scoreuptime)
 		{
 			if (gameConditions.timer >= powerupOption.scoreupSpawn)
 			{
@@ -294,9 +283,9 @@ function controlPowerups()
 	}
 
 //Slow
-	if ($('#slowspawns').is(':checked'))
+	if (newSettings.slowspawns)
 	{
-		if (powerupOption.slowtype === "scorebased")
+		if (newSettings.slowscore)
 		{
 			if (gameConditions.score >= powerupOption.slowSpawn)
 			{
@@ -305,7 +294,7 @@ function controlPowerups()
 				powerupOption.slowSpawn = gameConditions.score + Math.round(Math.random()*30+20); //Set a new score at which to spawn another slow
 			}
 		}
-		else if (powerupOption.slowtype === "timebased")
+		else if (newSettings.slowtime)
 		{
 			if (gameConditions.timer >= powerupOption.slowSpawn)
 			{
@@ -321,7 +310,7 @@ function controlPowerups()
 function endGame()
 {
   gameOverMessage.visible = true;
-  if (gameConditions.winConditions >= gameConditions.conditionsNeeded)	
+  if (gameConditions.winConditions >= newSettings.winconds)	
   {
     gameOverMessage.x = 120;
     gameOverMessage.text = "EARTH SAVED!";
@@ -332,10 +321,7 @@ function endGame()
   }
 }
 
-function pauseGame()
-{
-	//console.log("Paused." /*Sprite count: " + sprites.length*/);	
-}
+
 function makeAlien()
 {
   //Create the alien
@@ -387,8 +373,8 @@ function makeMother()
 	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
-	mothership.health = mothership.MAXHEALTH = $('#motherHealthnum').val(); //Set the ship's health based on the option setting, under the Aliens section
-	mothership.bounty = parseInt($('#motherbounty').val(), 10) //Set the ship's bounty (score earned from destruction) based on the option setting, under the Aliens section
+	mothership.health = mothership.MAXHEALTH = newSettings.motherhealth; //Set the ship's health based on the option setting, under the Aliens section
+	mothership.bounty = newSettings.motherbounty; //Set the ship's bounty (score earned from destruction) based on the option setting, under the Aliens section
 	
 	sprites.push(mothership);
   
@@ -439,73 +425,69 @@ function render()
 	0, 0,
 	480, 320
 	);
-  
-  
-
-  
+   
     //JT: Display the scenes.   
-  if(scenes.length !== 0)
-  {
-    for(var i = 0; i < scenes.length; i++)
-    {
-      var scene = scenes[i];
-      drawingSurface.drawImage
-      (
-        image, 
-        scene.sourceX, scene.sourceY, 
-        scene.sourceWidth, scene.sourceHeight,
-        Math.floor(scene.x), Math.floor(scene.y), 
-        scene.width, scene.height
-      ); 
-    }
-  }
-  
-  //Display the sprites
-  if(sprites.length !== 0)
-  {
-    for(var i = 0; i < sprites.length; i++)
-    {
-      var sprite = sprites[i];
-      drawingSurface.drawImage
-      (
-        image, 
-        sprite.sourceX, sprite.sourceY, 
-        sprite.sourceWidth, sprite.sourceHeight,
-        Math.floor(sprite.x), Math.floor(sprite.y), 
-        sprite.width, sprite.height
-      ); 
-    }
-  }
-  
-  //Display game messages
-  if(messages.length !== 0)
-  {
-    for(var i = 0; i < messages.length; i++)
+	if(scenes.length !== 0)
 	{
-	  var message = messages[i];
-	  if(message.visible)
-	  {
-	    drawingSurface.font = message.font;  
-        drawingSurface.fillStyle = message.fillStyle;
-        drawingSurface.textBaseline = message.textBaseline;
-		drawingSurface.fillText(message.text, message.x, message.y);  
-	  }
+		for(var i = 0; i < scenes.length; i++)
+		{
+			var scene = scenes[i];
+			drawingSurface.drawImage
+			(
+			image, 
+			scene.sourceX, scene.sourceY, 
+			scene.sourceWidth, scene.sourceHeight,
+			Math.floor(scene.x), Math.floor(scene.y), 
+			scene.width, scene.height
+			); 
+		}
 	}
-  }
   
-    //Display a lives counter
+	//Display the sprites
+	if(sprites.length !== 0)
+	{
+		for(var i = 0; i < sprites.length; i++)
+		{
+			var sprite = sprites[i];
+			drawingSurface.drawImage
+			(
+			image, 
+			sprite.sourceX, sprite.sourceY, 
+			sprite.sourceWidth, sprite.sourceHeight,
+			Math.floor(sprite.x), Math.floor(sprite.y), 
+			sprite.width, sprite.height
+			); 
+		}
+	}
+
+	//Display game messages
+	if(messages.length !== 0)
+	{
+		for(var i = 0; i < messages.length; i++)
+		{
+			var message = messages[i];
+			if(message.visible)
+			{
+				drawingSurface.font = message.font;  
+				drawingSurface.fillStyle = message.fillStyle;
+				drawingSurface.textBaseline = message.textBaseline;
+				drawingSurface.fillText(message.text, message.x, message.y);  
+			}
+		}
+	}
+
+	//Display a lives counter in the bottom left
 	for (var i = 0; i < gameConditions.lives; i++)
 	{
-		
 		drawingSurface.drawImage 
 		(
-			image,
-			cannon.sourceX, cannon.sourceY, //Uses cannon's current source, to react to model changes
-			32, 32,
-			(10 + i*24), 290, //The draw is going to start at 10px over, and then each additional life is going to be 24 pixels further over (16 for the sprite size, +8 for some spacing)
-			16, 16
+		image,
+		cannon.sourceX, cannon.sourceY, //Uses cannon's current source, to react to model changes
+		32, 32,
+		(10 + i*24), 290, //The draw is going to start at 10px over, and then each additional life is going to be 24 pixels further over (16 for the sprite size, +8 for some spacing)
+		16, 16
 		);
 	}
-  }
+}//End render()
 
 }());

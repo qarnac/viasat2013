@@ -13,7 +13,7 @@ $(document).ready(function(){
 				break;
 
 			case ("scorenum"):
-				gameConditions.scoreToWin = newSettings.winscoreNum = this.value;
+				newSettings.winscoreNum =  parseInt(this.value, 10);
 				console.log(this.value);
 				break;
 				
@@ -23,7 +23,7 @@ $(document).ready(function(){
 				break;
 				
 			case ("timenum"):
-				gameConditions.timeToWin = newSettings.wintimeNum = this.value;
+				newSettings.wintimeNum =  parseInt(this.value, 10);
 				console.log(this.value);
 				break;
 				
@@ -33,12 +33,12 @@ $(document).ready(function(){
 				break;
 			
 			case ("shipnum"):
-				gameConditions.shipstoWin = newSettings.winshipNum = this.value;
+				newSettings.winshipNum =  parseInt(this.value, 10);
 				console.log(this.value);
 				break;
 				
 			case ("winconds"):
-				gameConditions.conditionsNeeded = newSettings.winconds = this.value;
+				newSettings.winconds =  parseInt(this.value, 10);
 				console.log(this.value);
 				break;
 		
@@ -55,7 +55,7 @@ $(document).ready(function(){
 	
 	//Separate from the others because "input" is more responsive than "click" for range sliders, but doesn't work for checkboxes
 	$('#winconds').on("input", function() {
-		$('#wincondsNum').val(this.value);	
+		$('#wincondsNum').val(parseInt(this.value, 10));	
 		newSettings.winconds = $('#wincondsNum').val(); //Change the Settings value
 	});
 	
@@ -164,7 +164,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "slow" option, either show or hide the inner options.
 	$('#slowspawns').on("click", function(){
 		$('#slowoptions').toggle();
-		newSettings.bombspawns = $('#bombspawns').prop('checked');
+		newSettings.slowspawns = $('#slowspawns').prop('checked');
 	});
 	//When one of the slow options has been selected
 	$('#slowoptions input').on("click", function()
@@ -227,7 +227,7 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	
 //Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
 	$('#missileDamage').on("input", function(){
-		$('#missileDamagenum').val(this.value);
+		$('#missileDamagenum').val(parseInt(this.value, 10));
 		newSettings.damage = missileDam = parseInt(this.value, 10);
 	});
 	
@@ -239,21 +239,20 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Alien bounty
 	$('#alienbounty').on("change", function() 
 	{
-		newSettings.alienbounty = alienOption.bounty = parseInt(this.value, 10);	
+		newSettings.alienbounty = parseInt(this.value, 10);	
 	});
 
 //Alter alien health - Change the text box on the slider change. Actual health values set in the AlienEntity.js constructor.
 	$('#alienHealth').on("input", function(){
-		$('#alienHealthnum').val(this.value);
-		alienOption.baseHealth = parseInt(this.value, 10);
-		newSettings.alienhealth = this.value;
+		$('#alienHealthnum').val(parseInt(this.value, 10));
+		newSettings.alienhealth = parseInt(this.value, 10);
+		
 	});
 
 //Aliens grow stronger at what intervals? - Change text box depending on slider. If slider = 0, text is "never".
 	$('#alienGrowth').on("input", function(){
-		newSettings.aliengrowth = this.value;
-		alienOption.growthRate = parseInt($(this).val(), 10);
-		$('#alienGrowthNum').val(alienOption.growthRate? "Every " + alienOption.growthRate + " points" : "Never");
+		newSettings.aliengrowth = parseInt($(this).val(), 10);
+		$('#alienGrowthNum').val(newSettings.aliengrowth? "Every " + newSettings.aliengrowth + " points" : "Never");
 	});
 
 //Mothership existence (None, one, multiple)
@@ -279,19 +278,19 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 //Mothership bounty
 $('#motherbounty').on("change", function() 
 {
-	newSettings.motherbounty = this.value;	
+	newSettings.motherbounty = parseInt(this.value, 10);	
 });
 	
 //Alter mothership health - Change the text box on the slider change. Actual health value set in makeMother function.
 	$('#motherHealth').on("input", function(){
-		$('#motherHealthnum').val(this.value);
-		newSettings.motherhealth = this.value;
+		$('#motherHealthnum').val(parseInt(this.value, 10));
+		newSettings.motherhealth = parseInt(this.value, 10);
 	});
 
 //Change mothership spawn rates
 	$('#motherRate').on("input", function(){
-		$('#motherRateNum').val(this.value);
-		newSettings.spawn = this.value;
+		$('#motherRateNum').val(parseInt(this.value, 10));
+		newSettings.spawn =  parseInt(this.value, 10);
 	});
 });
 
@@ -418,6 +417,8 @@ $('.resetbuttons').on("click", function() {
 
 		$('#restart').show(); //Make sure the "Restart with current settings" button is shown
 		$('#unlock').hide(); //and that the Unlock button is hidden (resetting will unlock everything anyway)
+		
+		newSettings = defaultSettings;
 	}
 	
 });

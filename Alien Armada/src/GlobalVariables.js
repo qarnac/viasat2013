@@ -24,25 +24,20 @@ var settingFile = defaultSettings;
 var alienOption = 
 {
 	timer: 0,
-	frequency: 100, //When timer===frequency, spawn an alien, and reduce frequency (so they spawn more often)
-	growthRate: 0, //0 === disabled. Else, give aliens an extra health every time the score is evenly divisible by this.
-	baseHealth: 1, //Base amount of health an alien has
-	bounty: 1 //How much score each alien is worth
+	frequency: 100 //When timer===frequency, spawn an alien, and reduce frequency (so they spawn more often)
 };
 
 //Variables related to motherships being spawned
 var mothershipOption = 
 {
 	scoreToMother: 5, 	//How many more points needed for mothership to spawn. Decrement every kill.
-	called: false,		//Whether or not one is spawned already
-	spawnRate: 0, 		//If it's 0, then only one will spawn. Any pos number is valid
+	called: false		//Whether or not one is spawned already
 };
 
 //Variables related to the game being won or lost.
 var gameConditions =
 {
 	score: 0,
-	scoreToWin: 160,
 	timer: 0,
 	timeToWin: 300,
 	
@@ -50,8 +45,7 @@ var gameConditions =
 	shipsToWin: 2, 		//How many motherships need to be killed to win (if that condition is enabled
 	
 	winConditions: 0,
-	conditionsNeeded: 1,
-	
+
 	lives: 3
 };
 

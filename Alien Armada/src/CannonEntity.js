@@ -10,6 +10,7 @@ function Cannon(x, y) {
 
 Cannon.prototype.update = function () {	
 	//Left
+	
 	if(moveLeft && !moveRight)
 	{
 		this.vx = -6;

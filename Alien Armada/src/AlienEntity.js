@@ -12,9 +12,9 @@ function Alien() {
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	
-	this.health = this.MAXHEALTH = alienOption.baseHealth + (parseInt((gameConditions.score / alienOption.growthRate), 10) || 0);
+	this.health = this.MAXHEALTH = newSettings.alienhealth + (parseInt((gameConditions.score / newSettings.aliengrowth), 10) || 0);
 	/*To break it down: X + (A/B || 0)
-	And I call parseint on X and B because by default they are strings. And parseInt on A/B because it can be undefined if B is 0.
+	I call parseInt on A/B because it can be undefined if B is 0.
 	
 	X is the base health, default is 1 but the player can change it with an option slider.
 	A is the current score
@@ -31,7 +31,7 @@ function Alien() {
 	console.log(this.health);
 	
 	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
-	this.bounty = alienOption.bounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
+	this.bounty = newSettings.alienbounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
 	
 }
@@ -49,21 +49,22 @@ Alien.prototype.update = function () {
 		}
 	}
 	
-	if (this.exploded) {
+	if (this.exploded) 
+	{
 		if (this === mothership) //If the alien was a mothership
 		{
 			this.sourceX = 192; //Go to explosion sprite
 			if (this.deathcounter === 60)
 			{
 				gameConditions.ships++; //Increment the amount of motherships destroyed (potential win condition)
-				if($('#bosskill').is(':checked'))
+				if($('#bosskill').prop('checked'))
 				{
 					var repair = new Powerup("Repair");
 					sprites.push(repair);
 				}
 			}
 			
-			if ($("input:radio[name='mothers']:checked").val() === "many") //If the player wants to see multiple ships
+			if (newSettings.motherspawns === "many") //If the player wants to see multiple ships
 			{
 				mothershipOption.called = false; //Reset the boolean value so another can be spawned in the future
 			}

@@ -92,7 +92,7 @@ Missile.prototype.update = function () {
 						{ 
 							if (sprites[k] instanceof Alien)
 							{
-								sprites[k].health -= this.damage; 
+								sprites[k].health -= 3; 
 							}
 						}
 						break;
