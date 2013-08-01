@@ -28,11 +28,11 @@ function Alien() {
 	1 + (Infinity || 0)
 	1 + 0
 	1 health*/
-	console.log(this.health);
+	//console.log(this.health); //Uncomment if you need to see for yourself that it works
 	
 	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
 	this.bounty = newSettings.alienbounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
-	this.deathcounter = 60;	//YO: to last 60 frames, i.e. 1 second
+	this.framesremaining = 60;	//YO: to last 60 frames, i.e. 1 second
 	
 }
 
@@ -42,7 +42,7 @@ Alien.prototype.update = function () {
 	if (this.y > 320 + this.height)
 	{
 		gameConditions.lives--;
-		this.deathcounter=0;
+		this.framesremaining=0;
 		if (gameConditions.lives <= 0)
 		{
 			gameState = OVER;
@@ -54,7 +54,7 @@ Alien.prototype.update = function () {
 		if (this === mothership) //If the alien was a mothership
 		{
 			this.sourceX = 192; //Go to explosion sprite
-			if (this.deathcounter === 60)
+			if (this.framesremaining === 60)
 			{
 				gameConditions.ships++; //Increment the amount of motherships destroyed (potential win condition)
 				if($('#bosskill').prop('checked'))
@@ -72,7 +72,7 @@ Alien.prototype.update = function () {
 			//If the player wants repairs to spawn after mothership kills, then spawn a repair kit.
 		} 
 		else {this.sourceX = 64; } //Go to explosion sprite
-		this.deathcounter--;
+		this.framesremaining--;
 		
 	} 
 	else if (this.health <= 0)

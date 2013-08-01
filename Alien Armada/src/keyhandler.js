@@ -1,16 +1,13 @@
 
 //Game states
-var LOADING = 0
+var LOADING = 0;
 var PLAYING = 1;
-var OVER = 2;			//Moved to keyhandler.js
+var OVER = 2;
 var PAUSED = 3;
 var OPTIONSMENU = 4;
 var CHANGE_LEVEL = 5;
 
-
 var gameState;
-var prevState;	//Used for pause/unpause going to the right game state
-
 
 //Arrow key codes
 var RIGHT = 39;
@@ -19,16 +16,16 @@ var SPACE = 32;
 var ESC = 27;
 var S = 83;
 var E = 69;
-var PLUSNP = 107;					
+var PLUSNUMPAD = 107;					
 var PLUS = 187;
-var MINUSNP = 109;
+var MINUSNUMPAD = 109;
 var MINUS = 189;
 
 //Directions
 var moveRight = false;
 var moveLeft = false;
 
-//Variables to help fire missiles
+//Variables to help fire missiles, only one per press of the spacebar
 var shoot = false;
 var spaceKeyIsDown = false;
 
@@ -55,32 +52,25 @@ function keydownhandler() {
 			break;
 			
 		case ESC:
-			//Will not change state if game is over, or still loading. Only if currently playing, doing options, or paused.
-			//Uses prevState so that it knows which to return to on unpause
-			if (gameState === PLAYING) 			{ gameState = PAUSED; prevState = PLAYING;		pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
-			else if (gameState === OPTIONSMENU) { gameState = PAUSED; prevState = OPTIONSMENU; 	pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
-			else if (gameState === PAUSED) 		{ gameState = prevState;						pauseMessage.innerHTML = "Press \"ESC\" to pause";					}
+			if (gameState === PLAYING) 		{ gameState = PAUSED;	pauseMessage.innerHTML = "Press \"ESC\" to <span>un</span>pause";	}
+			else if (gameState === PAUSED) 	{ gameState = PLAYING;	pauseMessage.innerHTML = "Press \"ESC\" to pause";					}
 			break;
 			
 		case S: 
-			controlSound("S");
+			controlSound("muteMusic");
 			break;
 			
 		case E:
-			controlSound("E");
+			controlSound("muteEffects");
 			break;
 			
 		case PLUS:
-			controlSound("PLUS");
-			break;
-		case PLUSNP:
+		case PLUSNUMPAD:
 			controlSound("PLUS");
 			break;
 			
 		case MINUS:
-			controlSound("MINUS");
-			break;
-		case MINUSNP:
+		case MINUSNUMPAD:
 			controlSound("MINUS");
 			break;
 	}
@@ -103,5 +93,3 @@ function keyuphandler()
 		break;
   }
 }
-
-

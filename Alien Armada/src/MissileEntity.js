@@ -8,8 +8,7 @@ function Missile(cannon) {
 	this.width = 16;
 	this.height = 16;
 	this.vy = -8;
-	this.vx = 0;
-	this.deathcounter = 1;
+	//this.vx = 0;
 	this.damage = missileDam; //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
 	
 	// Center it over the cannon
@@ -74,7 +73,7 @@ Missile.prototype.update = function () {
 			if (this.hit(sprite) && !sprite.exploded) //If the alien/mothership is alive
 			{
 				sprite.health -= this.damage; //Reduce the alien/mothership's health by the missile's damage
-				this.deathcounter--; //Remove the missile
+				this.framesremaining--; //Remove the missile
 			}
 		}	
 
@@ -83,7 +82,7 @@ Missile.prototype.update = function () {
 		{
 			
 			if (this.hit(sprite)) 
-				{
+			{
 				//console.log(sprite.id); //Log which powerup was hit
 				switch(sprite.id)
 				{					
@@ -114,8 +113,8 @@ Missile.prototype.update = function () {
 					//End powerups
 				}
 				
-				sprite.deathcounter = 0; //Remove the option button
-				this.deathcounter = 0; //Remove the missile
+				sprite.framesremaining = 0; //Remove the option button
+				this.framesremaining = 0; //Remove the missile
 			}
 		}
 	}//End collisions
@@ -169,6 +168,6 @@ Missile.prototype.update = function () {
 	if((this.y < 0 - this.height) || (this.y > 320 + this.height) || (this.x < 0 - this.width) || (this.x > 480 + this.height))
     { 
 		//Remove the missile from the sprites array
-		this.deathcounter--;
+		this.framesremaining--;
     }
 }

@@ -7,8 +7,7 @@ var canvas = document.querySelector("canvas");
 var drawingSurface = canvas.getContext("2d");
 
 //Create the background
-var background = new levelEntityClass();	//Object.create(spriteObject);
-//sprites.push(background);  
+var background = new levelEntityClass();
 scenes.push(background);
 
 
@@ -23,16 +22,15 @@ sprites.push(cannon);
 //Create the score message
 var scoreDisplay = new Message();
 scoreDisplay.font = "normal bold 14px emulogic";
-scoreDisplay.fillStyle = "#00FF00";
 scoreDisplay.x = 300;
 scoreDisplay.y = 10;
+scoreDisplay.visible = true;
 messages.push(scoreDisplay);
 
 
 //The game over message
 gameOverMessage = new Message();
 gameOverMessage.font = "normal bold 20px emulogic";
-gameOverMessage.fillStyle = "#00FF00";
 gameOverMessage.x = 70;
 gameOverMessage.y = 120;
 gameOverMessage.visible = false;
@@ -94,7 +92,6 @@ function update()
 		break;
 
 		case CHANGE_LEVEL:
-		//console.log("we are about to change levels");
 		changingLevels();
 		gameState = PLAYING;
 		break;
@@ -138,7 +135,7 @@ function playGame()
 	//YO: add a loop to update all sprite objects
 	for(var i = 0; i < sprites.length; i++) 
 	{
-		if (sprites[i].deathcounter === 0)
+		if (sprites[i].framesremaining === 0)
 		{
 			removeObject(sprites[i], sprites);
 			i--;
@@ -208,7 +205,7 @@ function playGame()
 	//JT:this will scroll the background, which is stored inside a new array
 	for (var i = 0; i < scenes.length;i++) 
 	{
-		scenes[i].bgScroll();
+		scenes[i].update();
 	}
 
 }//end playGame
@@ -347,16 +344,12 @@ function loadGameLevel(lv)
   //JT: this statement will track what level we are on
   switch (lv) {
     case 0:
-      console.log("entering earth's orbit");
       break;
     
     case 1:
-      var marsBackground = new Mars();
+      var marsBackground = new levelEntityClass();
+	  marsBackground.sourceX = 480; 
       scenes.splice(0, 1, marsBackground);	//KN: Changed to splice from scenes, now that we're using that.
-      console.log("entering mars' orbit");
-      break;
-    
-    case 2:
       break;
   }
 }

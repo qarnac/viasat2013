@@ -3,14 +3,9 @@ Bar.prototype.constructor = Bar;
 function Bar() {
 	EntityClass.call(this);
 
-	this.sourceY =0;
 	this.sourceX = 256;
 	this.sourceWidth = 180;
-	this.sourceHeight = 32;
 	this.width = 180;
-	this.height = 32;
-	this.visible =true;
-	this.deathcounter = 1;
 }
 
 //YO: A bar object is tightly coupled with its associated mothership/alien and should not be an independent object.
@@ -25,6 +20,6 @@ Bar.prototype.update = function() {
 	}
 	else //Once the mothership is gone, remove the health bar.
 	{
-		this.deathcounter--;
+		this.framesremaining--;
 	}
 }

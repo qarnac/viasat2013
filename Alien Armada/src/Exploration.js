@@ -14,7 +14,6 @@ $(document).ready(function(){
 
 			case ("scorenum"):
 				newSettings.winscoreNum =  parseInt(this.value, 10);
-				console.log(this.value);
 				break;
 				
 			case("time"):
@@ -24,7 +23,6 @@ $(document).ready(function(){
 				
 			case ("timenum"):
 				newSettings.wintimeNum =  parseInt(this.value, 10);
-				console.log(this.value);
 				break;
 				
 			case("ship"):
@@ -34,12 +32,10 @@ $(document).ready(function(){
 			
 			case ("shipnum"):
 				newSettings.winshipNum =  parseInt(this.value, 10);
-				console.log(this.value);
 				break;
 				
 			case ("winconds"):
 				newSettings.winconds =  parseInt(this.value, 10);
-				console.log(this.value);
 				break;
 		
 			default:
@@ -205,7 +201,6 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 				cannon.sourceX = 512;
 				break;
 			default:
-				console.log("Error?");
 				break;
 		}
 	});
@@ -305,7 +300,6 @@ $('.resetbuttons').on("click", function() {
 	settingFile = defaultSettings;
 	if ($(this).attr('id') === "restart")
 	{
-		console.log("hi");
 		settingFile = newSettings;
 	}
 

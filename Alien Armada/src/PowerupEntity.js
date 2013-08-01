@@ -3,7 +3,6 @@ Powerup.prototype.constructor = EntityClass;
 function Powerup(type) {
 	EntityClass.call(this);
 	this.vy= .5;
-	this.deathcounter = 1;
 	this.id = type;
 	
 	var randomPosition = Math.floor(Math.random() * 15);

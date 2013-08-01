@@ -28,66 +28,54 @@ volAll.addEventListener("input", controlSound, false);
 
 function controlSound(event) //Overarching volume control function
 {
-	if (event === "S") { target = "muteMusic"; }
-	else if (event === "E") { target = "muteEffects"; }
+	
+	//In the case of a key shortcut being pressed
+	if (event === "muteMusic" || event === "muteEffects") { target = event; }
 	else if (event === "PLUS" || event === "MINUS") { target = "keyAll"; }
 	
-	else {	target = event.target.id; }
-	if (target === "muteMusic") //If they pressed the "(Un)Mute music" button
+	//Else, one of the buttons or the slider has changed
+	else {	target = event.target.id; } 
+	
+	if (target === "muteMusic") //If they pressed the "(Un)Mute music" button, or the S key
 	{
 		music.muted = !music.muted; //Change the muted status
 		if (music.muted) { muteMusic.innerHTML = "<span>Un</span>mute music"; } //Update button
-		else {muteMusic.innerHTML = "Mute music"; } //Update button
+		else 			 { muteMusic.innerHTML = "Mute music"; } //Update button
 	}
-	if (target === "muteEffects") //If they pressed the "(Un)Mute effects" button
+	
+	else if (target === "muteEffects") //If they pressed the "(Un)Mute effects" button, or the E key
 	{
 		explosionSound.muted = shootSound.muted = !shootSound.muted; //Change the muted status
 		if (shootSound.muted) { muteEffects.innerHTML = "<span>Un</span>mute effects"; } //Update button
-		else {muteEffects.innerHTML = "Mute effects"; } //Update button
+		else 				  { muteEffects.innerHTML = "Mute effects"; } //Update button
 	}
-	if (target === "volAll") //If they changed the "Master" slider
+	
+	else if (target === "volAll") //If they changed the "Master" slider
 	{
 		var newvol = volAll.value/100; //Save the new volume on a 0-1 scale
-		//console.log ("Newvol: " + newvol);
-		if (newvol === 0) //If it's 0, then they want everything muted
-		{
-			music.muted = shootSound.muted = explosionSound.muted = true; //Mute everything
-			muteMusic.innerHTML = muteEffects.innerHTML = "<span>Un</span>mute music"; //Update buttons
-		}
-		else if (newvol <= 1) //Otherwise, change to this percentage
+		if (newvol <= 1) //Otherwise, change to this percentage
 		{
 			music.volume = newvol;
-			shootSound.volume =	explosionSound.volume = newvol *.75; //Shootsound and explosionSound multiplied by a constant to be a bit lower
-			//console.log("Music vol: " + music.volume.toFixed(2) + "       Sound vol: " + shootSound.volume.toFixed(2));
-			if (!shootSound.muted) {muteEffects.innerHTML = "Mute effects"; } //Update button
-			if (!music.muted) {muteMusic.innerHTML = "Mute music"; } //Update button
+			shootSound.volume =	explosionSound.volume = (music.volume * newvol *.75).toFixed(2); //Shootsound and explosionSound multiplied by a constant to be a bit lower
 			currVol.innerHTML = Math.round(newvol*100) + "%"; //Update text saying what the volume is presently at
 		}
 	}
-	if (target === "keyAll")
+	
+	else if (target === "keyAll") //If they hit the + or - keys
 	{
-		//newvol = 0;
-		if (event === "PLUS" && music.volume < .94) 
+		if (event === "PLUS" && music.volume < .96) 
 		{
-			newvol = .05;
+			var newvol = .05;
 		}
-		else if (event === "MINUS" && music.volume > .05)
+		else if (event === "MINUS" && music.volume > .04)
 		{
-			newvol = -.05;
+			var newvol = -.05;
 		}
 	
-		if (newvol === 0) //If it's 0, then they want everything muted
+		if ((music.volume + newvol <= 1) && (music.volume + newvol >= 0)) 
 		{
-			music.muted = shootSound.muted = explosionSound.muted = true; //Mute everything
-			muteMusic.innerHTML = muteEffects.innerHTML = "<span>Un</span>mute music"; //Update buttons
-		}
-		else if (newvol <= 1) //Otherwise, change to this percentage
-		{
-			music.volume += newvol;
-			shootSound.volume =	explosionSound.volume += newvol; //Shootsound and explosionSound multiplied by a constant to be a bit lower
-			//console.log("Music vol: " + music.volume.toFixed(2) + "       Sound vol: " + shootSound.volume.toFixed(2));
-			if (!shootSound.muted) {muteEffects.innerHTML = "Mute effects"; } //Update button
-			if (!music.muted) {muteMusic.innerHTML = "Mute music"; } //Update button
+			music.volume = newvol;
+			shootSound.volume =	explosionSound.volume = (music.volume * newvol *.75).toFixed(2); //Shootsound and explosionSound multiplied by a constant to be a bit lower			
 			currVol.innerHTML = Math.round(shootSound.volume*100) + "%"; //Update text saying what the volume is presently at
 		}
 	}
