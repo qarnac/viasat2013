@@ -62,15 +62,17 @@ Missile.prototype.update = function () {
 	{
 		var sprite = sprites[i];
 		
-		//If there's no hit, then go to the next sprite
+	//If there's no hit, then go to the next sprite
 		if (!this.hit(sprite))
 		{
 			continue;
 		}
+		
+	//Otherwise, there was a hit.
 		//Hit an alien or mothership
 		if (sprite instanceof Alien) 
 		{
-			if (this.hit(sprite) && !sprite.exploded) //If the alien/mothership is alive
+			if (!sprite.exploded) //If the alien/mothership is alive
 			{
 				sprite.health -= this.damage; //Reduce the alien/mothership's health by the missile's damage
 				this.framesremaining--; //Remove the missile
@@ -80,42 +82,38 @@ Missile.prototype.update = function () {
 		//Hit a powerup
 		if (sprite instanceof Powerup) 
 		{
-			
-			if (this.hit(sprite)) 
-			{
-				//console.log(sprite.id); //Log which powerup was hit
-				switch(sprite.id)
-				{					
-					case "Bomb": //Damage enemies on screen
-						for (var k = 0; k < sprites.length; k++) 
-						{ 
-							if (sprites[k] instanceof Alien)
-							{
-								sprites[k].health -= 3; 
-							}
-						}
-						break;
-						
-					case "Slow": //Slow down enemies on screen
-						for (var k = 0; k < sprites.length; k++)
+			switch(sprite.id)
+			{					
+				case "Bomb": //Damage enemies on screen
+					for (var j = 0; j < sprites.length; j++) 
+					{ 
+						if (sprites[j] instanceof Alien)
 						{
-							if (sprites[k] instanceof Alien) { sprites[k].vy /= 2; } //Cut the alien's speed in half
+							sprites[j].health -= 3; 
 						}
-						break;
-						
-					case "Scoreup": //Minor boost in score
-						gameConditions.score += 5;
-						break;
-					case "Repair": //Grants extra lives.
-						gameConditions.lives++;
-						break;
-						
-					//End powerups
-				}
-				
-				sprite.framesremaining = 0; //Remove the option button
-				this.framesremaining = 0; //Remove the missile
+					}
+					break;
+					
+				case "Slow": //Slow down enemies on screen
+					for (var j = 0; j < sprites.length; j++)
+					{
+						if (sprites[j] instanceof Alien) { sprites[j].vy /= 2; } //Cut the alien's speed in half
+					}
+					break;
+					
+				case "Scoreup": //Minor boost in score
+					gameConditions.score += 5;
+					break;
+					
+				case "Repair": //Grants extra lives.
+					gameConditions.lives++;
+					break;
+					
+				//End powerups
 			}
+			
+			sprite.framesremaining = 0; //Remove the powerup button
+			this.framesremaining = 0; //Remove the missile
 		}
 	}//End collisions
 	
@@ -129,45 +127,43 @@ Missile.prototype.update = function () {
 			distX = (this.x + this.width/2) - (mothership.x + mothership.width/2);
 			distY = (this.y + this.height/2) - (mothership.y + mothership.height/2);
 			
-			if (distX < -50 || distX > 50)
+			if (distX > -40 && distX < 40) //If the missile is underneath the mothership
 			{
-				this.vx = 0;
+				this.vx = 0; //Then act as normal.
 			}
-			else if (distX < 50) //Missile is on the left
+			else if (distX > 50) //Missile is on the right
 			{
-				this.vx = 2; //Go right
+				this.vx = -4; //Go to the left
 			}
-			else if (distX > -50) //Missile is on the right
+			else if (distX < -50) //Missile is on the left
 			{
-				this.vx = -2; //Go left
-			}
-			
-			if (distY > -50 || distY < 50)
-			{
-				if (distX > 0) { this.vx = -2;}
-				else { this.vx = 2; }
-			}
-			if (distY < -50) //The missile has shot above the mothership
-			{
-				this.vy = 4;
-			}
-			else if (distY > 50)
-			{
-				this.vy = -8;
+				this.vx = 4; //Go to the right
 			}
 			
+			//Positive values means the ship is above the missile
+			
+			//If the missile is quite a bit above the ship, make it go down
+			if (distY < -40)
+			{
+				this.vy = 6;
+			}
+			//If the missile is quite a bit below the ship, make it go upward
+			else if (distY > 40)
+			{	
+				this.vy = -6;
+			}
 		}
-		else
+		else //OTherwise, the mothership is not there (any more), so go back to the normal trajectory
 		{
 			this.vy = -8;
+			this.vx = 0;
 		}
 	}//End mothership seeking section
 	
 	
-	//If missile is above, or below, or to the left, or to the right, of the screen
+	//If missile is above, or below, or to the left, or to the right, of the screen, remove it from the sprites array
 	if((this.y < 0 - this.height) || (this.y > 320 + this.height) || (this.x < 0 - this.width) || (this.x > 480 + this.height))
     { 
-		//Remove the missile from the sprites array
 		this.framesremaining--;
     }
 }

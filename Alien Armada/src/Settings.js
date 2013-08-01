@@ -18,7 +18,7 @@ Settings = function() {
 	
 //Powerups
 //"no" means they don't spawn. "score" means they spawn based on score. "time" means they spawn based on time.
-	this.repairspawns = "no"; //can also be "boss", spawning after a boss kill
+	this.repairspawns = "no"; //instead of "time", can also be "boss", spawning after a boss kill
 	this.bombspawns = "no";
 	this.scoreupspawns = "no";
 	this.slowspawns = "no";

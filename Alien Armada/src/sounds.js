@@ -12,27 +12,22 @@ var explosionSound = new Audio();
 explosionSound.src = "../sounds/explosion.mp3";
 explosionSound.load();
 
-
-//If the player pressed on one of the sound control buttons
-$('#muteMusic').on("click", toggleMusic);
-$('#muteEffects').on("click", toggleEffects);
-
-//toggleMusic/toggleEffects called both by the buttons and keyboard shortcuts (S and E for Music and Effects, respectively)
+//toggleMusic/toggleEffects called both by the buttons (handled in Exploration.js) and keyboard shortcuts (S and E for Music and Effects, respectively)
 function toggleMusic() {
-	if (music.muted)//If it was muted, then unmute it
+	if (music.muted)//If it was muted, 
 	{
-		music.muted = false;
-		muteMusic.innerHTML = "Mute music";
+		music.muted = false; //then unmute it
+		muteMusic.innerHTML = "Mute music"; //And change the button text
 	}	
-	else
+	else //Otherwise, it wasn't muted
 	{
-		music.muted = true;
-		muteMusic.innerHTML = "<span>Un</span>mute music"; 
+		music.muted = true; //so mute it
+		muteMusic.innerHTML = "<span>Un</span>mute music"; //And change the button text
 	}
 };
 
 function toggleEffects(){
-	if (shootSound.muted)//If it was muted, then unmute it
+	if (shootSound.muted)
 	{
 		shootSound.muted = explosionSound.muted = false;
 		muteEffects.innerHTML = "Mute effects";
@@ -44,23 +39,13 @@ function toggleEffects(){
 	}
 }
 
-//If player moved the master volume slider
-$('#volAll').on("input", function() {
-	console.log(this.value);
-	currVol.innerHTML = this.value + "%"; //Change the text to the side
-	music.volume = parseInt(this.value, 10); //Set the music volume to the value
-	shootSound.volume = explosionSound.volume = (music.volume *.75).toFixed(2); //Set the shooting and exploding sounds to be a bit quieter
-});
-
 //If the player hit + or - keyboard shortcuts
 function changeSound(direction) {
-	var newvol;
-	if (direction === "up") 
-		{ newvol = .05; }
-	else
-		{ newvol = -.05; }
+	var newvol = .05; //Set newvol as a positive value by default
+	if (direction === "down")//If they hit a - key
+		{ newvol = -.05; } //change newvol to be a negative value
 		
-	//As long as the new volume won't go above 100% or below 0%
+	//Ensure that the new volume won't go above 100% or below 0%
 	if ((music.volume + newvol <= 1) && (music.volume + newvol >= 0))
 	{
 		music.volume = (music.volume + newvol).toFixed(2);	//Then set the new volume equal to current volume plus/minus 5%, depending on whether they pressed + or -

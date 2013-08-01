@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="../../jQuery/jquery-ui.min.css">	
 <link rel="stylesheet" href="alienArmada.css">
 
-<!-- The canvas -->
 <table>
 	<tr>
-		<td><canvas width="480" height="320"></canvas></td>
+	<!-- The canvas -->
+	<td><canvas width="480" height="320"></canvas></td>
 	
-	<!-- The section for learning about JavaScript -->
-	<td id="exploration" width="480">
+	<!-- The section for playing with options-->
+	<th  rowspan="2" id="exploration" width="480">
 		<div id="menu" style="font-size: 10px"  height="200">
 			<h3>Volume control</h3>
 			<div>
@@ -116,11 +116,14 @@
 	</tr>
 	<tr>
 		<td id="pauseMessage"align="center">Press "ESC" to <span></span>pause</td>
+	</tr>
+	<tr>
+		<td></td>
 		<td align="center"> 
-		<button type="button" class="resetbuttons" style="width: 200px" id="restart">Restart with current settings</button>
-		<button type="button" style="width: 200px" id="unlock">Unlock the settings</button><br>
-		<button type="button" class="resetbuttons" style="width: 200px" id="reset">Reset <span>everything</span></button> 
-	</td>
+			<button type="button" class="resetbuttons" style="width: 200px" id="restart">Restart with current settings</button>
+			<button type="button" style="width: 200px" id="unlock">Unlock the settings</button><br>
+			<button type="button" class="resetbuttons" style="width: 200px" id="reset">Reset <span>everything</span></button> 
+		</td>
 	</tr>
 	<tr></tr>
 

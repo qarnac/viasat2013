@@ -60,16 +60,7 @@ assetsToLoad.push(explosionSound);
 //Variable to count the number of assets the game needs to load
 var assetsLoaded = 0;
 
-//All moved to keyhandler.js for now
-var LOADING = 0
-var PLAYING = 1;
-var OVER = 2;	
-var PAUSED = 3;
-var CHANGE_LEVEL = 5;
-gameState = LOADING;
-
 //Add keyboard listeners
-
 window.addEventListener("keydown", keydownhandler, false);	//Executed in keyhandler.js
 window.addEventListener("keyup", keyuphandler, false);		//Executed in keyhandler.js
 
@@ -107,6 +98,7 @@ function loadHandler()
   {
     //Remove the load event listener from the image and sounds
     image.removeEventListener("load", loadHandler, false);
+	bgimage.removeEventListener("load", loadHandler, false);
     music.removeEventListener("canplaythrough", loadHandler, false);
     shootSound.removeEventListener("canplaythrough", loadHandler, false);
     explosionSound.removeEventListener("canplaythrough", loadHandler, false);
@@ -124,7 +116,6 @@ function loadHandler()
 
 function playGame()
 {
-
 	//Fire a missile if shoot is true
 	if(shoot)
 	{
@@ -132,13 +123,13 @@ function playGame()
 		shoot = false;	
 	}
   
-	//YO: add a loop to update all sprite objects
+	//Go through all sprites. If no more framesremaining, remove them from the game. Otherwise, update them
 	for(var i = 0; i < sprites.length; i++) 
 	{
 		if (sprites[i].framesremaining === 0)
 		{
 			removeObject(sprites[i], sprites);
-			i--;
+			i--;	//Go back 1 element, to make up for the fact that an element was just removed
 		}
 		
 		else
@@ -153,11 +144,11 @@ function playGame()
 	//Make a new alien if timer equals the frequency
 	if(alienOption.timer === alienOption.frequency)
 	{
-		makeAlien();
-		alienOption.timer = 0;
+		sprites.push(new Alien()); //Put a new alien into the sprites array
+		
+		alienOption.timer = 0;	//Reset the timer
 
-		//Reduce frequency by one to gradually increase
-		//the frequency that aliens are created
+		//Reduce frequency by one to gradually increase the frequency that aliens are created
 		if(alienOption.frequency > 2)
 		{  
 			alienOption.frequency--;
@@ -194,7 +185,6 @@ function playGame()
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
 	if (gameConditions.score >= 30 && loadLevel === false) //Go to the next level
 	{
-		//temp so we dont repeat
 		gameConditions.score++;
 		levelNumber++;
 		loadLevel = true;
@@ -212,10 +202,10 @@ function playGame()
 function controlPowerups()
 {
 	gameConditions.timer++;
-/*
-	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
-*/
 	
+/*
+The powerup controls are all clones of each other. So I am just commenting the first one heavily.
+*/
 	if (newSettings.repairspawns !== "no") //If the button to spawn repairs has been checked
 //Repair
 	{
@@ -305,7 +295,7 @@ function controlPowerups()
 
 function endGame()
 {
-  gameOverMessage.visible = true;
+	//Set the message depending on whether the player won or lost
   if (gameConditions.winConditions >= newSettings.wincondsneeded)	
   {
     gameOverMessage.x = 120;
@@ -315,16 +305,7 @@ function endGame()
   {
     gameOverMessage.text = "EARTH DESTROYED!";
   }
-}
-
-
-function makeAlien()
-{
-  //Create the alien
-  var alien = new Alien();
-  
-  //Push the alien into the sprites array
-  sprites.push(alien);
+  gameOverMessage.visible = true; //And make it visible
 }
 
 function changingLevels ()
@@ -332,37 +313,27 @@ function changingLevels ()
   //load the level, and check to see if we should update it
   if (loadLevel === true) {
     
-    //load the level just once
-    loadGameLevel(levelNumber);
-    //loadLevel = false;
-  }
-}
-//JT:will load the game levels by taking in the argument of what level we are inn
-function loadGameLevel(lv)
-{
-  //JT: this statement will track what level we are on
-  switch (lv) {
-    case 0:
-      break;
-    
-    case 1:
-      var marsBackground = new levelEntityClass();
-	  marsBackground.sourceX = 480; 
-      scenes.splice(0, 1, marsBackground);	//KN: Changed to splice from scenes, now that we're using that.
-      break;
-  }
-}
+	switch(levelNumber) 
+	{
+		case 0:
+		break;
 
-//crates the mothership
+		case 1:
+		var marsBackground = new levelEntityClass();
+		marsBackground.sourceX = 480; 
+		scenes.splice(0, 1, marsBackground);	//KN: Changed to splice from scenes, now that we're using that.
+		break;
+	}
+  }
+}
+//creates the mothership
 function makeMother()
 {  
+
     mothership = new Alien();
 	mothership.sourceX = 128;
 	mothership.sourceWidth = 64;
-	mothership.sourceHeight = 32;
 	mothership.width = 64;
-	mothership.height = 32;
-	mothership.y = 0;	// - mothership.height;	
 	mothership.x = 480/2 - mothership.width/2;
 	mothership.vy = .2;	  
 	mothership.health = mothership.MAXHEALTH = newSettings.motherhealth; //Set the ship's health based on the option setting, under the Aliens section
@@ -377,17 +348,7 @@ function makeMother()
 
 function fireMissile()
 { 
-	if (cannon.firingType === 0) //default ship
-	{
-		var missile = new Missile(cannon);	
-		sprites.push(missile);
-	}
-	else if (cannon.firingType === 1) //fire mothership seekers
-	{	
-		var missile = new Missile(cannon);	
-		sprites.push(missile);
-	}
-	else if (cannon.firingType === 2) //fire 2 angled missiles
+	if (cannon.firingType === 2) //fire 2 angled missiles
 	{
 		var missile = new Missile(cannon);	
 		missile.vx = 2;
@@ -398,6 +359,11 @@ function fireMissile()
 		missile.vx = -2;
 		missile.vy = -5;
 		sprites.push(missile);		
+	}
+	else //Either firing the straight missiles or the mothership-seeking missiles
+	{
+		var missile = new Missile(cannon);	
+		sprites.push(missile);
 	}
   //Play the firing sound
   shootSound.currentTime = 0;

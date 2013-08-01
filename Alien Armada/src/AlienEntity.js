@@ -12,25 +12,23 @@ function Alien() {
 	this.sourceX = 32;
 	this.exploded = false;	//YO: Since there are only two modes, it's better to use a boolean variable
 	
+	//Current and max health
 	this.health = this.MAXHEALTH = newSettings.alienhealth + (parseInt((gameConditions.score / newSettings.aliengrowth), 10) || 0);
-	/*To break it down: X + (A/B || 0)
-	I call parseInt on A/B because it can be undefined if B is 0.
-	
-	X is the base health, default is 1 but the player can change it with an option slider.
-	A is the current score
-	B is a "growth rate", default is 0 (used as "never happens") -- aliens get an extra health every B points.
-	(So A/B would be how many times that growth rate has triggered)
-	Problem is that when B is 0, the aliens are never supposed to get stronger, but anything divided by 0 is Infinity.
-	That's where the ||0 comes in. If it has the option between Infinity and 0, it chooses 0.
-	
-	So in the default case, it's:
-	1 + ((#/0) || 0)
-	1 + (Infinity || 0)
-	1 + 0
-	1 health*/
+	/* 
+		aliengrowth represents "at every X points, the aliens gain extra health". So score/aliengrowth is how many times the aliens have gotten that.
+		If aliengrowth is 0, then they never grow. 
+		Because it can (and will by default) be 0, then the result of score/aliengrowth can be undefined. 
+		That is why it is then OR'ed with 0. JavaScript will choose 0 if the other choice is undefined.
+		
+		That result is added to the base health of the alien, to produce the total health of the alien.
+		
+		So in the default case, it's:
+		1 + ((#/0) || 0)
+		1 + (Infinity || 0)
+		1 + 0
+		1 health*/
 	//console.log(this.health); //Uncomment if you need to see for yourself that it works
 	
-	//Current and max health. Default is 1. Take the value from the input text field (in the "Alien" section). 
 	this.bounty = newSettings.alienbounty; //Score value for killing. Default is 1. Take the value from the input text field (in the "Alien" section)
 	this.framesremaining = 60;	//YO: to last 60 frames, i.e. 1 second
 	

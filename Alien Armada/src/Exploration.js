@@ -1,7 +1,18 @@
 $(document).ready(function(){
     $('#menu').accordion({heightStyle: "fill"}); //Do the accordion feature -- collapsing categories. "fill" means they fill the table size, no bigger and no smaller
-	$('#unlock').hide();
+	$('#unlock').hide(); //Hide the unlock button (shows when the "Restart with current settings" button is hidden)
 
+	//If the player pressed on one of the sound control buttons, either mute or unmute it (controlled in sounds.js)
+	$('#muteMusic').on("click", toggleMusic);
+	$('#muteEffects').on("click", toggleEffects);
+
+	//If player moved the master volume slider
+	$('#volAll').on("input", function() {
+		currVol.innerHTML = this.value + "%"; //Change the text to the side
+		music.volume = parseInt(this.value, 10); //Set the music volume to the value
+		shootSound.volume = explosionSound.volume = (music.volume *.75).toFixed(2); //Set the shooting and exploding sounds to be a bit quieter
+	});
+	
 //Win conditions -- When someone has clicked on an input under the "How can the player win?" paragraph
 	$('#winoptions input').on("change", function() {
 		

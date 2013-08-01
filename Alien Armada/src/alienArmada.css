@@ -9,11 +9,6 @@ table, #Optionshead {
 	border-top-right-radius: 10px;
 	}
 
-	
-th {
-	background-color: #585858 ;
-	color: white;
-	}
 
 #options
 {
@@ -31,6 +26,13 @@ input {
 	width: 25px;
 
 }
+
+th {
+	font-weight:normal;
+	text-align:left;
+
+} 
+
 
 #currVol {
 	display: inline;
