@@ -57,21 +57,21 @@ function keydownhandler() {
 			break;
 			
 		case S: 
-			controlSound("muteMusic");
+			toggleMusic();
 			break;
 			
 		case E:
-			controlSound("muteEffects");
+			toggleEffects();
 			break;
 			
 		case PLUS:
 		case PLUSNUMPAD:
-			controlSound("PLUS");
+			changeSound("up");
 			break;
 			
 		case MINUS:
 		case MINUSNUMPAD:
-			controlSound("MINUS");
+			changeSound("down");
 			break;
 	}
 }

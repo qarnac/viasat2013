@@ -13,30 +13,20 @@ Settings = function() {
 	this.winship = false;
 	this.winshipNum = 2;  //Destroy an amount of motherships
 	
-	this.winconds = 1; //How many win conditions must be met in order to win
+	this.wincondsneeded = 1; //How many win conditions must be met in order to win
 	
 	
 //Powerups
-	this.repairspawns = false;
-	this.repairscore = false;
-	this.repairmother = false;
-
-	this.bombspawns = false;
-	this.bombscore = false;
-	this.bombtime = false;
-
-	this.scoreupspawns = false;
-	this.scoreupscore = false;
-	this.scoreuptime = false;
-
-	this.slowspawns = false;
-	this.slowscore = false;
-	this.slowtime = false;
+//"no" means they don't spawn. "score" means they spawn based on score. "time" means they spawn based on time.
+	this.repairspawns = "no"; //can also be "boss", spawning after a boss kill
+	this.bombspawns = "no";
+	this.scoreupspawns = "no";
+	this.slowspawns = "no";
 
 	
 //Player
-	this.model = "grey";
-	this.missiles = "straight";
+	this.model = "grey";	//Aesthetics
+	this.firingType = 0; //0 fires 1 missile to the side, 1 fires 2 at an angle, 2 fires missiles that seek motherships
 	this.damage = 1;
 	this.lives = 3;
 	

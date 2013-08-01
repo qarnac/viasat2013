@@ -35,7 +35,7 @@ $(document).ready(function(){
 				break;
 				
 			case ("winconds"):
-				newSettings.winconds =  parseInt(this.value, 10);
+				newSettings.wincondsneeded =  parseInt(this.value, 10);
 				break;
 		
 			default:
@@ -46,13 +46,13 @@ $(document).ready(function(){
 		
 		$('#winconds').attr('value', Math.min($('#winconds').attr('value'), $('#winconds').attr('max')));//Change current if it's greater than max
 		$('#wincondsNum').val($('#winconds').val());		
-		newSettings.winconds = $('#wincondsNum').val(); //Change the Settings value
+		newSettings.wincondsneeded = $('#wincondsNum').val(); //Change the Settings value
 	});
 	
 	//Separate from the others because "input" is more responsive than "click" for range sliders, but doesn't work for checkboxes
 	$('#winconds').on("input", function() {
 		$('#wincondsNum').val(parseInt(this.value, 10));	
-		newSettings.winconds = $('#wincondsNum').val(); //Change the Settings value
+		newSettings.wincondsneeded = $('#wincondsNum').val(); //Change the Settings value
 	});
 	
 /*
@@ -65,7 +65,10 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	$('#repairoptions').hide(); //Hide that sub-menu by default
 	$('#repairspawns').on("click", function(){
 		$('#repairoptions').toggle(); 	//When the player clicks on the "repair" option, either show or hide the inner options.
-		newSettings.repairspawns = $('#repairspawns').prop('checked');
+		if (!$('#repairspawns').prop('checked'))
+		{
+			newSettings.repairspawns = "no";
+		}
 	});
 	
 	//When one of the repair options has been selected
@@ -79,15 +82,13 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			powerupOption.repairSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + powerupOption.repairSpawn + " score") //Diagnostic, just making sure that it works as intended.
-			newSettings.repairscore = true;
-			newSettings.repairmother = false;
+			newSettings.repairspawns = "score";
 		}
-		else if (powerupOption.repairtype === "timebased")
+		else if (powerupOption.repairtype === "bosskill")
 		{
 			powerupOption.repairSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (powerupOption.repairSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
-			newSettings.repairscore = false;
-			newSettings.repairmother = true;
+			newSettings.repairspawns = "boss";
 		}
 	});
 
@@ -97,7 +98,10 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "Bomb" option, either show or hide the inner options.
 	$('#bombspawns').on("click", function(){
 		$('#bomboptions').toggle();
-		newSettings.bombspawns = $('#bombspawns').prop('checked');
+		if (!$('#bombspawns').prop('checked'))
+		{
+			newSettings.bombspawns = "no";
+		}
 	});
 	//When one of the bomb options has been selected
 	$('#bomboptions input').on("click", function()
@@ -110,15 +114,14 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			powerupOption.bombSpawn = gameConditions.score + Math.round(Math.random()*40); //Spawn anywhere between 0 and 40 score
 			console.log("Set to " + powerupOption.bombSpawn + " score") //Diagnostic, just making sure that it works as intended.
-			newSettings.bombscore = true;
-			newSettings.bombtime= false;
+			newSettings.bombspawns = "score";
 		}
 		else if (powerupOption.bombtype === "timebased")
 		{
 			powerupOption.bombSpawn = gameConditions.timer + Math.round(Math.random()*60*40); //Spawn anywhere between 0 and 40 seconds
 			console.log("Set to " + (powerupOption.bombSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
-			newSettings.bombscore = false;
-			newSettings.bombtime= true;
+
+			newSettings.bombspawns = "time";
 		}
 	});
 
@@ -128,7 +131,10 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "scoreup" option, either show or hide the inner options.
 	$('#scoreupspawns').on("click", function(){
 		$('#scoreupoptions').toggle();
-		newSettings.scoreupspawns = $('#scoreupspawns').prop('checked');
+		if (!$('#scoreupspawns').prop('checked'))
+		{
+			newSettings.scoreupspawns = "no";
+		}
 	});
 	//When one of the scoreup options has been selected
 	$('#scoreupoptions input').on("click", function()
@@ -141,15 +147,13 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			powerupOption.scoreupSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + powerupOption.scoreupSpawn + " score") //Diagnostic, just making sure that it works as intended.
-			newSettings.scoreupscore = true;
-			newSettings.scoreuptime = false;
+			newSettings.scoreupspawns = "score";
 		}
 		else if (powerupOption.scoreuptype === "timebased")
 		{
 			powerupOption.scoreupSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (powerupOption.scoreupSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
-			newSettings.scoreupscore = false;
-			newSettings.scoreuptime = true;
+			newSettings.scoreupspawns = "time";
 		}
 	});	
 	
@@ -160,7 +164,10 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	//When the player clicks on the "slow" option, either show or hide the inner options.
 	$('#slowspawns').on("click", function(){
 		$('#slowoptions').toggle();
-		newSettings.slowspawns = $('#slowspawns').prop('checked');
+		if (!$('#slowspawns').prop('checked'))
+		{
+			newSettings.slowspawns = "no";
+		}
 	});
 	//When one of the slow options has been selected
 	$('#slowoptions input').on("click", function()
@@ -173,15 +180,13 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 		{
 			powerupOption.slowSpawn = gameConditions.score + Math.round(Math.random()*30+10); //Spawn anywhere between 10 and 40 score
 			console.log("Set to " + powerupOption.slowSpawn + " score") //Diagnostic, just making sure that it works as intended.
-			newSettings.slowscore = true;
-			newSettings.slowtime= false;
+			newSettings.slowspawns = "score";
 		}
 		else if (powerupOption.slowtype === "timebased")
 		{
 			powerupOption.slowSpawn = gameConditions.timer + Math.round(Math.random()*60*30+10); //Spawn between 10 and 40 seconds
 			console.log("Set to " + (powerupOption.slowSpawn/60).toFixed(0) + " seconds"); //Diagnostic, just making sure that it works as intended.
-			newSettings.slowscore = false;
-			newSettings.slowtime= true;
+			newSettings.slowspawns = "time";
 		}
 	});	
 	
@@ -206,24 +211,24 @@ Toggling any of the checkboxes will decide whether or not they spawn. And inner 
 	});
 //Ship firing types -- When the player has clicked on one of the choices for how the ship fires, change "model" depending on which it was -- Actual behavior decided by model is done in MissileEntity.js
 	$('#missilechoices input').on("click", function(){
-	newSettings.missiles = $(this).attr('id');
+	newSettings.firingType = $(this).attr('id');
 	switch($(this).attr('id'))
 	{
 		case "straight":
-			cannon.model = 0;
+			cannon.firingType = 0;
 			break;
 		case "seeker":
-			cannon.model = 1;
+			cannon.firingType= 1;
 			break;
 		case "spread":
-			cannon.model = 2;
+			cannon.firingType = 2;
 			break;
 	}});
 	
 //Ship damage -- When the player moves the slider for missile damage, change the text box next to it (Actual damage is set in MissileEntity.js, in the constructor.
 	$('#missileDamage').on("input", function(){
 		$('#missileDamagenum').val(parseInt(this.value, 10));
-		newSettings.damage = missileDam = parseInt(this.value, 10);
+		newSettings.damage = parseInt(this.value, 10);
 	});
 	
 //Grant lives as requested -
@@ -303,6 +308,20 @@ $('.resetbuttons').on("click", function() {
 		settingFile = newSettings;
 	}
 
+//Reset thevariables
+	alienOption.timer = 0; //The timer keeping track of when to spawn aliens
+	alienOption.frequency = 100; //How often aliens spawn
+	gameConditions.lives = settingFile.lives; //Player's lives
+	gameConditions.score = 0;	//Score
+	gameConditions.timer = 0;	//Time
+	mothershipOption.called = false; //If a mothership has spawned yet
+	gameConditions.ships = 0;	//How many motherships have spawned already
+	mothershipOption.scoreToMother = 5;	//How long until the next mothership
+	gameConditions.winConditions = 0;	//How many win conditions the player has met.
+	gameState = PLAYING;	//Gamestate
+	gameOverMessage.visible = false;	//Hide "Earth saved!"/"Earth destroyed!" message
+	
+	
 //Set all of the options.
 //Winning conditions category	
 	$('#score').prop('checked', settingFile.winscore);
@@ -319,37 +338,92 @@ $('.resetbuttons').on("click", function() {
 	
 //Powerups category
 	//Repair
-	$('#repairspawns').prop('checked', settingFile.repairspawns);
-	$('#repairoptions #scorebased').prop('checked', settingFile.repairscore);
-	$('#repairoptions #bosskill').prop('checked', settingFile.repairmother);
+	switch(settingFile.repairspawns)
+	{
+		case("no"):
+			$('#repairspawns').prop('checked', false);
+			$('#repairoptions #scorebased').prop('checked', false);
+			$('#repairoptions #bosskill').prop('checked', false);
+			break;
+		case ("score"):
+			$('#repairspawns').prop('checked', true);
+			$('#repairoptions #scorebased').prop('checked', true);
+			$('#repairoptions #bosskill').prop('checked', false);
+			break;
+		case("boss"):
+			$('#repairspawns').prop('checked', true);
+			$('#repairoptions #scorebased').prop('checked', false);
+			$('#repairoptions #bosskill').prop('checked', true);
+			break;
+	}
+	switch(settingFile.bombspawns)
+	{
+		case("no"):
+			$('#bombspawns').prop('checked', false);
+			$('#bomboptions #scorebased').prop('checked', false);
+			$('#bomboptions #bosskill').prop('checked', false);
+			break;
+		case ("score"):
+			$('#bombspawns').prop('checked', true);
+			$('#bomboptions #scorebased').prop('checked', true);
+			$('#bomboptions #bosskill').prop('checked', false);
+			break;
+		case("boss"):
+			$('#bombspawns').prop('checked', true);
+			$('#bomboptions #scorebased').prop('checked', false);
+			$('#bomboptions #bosskill').prop('checked', true);
+			break;
+	}
+	switch(settingFile.scoreupspawns)
+	{
+		case("no"):
+			$('#scoreupspawns').prop('checked', false);
+			$('#scoreupoptions #scorebased').prop('checked', false);
+			$('#scoreupoptions #bosskill').prop('checked', false);
+			break;
+		case ("score"):
+			$('#scoreupspawns').prop('checked', true);
+			$('#scoreupoptions #scorebased').prop('checked', true);
+			$('#scoreupoptions #bosskill').prop('checked', false);
+			break;
+		case("boss"):
+			$('#scoreupspawns').prop('checked', true);
+			$('#scoreupoptions #scorebased').prop('checked', false);
+			$('#scoreupoptions #bosskill').prop('checked', true);
+			break;
+	}
+	switch(settingFile.slowspawns)
+	{
+		case("no"):
+			$('#slowspawns').prop('checked', false);
+			$('#slowoptions #scorebased').prop('checked', false);
+			$('#slowoptions #bosskill').prop('checked', false);
+			break;
+		case ("score"):
+			$('#slowspawns').prop('checked', true);
+			$('#slowoptions #scorebased').prop('checked', true);
+			$('#slowoptions #bosskill').prop('checked', false);
+			break;
+		case("boss"):
+			$('#slowspawns').prop('checked', true);
+			$('#slowoptions #scorebased').prop('checked', false);
+			$('#slowoptions #bosskill').prop('checked', true);
+			break;
+	}
 	
-	//Bomb
-	$('#bombspawns').prop('checked', settingFile.bombspawns);
-	$('#bomboptions #scorebased').prop('checked', settingFile.bombscore);
-	$('#bomboptions #timebased').prop('checked', settingFile.bombtime);
-	
-	//Scoreup
-	$('#scoreupspawns').prop('checked', settingFile.scoreupspawns);
-	$('#scoreupoptions #scorebased').prop('checked', settingFile.scoreupscore);
-	$('#scoreupoptions #timebased').prop('checked', settingFile.scoreuptime);
-	
-	//Slow
-	$('#slowspawns').prop('checked', settingFile.slowspawns);
-	$('#slowoptions #scorebased').prop('checked', settingFile.slowscore);
-	$('#slowoptions #timebased').prop('checked', settingFile.slowtime);
 	
 	/*Update powerup spawn values.
 	Calculate a score at which to spawn the powerup, and a time. Multiply each one respectively by the boolean value for whether or not it will spawn that way (ie, the result will be 0 for the non-active one). 
 	Otherwise, they will spawn at whatever score/time was last set -- which could've been quite a ways into the game already.
 	*/
-	powerupOption.repairSpawn = 	 (gameConditions.score + Math.round(Math.random()*30+10)*settingFile.repairscore);
-	powerupOption.bombSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))*settingFile.bombscore)		+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.bombtime;
-	powerupOption.scoreupSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))*settingFile.scoreupscore) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.scoreuptime;
-	powerupOption.slowSpawn = 	((gameConditions.score + Math.round(Math.random()*30+20))*settingFile.slowscore) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*settingFile.slowtime;
+	powerupOption.repairSpawn = 	 (gameConditions.score + Math.round(Math.random()*30+10)* (settingFile.repairspawns === "score"));
+	powerupOption.bombSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))* (settingFile.bombspawns === "score"))		+ (gameConditions.timer + Math.round(Math.random()*60*10+20))* (settingFile.bombspawns === "time");
+	powerupOption.scoreupSpawn = 	((gameConditions.score + Math.round(Math.random()*40+6))* (settingFile.scoreupspawns === "score")) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*(settingFile.scoreupspawns === "time");
+	powerupOption.slowSpawn = 	((gameConditions.score + Math.round(Math.random()*30+20))* (settingFile.slowspawns === "score")) 	+ (gameConditions.timer + Math.round(Math.random()*60*10+20))*(settingFile.slowspawns === "time");
 
 //Player's ship category
 	$('#' + settingFile.model).click() //.model is a string. grey, teal, red. The aesthetic model for the player's ship.
-	$('#' + settingFile.missiles).click() //.missiles is a string. straight, seeker, spread. The type of missiles that're fired.
+	$('#' + settingFile.firingType).click() //.firingType is a string. straight, seeker, spread. The type of missiles that're fired.
 	$('#missileDamage').val(settingFile.damage);
 	$('#missileDamagenum').val(settingFile.damage);
 	$('#extraLives').val(settingFile.lives);
@@ -382,18 +456,6 @@ $('.resetbuttons').on("click", function() {
 		}	
 	}
 	
-//Reset all the other variables
-	alienOption.timer = 0; //The timer keeping track of when to spawn aliens
-	alienOption.frequency = 100; //How often aliens spawn
-	gameConditions.lives = $('#extraLives').val(); //Player's lives
-	gameConditions.score = 0;	//Score
-	gameConditions.timer = 0;	//Time
-	mothershipOption.called = false; //If a mothership has spawned yet
-	gameConditions.ships = 0;	//How many motherships have spawned already
-	mothershipOption.scoreToMother = 5;	//How long until the next mothership
-	gameConditions.winConditions = 0;	//How many win conditions the player has met.
-	gameState = PLAYING;	//Gamestate
-	gameOverMessage.visible = false;	//Hide "Earth saved!"/"Earth destroyed!" message
 	
 	if ($(this).attr('id') === "restart") //If they clicked the "Restart with current settings" button
 	{

@@ -1,3 +1,4 @@
+//This health bar is associated with the mothership.
 Bar.prototype = new EntityClass();
 Bar.prototype.constructor = Bar;
 function Bar() {
@@ -8,7 +9,6 @@ function Bar() {
 	this.width = 180;
 }
 
-//YO: A bar object is tightly coupled with its associated mothership/alien and should not be an independent object.
 Bar.prototype.update = function() {
 	if (mothership.health) //If it is alive, update the bar to reflect its health
 	{

@@ -4,28 +4,18 @@ function Cannon(x, y) {
 	EntityClass.call(this);
 	this.x = x; 
 	this.y = y;	
-	this.model = 0; //Model affects how the ship fires
-	this.health = this.MAXHEALTH = 2;
+	this.firingType = 0; //Model affects how the ship fires
 }
 
 Cannon.prototype.update = function () {	
 
-	//Left
-	if(moveLeft && !moveRight)
-	{
-		this.vx = -6;
-	}
-	//Right
-	if(moveRight && !moveLeft)
-	{
-		this.vx = 6;
-	}
+	//Set velocity to either move the ship left, right, or stay still, depending on keys being pressed.
+	if(moveLeft && !moveRight) { this.vx = -6;}
+	if(moveRight && !moveLeft) { this.vx = 6; }
+	if(!moveLeft && !moveRight){ this.vx = 0; }
 
-	//Set the cannon's velocity to zero if none of the keys are being pressed
-	if(!moveLeft && !moveRight)
-	{
-		this.vx = 0;
-	}
-
-	this.x = Math.max(0, Math.min(this.x + this.vx, 480 - this.width)); //Ensure the cannon stays within the map.
+	//Change location based on velocity.
+	//Math.min checks current position+velocity against the width of the screen, so that the player will always be to the left of that edge
+	//Math.max checks that result against the left-most point on the screen (0), so the player will always be to the right of that edge
+	this.x = Math.max(0, Math.min(this.x + this.vx, 480 - this.width)); 
 }

@@ -9,7 +9,7 @@ function Missile(cannon) {
 	this.height = 16;
 	this.vy = -8;
 	//this.vx = 0;
-	this.damage = missileDam; //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
+	this.damage = newSettings.damage; //How much damage each missile does. Value taken from an input field, in the "Player's ship" section
 	
 	// Center it over the cannon
 	this.x = cannon.centerX() - this.halfWidth();
@@ -120,7 +120,7 @@ Missile.prototype.update = function () {
 	}//End collisions
 	
 	//Mothership seeking missile
-	if (cannon.model === 1)
+	if (cannon.firingType === 1)
 	{	
 		var distX;
 		var distY;

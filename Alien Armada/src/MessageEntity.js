@@ -1,3 +1,4 @@
+//Used for any messages displayed on screen (Presently, the score display and the win/loss message)
 Message.prototype = new EntityClass();
 Message.prototype.constructor = Message;
 function Message() {

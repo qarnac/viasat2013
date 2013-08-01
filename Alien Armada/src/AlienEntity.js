@@ -57,7 +57,7 @@ Alien.prototype.update = function () {
 			if (this.framesremaining === 60)
 			{
 				gameConditions.ships++; //Increment the amount of motherships destroyed (potential win condition)
-				if($('#bosskill').prop('checked'))
+				if(newSettings.repairspawns === "boss")
 				{
 					var repair = new Powerup("Repair");
 					sprites.push(repair);

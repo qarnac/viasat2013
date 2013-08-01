@@ -176,20 +176,19 @@ function playGame()
 
 	controlPowerups(); //All of the functions related to spawning powerups in here, to de-clutter the playGame function.
 
-	//--- The score 
 	//Display the score
 	scoreDisplay.text = "Score: " + gameConditions.score;
 
-	//Check if any win conditions have been met. And make sure that the option for that win condition has been enabled 
-	if(gameConditions.score >= newSettings.winscoreNum && newSettings.winscore)
-	{	gameConditions.winConditions++;  }
-	if (gameConditions.timer >= newSettings.wintimeNum*60 && newSettings.wintime) //Multiply by 60 for the 60 frames-per-second
-	{	gameConditions.winConditions++;  }
-	if (gameConditions.ships >= newSettings.winshipNum && newSettings.winship)
-	{	gameConditions.winConditions++;  }
+	//Check if any win conditions have been met. And make sure that the option for that win condition has been enabled. And make sure it has not been met before.
+	if(gameConditions.score >= newSettings.winscoreNum && newSettings.winscore && !gameConditions.scoreMet)
+	{	gameConditions.winConditions++;  gameConditions.scoreMet = true; }
+	if (gameConditions.timer >= newSettings.wintimeNum*60 && newSettings.wintime && !gameConditions.timeMet) //Multiply by 60 for the 60 frames per second
+	{	gameConditions.winConditions++;  gameConditions.timeMet = true; }
+	if (gameConditions.ships >= newSettings.winshipNum && newSettings.winship && !gameConditions.shipsMet)
+	{	gameConditions.winConditions++;  gameConditions.shipsMet = true; }
 
 	//If enough win conditions (also customizable by the player) are met, then end the game
-	if (gameConditions.winConditions >= newSettings.winconds)
+	if (gameConditions.winConditions >= newSettings.wincondsneeded)
 	{	gameState = OVER;  }
 
 	//KN: changed this to account for situations where mothership kills will make the player skip score == 30.
@@ -217,11 +216,11 @@ function controlPowerups()
 	The powerup controls are all clones of each other. So I am just commenting the first one heavily.
 */
 	
-	if (newSettings.repairspawns) //If the button to spawn repairs has been checked
+	if (newSettings.repairspawns !== "no") //If the button to spawn repairs has been checked
 //Repair
 	{
 		//If repair kits drop on a score basis
-		if (newSettings.repairscore)
+		if (newSettings.repairspawns === "score")//if (newSettings.repairscore)
 		{
 			if (gameConditions.score >= powerupOption.repairSpawn) //Then check if the current score is high enough to merit a  kit
 			{
@@ -234,9 +233,9 @@ function controlPowerups()
 	}
 	
 //Bomb
-	if (newSettings.bombspawns)
+	if (newSettings.bombspawns !== "no")
 	{
-		if (newSettings.bombscore)
+		if (newSettings.bombspawns === "score")
 		{
 			if (gameConditions.score >= powerupOption.bombSpawn)
 			{
@@ -245,7 +244,7 @@ function controlPowerups()
 				powerupOption.bombSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another bomb
 			}
 		}
-		else if (newSettings.bombtime)
+		else if (newSettings.bombspawns === "time")
 		{
 			if (gameConditions.timer >= powerupOption.bombSpawn)
 			{
@@ -257,9 +256,9 @@ function controlPowerups()
 	}
 	
 //Scoreup
-	if (newSettings.scoreupspawns)
+	if (newSettings.scoreupspawns !== "no")
 	{
-		if (newSettings.scoreupscore)
+		if (newSettings.scoreupspawns === "score")
 		{
 			if (gameConditions.score >= powerupOption.scoreupSpawn)
 			{
@@ -268,7 +267,7 @@ function controlPowerups()
 				powerupOption.scoreupSpawn = gameConditions.score + Math.round(Math.random()*40+6); //Set a new score at which to spawn another scoreup
 			}
 		}
-		else if (newSettings.scoreuptime)
+		else if (newSettings.scoreupspawns === "time")
 		{
 			if (gameConditions.timer >= powerupOption.scoreupSpawn)
 			{
@@ -280,9 +279,9 @@ function controlPowerups()
 	}
 
 //Slow
-	if (newSettings.slowspawns)
+	if (newSettings.slowspawns !== "no")
 	{
-		if (newSettings.slowscore)
+		if (newSettings.slowspawns === "score")
 		{
 			if (gameConditions.score >= powerupOption.slowSpawn)
 			{
@@ -291,7 +290,7 @@ function controlPowerups()
 				powerupOption.slowSpawn = gameConditions.score + Math.round(Math.random()*30+20); //Set a new score at which to spawn another slow
 			}
 		}
-		else if (newSettings.slowtime)
+		else if (newSettings.slowspawns === "time")
 		{
 			if (gameConditions.timer >= powerupOption.slowSpawn)
 			{
@@ -307,7 +306,7 @@ function controlPowerups()
 function endGame()
 {
   gameOverMessage.visible = true;
-  if (gameConditions.winConditions >= newSettings.winconds)	
+  if (gameConditions.winConditions >= newSettings.wincondsneeded)	
   {
     gameOverMessage.x = 120;
     gameOverMessage.text = "EARTH SAVED!";
@@ -378,17 +377,17 @@ function makeMother()
 
 function fireMissile()
 { 
-	if (cannon.model === 0) //default ship
+	if (cannon.firingType === 0) //default ship
 	{
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}
-	else if (cannon.model === 1) //fire mothership seekers
+	else if (cannon.firingType === 1) //fire mothership seekers
 	{	
 		var missile = new Missile(cannon);	
 		sprites.push(missile);
 	}
-	else if (cannon.model === 2) //fire 2 angled missiles
+	else if (cannon.firingType === 2) //fire 2 angled missiles
 	{
 		var missile = new Missile(cannon);	
 		missile.vx = 2;

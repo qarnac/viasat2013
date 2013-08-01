@@ -1,3 +1,4 @@
+//Used for the background of the game, whether it's Earth, Mars, or open space.
 levelEntityClass.prototype = new EntityClass();
 levelEntityClass.prototype.constructor = levelEntityClass;
 function levelEntityClass() {

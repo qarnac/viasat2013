@@ -1,20 +1,18 @@
 
 //Arrays to store the game objects and assets to load
-var assetsToLoad = [];
-var messages = [];
-var sprites = [];
+var assetsToLoad = []; //Audio files, spritesheets
+var messages = []; 	//Score, gameover message
+var sprites = [];	//Player, aliens, powerups, health bar
+var scenes = []; 	//Backdrops
 
-//JT:we will now use the array scene to hold the background tiles we will useto pan through
-//and manipulate the background
-var scenes = [];
-
+//Sprites to be referenced by name
 var cannon;
 var mothership;
 
-var missileDam = 1;
-
+//Message to be referenced by name
 var gameOverMessage;
 
+//3 settings files. defaultSettings are the original settings, newSettings are whatever modifications the user has made, settingFile is one of those two, chosen when the player clicks either the Restart or Reset button.
 var defaultSettings = new Settings();
 var newSettings = new Settings();
 var settingFile = defaultSettings;
@@ -23,7 +21,7 @@ var settingFile = defaultSettings;
 //Variables related to aliens being spawned
 var alienOption = 
 {
-	timer: 0,
+	timer: 0, //Counts up by 1 every frame and resets to 0 after an alien is spawned
 	frequency: 100 //When timer===frequency, spawn an alien, and reduce frequency (so they spawn more often)
 };
 
@@ -37,15 +35,17 @@ var mothershipOption =
 //Variables related to the game being won or lost.
 var gameConditions =
 {
-	score: 0,
-	timer: 0,
-	timeToWin: 300,
+	score: 0,	//Current score
+	timer: 0,	//Current time
+	ships: 0, 	//Quantity of motherships killed
 	
-	ships: 0, 			//Quantity of motherships killed
-	shipsToWin: 2, 		//How many motherships need to be killed to win (if that condition is enabled
+	winConditions: 0, //How many win conditions have been met so far
 	
-	winConditions: 0,
-
+	//Whether or not x win condition has been met, so as to not count one twice.
+	scoreMet: false,
+	timeMet: false,
+	shipsMet: false,
+	
 	lives: 3
 };
 
